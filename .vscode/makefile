@@ -1,5 +1,5 @@
 #source file search paths
-VPATH = ./src 
+VPATH = ./src ../PathFinder/src
 
 	# compiler include search paths
 INCS = -I./include \
@@ -28,6 +28,8 @@ OBJ_starter = \
 	$(ODIR)/main.o \
 	$(ODIR)/cGUI.o \
 	$(ODIR)/allocator.o \
+	$(ODIR)/cGraph.o \
+	$(ODIR)/GraphTheory.o \
 
 ### COMPILE
 
