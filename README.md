@@ -1,6 +1,6 @@
 # Agents2Tasks
 
-Assign agents to tasks in multiple timeslots.
+Allocate agents to tasks in multiple timeslots.
 
 Construct instance of class to allocate agents to tasks
 
@@ -58,6 +58,10 @@ std::cout << allocator.text();
 The output is
 
 ![image](https://github.com/JamesBremner/Agents2Tasks/assets/2046227/7d58cf20-7d03-47eb-aea4-883559b6e778)
+
+# Algorithm
+
+Maximum flow maximises the number of tasks that are allocated in each timeslot.
 
 
 
