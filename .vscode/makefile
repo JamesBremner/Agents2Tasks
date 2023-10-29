@@ -25,11 +25,13 @@ CCflags = -std=c++17 $(OPT) -D_mingw_
 
 # sources
 OBJ_starter = \
-	$(ODIR)/main.o 
+	$(ODIR)/main.o \
+	$(ODIR)/cGUI.o \
+	$(ODIR)/allocator.o \
 
 ### COMPILE
 
-$(ODIR)/%.o: %.cpp  
+$(ODIR)/%.o: %.cpp allocator.h cGUI.h
 	g++  $(CCflags) \
 	-c -o $@ $< $(INCS)
 

@@ -5,30 +5,13 @@
 #include <vector>
 #include <algorithm>
 #include <wex.h>
-#include "cStarterGUI.h"
+#include "cGUI.h"
 
-class cGUI : public cStarterGUI
-{
-public:
-    cGUI()
-        : cStarterGUI(
-              "Starter",
-              {50, 50, 1000, 500}),
-          lb(wex::maker::make < wex::label >(fm))
-    {
-        lb.move(50, 50, 100, 30);
-        lb.text("Hello World");
+#include "allocator.h"
 
-        show();
-        run();
-    }
-
-private:
-    wex::label &lb;
-};
 
 main()
 {
-    cGUI theGUI;
+    cGUI theGUI("Agents2Tasks",{50,50,500,500});
     return 0;
 }
