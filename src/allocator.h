@@ -2,34 +2,34 @@
 #include <string>
 #include <vector>
 
+#include "../../PathFinder/src/GraphTheory.h"
+
 class cAgent
 {
     std::string myName;
-    std::vector<int> myTasks;
+
+    /// @brief tasks agent ready to do ( task id, cost )
+    std::vector<std::pair<int,double>> myTasks;
 
 public:
     cAgent(
         const std::string &name,
-        const std::vector<int> &vt)
-        : myName(name),
-          myTasks(vt)
-    {
-    }
+        const std::vector<int> &vt,
+        double cost );
+
     std::string name() const
     {
         return myName;
     }
 
-    bool isAble(int task);
+    bool isAble(int task) const;
+
+    double cost() const;
 
     std::string text(
         const std::vector<std::string> vTaskType) const;
 };
 
-class cTask
-{
-    int myType;
-};
 
 class cSlot
 {
@@ -51,6 +51,11 @@ public:
     std::string text(
         const std::vector<std::string> vTaskType) const;
 
+    int taskCount() const
+    {
+        return myTasks.size();
+    }
+
     std::vector<int>::iterator begin()
     {
         return myTasks.begin();
@@ -64,10 +69,9 @@ public:
 class cAllocator
 {
     std::vector<cAgent> myAgents;
-    std::vector<cTask> myTasks;
     std::vector<std::string> myTaskType;
     std::vector<cSlot> mySlot;
-    std::vector<std::vector<std::string>> mySolution;
+    std::vector<raven::graph::cGraph> mySolution;
 
     /// @brief find task type by name
     /// @param name
@@ -76,7 +80,11 @@ class cAllocator
     /// If task type absent, add it.
 
     int findTaskType(const std::string &name);
-    bool isAgent(const std::string &name);
+
+
+    bool isAgent(
+        const std::string &name,
+        int& iAgent) const;
     bool isSlot(const std::string &name);
 
 
@@ -91,7 +99,8 @@ public:
 
     void addAgent(
         const std::string &name,
-        const std::string &canDoTaskTypes);
+        const std::string &canDoTaskTypes,
+        double cost = 1);
 
     void addTask(
         const std::string &stype);
@@ -100,7 +109,13 @@ public:
         const std::string &name,
         const std::string &vTask);
 
+    /// @brief Allocate agents to tasks using max flow algorithm
     void allocate();
+
+    /// @brief  Allocate agents to tasks using Hungarian algorithm
+    /// https://en.wikipedia.org/wiki/Hungarian_algorithm
+    
+    void allocateHungarian();
 
     std::string text() const;
 };

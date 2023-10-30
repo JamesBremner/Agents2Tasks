@@ -11,13 +11,16 @@ cGUI::cGUI()
     allocator.addTask("accountant");
     allocator.addAgent(
         "John",
-        {"teacher cleaner"});
+        {"teacher cleaner"},
+        3.0);
     allocator.addAgent(
         "Margaret",
-        {"accountant cleaner"});
+        {"accountant cleaner"},
+        4.0);
     allocator.addAgent(
         "Andrew",
-        {"accountant teacher"});
+        {"accountant teacher"},
+        5.0 );
     allocator.addSlot(
         "28/OCT/2023 8:30",
         {"teacher teacher cleaner"});
@@ -32,7 +35,8 @@ cGUI::cGUI()
         {"teacher accountant"});
 
     // do the allocation
-    allocator.allocate();
+    //allocator.allocate();
+    allocator.allocateHungarian();
 
     fm.move({50,50,500,600});
     fm.text("Agents2Tasks");
@@ -77,11 +81,13 @@ void cGUI::menuCTOR()
                    wex::inputbox ib;
                    ib.gridWidth(400);
                    ib.add("Name", "");
+                   ib.add("Cost","1.0");
                    ib.add("Tasks", "");
                    ib.showModal();
                    allocator.addAgent(
                        ib.value("Name"),
-                       ib.value("Tasks"));
+                       ib.value("Tasks"),
+                       atof(ib.value("Cost").c_str()));
                    fm.update();
                });
     add.append("Add timeslot",
