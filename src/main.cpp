@@ -12,6 +12,6 @@
 
 main()
 {
-    cGUI theGUI("Agents2Tasks",{50,50,500,500});
+    cGUI theGUI;
     return 0;
 }

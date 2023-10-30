@@ -4,14 +4,8 @@
 class cGUI
 {
 public:
-    /** CTOR
-     * @param[in] title will appear in application window title
-     * @param[in] vlocation set location and size of appplication window
-     */
 
-    cGUI(
-        const std::string &title,
-        const std::vector<int> &vlocation);
+    cGUI();
 
     virtual void draw(wex::shapes &S)
     {
@@ -23,4 +17,6 @@ private:
     wex::panel & myPanel;
 
     cAllocator allocator;
+
+    void menuCTOR();
 };

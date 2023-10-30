@@ -28,22 +28,25 @@ std::string cSlot::text(
     return ss.str();
 }
 
+void cAllocator::clear()
+{
+    myAgents.clear();
+    myTasks.clear();
+    myTaskType.clear();
+    mySlot.clear();
+    mySolution.clear();
+}
 void cAllocator::addAgent(
     const std::string &name,
-    const std::vector<std::string> &canDoTaskTypes)
+    const std::string &canDoTaskTypes)
 {
-    if (std::find_if(
-            myAgents.begin(), myAgents.end(),
-            [name](const cAgent &ag)
-            {
-                return (ag.name() == name);
-            }) != myAgents.end())
+    if (isAgent(name))
         throw std::runtime_error(
             "Duplicate agent name" + name);
-    std::vector<int> vTaskIndices;
-    for (auto &ttn : canDoTaskTypes)
-        vTaskIndices.push_back(findTaskType(ttn));
-    myAgents.emplace_back(name, vTaskIndices);
+
+    myAgents.emplace_back(
+        name,
+        taskTypeIndices(canDoTaskTypes));
 }
 
 void cAllocator::addTask(
@@ -53,6 +56,38 @@ void cAllocator::addTask(
             myTaskType.begin(), myTaskType.end(), stype) != myTaskType.end())
         return;
     myTaskType.push_back(stype);
+}
+
+void cAllocator::addSlot(
+    const std::string &name,
+    const std::string &vTask)
+{
+    if (isSlot(name))
+        throw std::runtime_error(
+            "Duplicate slot name" + name);
+
+    mySlot.emplace_back(
+        name,
+        taskTypeIndices(vTask));
+}
+
+bool cAllocator::isAgent(const std::string &name)
+{
+    return (std::find_if(
+                myAgents.begin(), myAgents.end(),
+                [name](const cAgent &ag)
+                {
+                    return (ag.name() == name);
+                }) != myAgents.end());
+}
+bool cAllocator::isSlot(const std::string &name)
+{
+    return (std::find_if(
+                mySlot.begin(), mySlot.end(),
+                [name](const cSlot &sl)
+                {
+                    return (sl.name() == name);
+                }) != mySlot.end());
 }
 
 int cAllocator::findTaskType(const std::string &name)
@@ -72,28 +107,26 @@ int cAllocator::findTaskType(const std::string &name)
     return task;
 }
 
-void cAllocator::addSlot(
-    const std::string &name,
-    const std::vector<std::string> &vTask)
+std::vector<int>
+cAllocator::taskTypeIndices(
+    const std::string &vTask)
 {
-    if (std::find_if(
-            mySlot.begin(), mySlot.end(),
-            [name](const cSlot &sl)
-            {
-                return (sl.name() == name);
-            }) != mySlot.end())
-        throw std::runtime_error(
-            "Duplicate slot name" + name);
-
     std::vector<int> vTaskIndices;
-    for (int kt = 0; kt < vTask.size(); kt++)
-        vTaskIndices.push_back(findTaskType(vTask[kt]));
-    mySlot.emplace_back(name, vTaskIndices);
+    std::stringstream sst(vTask);
+    std::string a;
+    while (getline(sst, a, ' '))
+        vTaskIndices.push_back(findTaskType(a));
+    return vTaskIndices;
 }
 
 std::string cAllocator::text() const
 {
     std::stringstream ss;
+
+    ss << "Task types\n==========\n";
+    for (auto &task : myTaskType)
+        ss << task << " ";
+    ss << "\n\n";
 
     ss << "Agents\n==========\n";
     for (auto &agent : myAgents)

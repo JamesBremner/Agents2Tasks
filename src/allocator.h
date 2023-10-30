@@ -20,7 +20,7 @@ public:
         return myName;
     }
 
-    bool isAble( int task );
+    bool isAble(int task);
 
     std::string text(
         const std::vector<std::string> vTaskType) const;
@@ -76,21 +76,29 @@ class cAllocator
     /// If task type absent, add it.
 
     int findTaskType(const std::string &name);
+    bool isAgent(const std::string &name);
+    bool isSlot(const std::string &name);
 
-    std::vector<int> findAgentsForTask( int task );
 
+    std::vector<int>
+    taskTypeIndices(
+        const std::string &vTask);
+
+    std::vector<int> findAgentsForTask(int task);
 
 public:
+    void clear();
+
     void addAgent(
         const std::string &name,
-        const std::vector<std::string> &canDoTaskTypes);
+        const std::string &canDoTaskTypes);
 
     void addTask(
         const std::string &stype);
 
     void addSlot(
         const std::string &name,
-        const std::vector<std::string> &vTask);
+        const std::string &vTask);
 
     void allocate();
 
