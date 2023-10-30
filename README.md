@@ -63,6 +63,8 @@ The output is
 
 Maximum flow maximises the number of tasks that are allocated in each timeslot.
 
+The Hungarian algorithm is used to minimize the cost in each timeslot.
+
 
 
 
