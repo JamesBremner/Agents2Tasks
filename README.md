@@ -57,7 +57,7 @@ std::cout << allocator.text();
 
 The output is
 
-![image](https://github.com/JamesBremner/Agents2Tasks/assets/2046227/eeab6e0b-df88-4e74-ad24-91e0b8f7f7c1)
+![image](https://github.com/JamesBremner/Agents2Tasks/assets/2046227/b4e2eaea-60f0-460c-b882-939da108128e)
 
 
 # Algorithm
