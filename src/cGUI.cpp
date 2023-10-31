@@ -6,9 +6,9 @@ cGUI::cGUI()
       myPanel(wex::maker::make<wex::panel>(fm))
 {
 
-    allocator.addTask("teacher");
-    allocator.addTask("cleaner");
-    allocator.addTask("accountant");
+    allocator.addTaskType("teacher");
+    allocator.addTaskType("cleaner");
+    allocator.addTaskType("accountant");
     allocator.addAgent(
         "John",
         {"teacher cleaner"},
@@ -35,8 +35,8 @@ cGUI::cGUI()
         {"teacher accountant"});
 
     // do the allocation
-    //allocator.allocate();
-    allocator.allocateHungarian();
+    allocator.allocateMaxFlow();
+    //allocator.allocateHungarian();
 
     fm.move({50,50,500,600});
     fm.text("Agents2Tasks");
@@ -72,7 +72,7 @@ void cGUI::menuCTOR()
                    ib.gridWidth(400);
                    ib.add("Task type", "");
                    ib.showModal();
-                   allocator.addTask(ib.value("Task type"));
+                   allocator.addTaskType(ib.value("Task type"));
                    fm.update();
                });
     add.append("Add agent",

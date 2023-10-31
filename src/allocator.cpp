@@ -47,12 +47,13 @@ double cAgent::cost() const
     return myTasks[0].second;
 }
 std::string cSlot::text(
-    const std::vector<std::string> vTaskType) const
+    const std::vector<cTask> &vTask,
+    const std::vector<std::string> &vTaskType) const
 {
     std::stringstream ss;
     ss << myName << " tasks: ";
     for (int tsk : myTasks)
-        ss << vTaskType[tsk] << " ";
+        ss << vTaskType[vTask[tsk].myTaskType] << " ";
     return ss.str();
 }
 
@@ -80,7 +81,7 @@ void cAllocator::addAgent(
         cost);
 }
 
-void cAllocator::addTask(
+void cAllocator::addTaskType(
     const std::string &stype)
 {
     if (std::find(
@@ -91,15 +92,28 @@ void cAllocator::addTask(
 
 void cAllocator::addSlot(
     const std::string &name,
-    const std::string &vTask)
+    const std::string &sTaskTypeName)
 {
     if (isSlot(name))
         throw std::runtime_error(
             "Duplicate slot name" + name);
 
+    // loop over tasks in slot
+    std::vector<int> vTaskIndex;
+    std::stringstream sst(sTaskTypeName);
+    std::string a;
+    while (getline(sst, a, ' '))
+    {
+        int taskIndex = myTask.end() - myTask.begin();
+        myTask.emplace_back(
+            findTaskType(a),
+            taskIndex);
+        vTaskIndex.push_back(taskIndex);
+    }
+
     mySlot.emplace_back(
         name,
-        taskTypeIndices(vTask));
+        vTaskIndex);
 }
 
 bool cAllocator::isAgent(
@@ -149,10 +163,10 @@ int cAllocator::findTaskType(const std::string &name)
 
 std::vector<int>
 cAllocator::taskTypeIndices(
-    const std::string &vTask)
+    const std::string &sTask)
 {
     std::vector<int> vTaskIndices;
-    std::stringstream sst(vTask);
+    std::stringstream sst(sTask);
     std::string a;
     while (getline(sst, a, ' '))
         vTaskIndices.push_back(findTaskType(a));
@@ -177,10 +191,13 @@ std::string cAllocator::text() const
     ss << "Time slots\n==========\n";
     for (auto &slot : mySlot)
     {
-        ss << slot.text(myTaskType) << "\n\n";
+        ss << slot.text(
+                  myTask,
+                  myTaskType)
+           << "\n";
     }
 
-    ss << "Solution\n==========\n";
+    ss << "\nSolution\n==========\n";
     for (int slot = 0; slot < mySolution.size(); slot++)
     {
         double cost = 0;
@@ -212,7 +229,7 @@ std::vector<int> cAllocator::findAgentsForTask(int task)
     return ret;
 }
 
-void cAllocator::allocate()
+void cAllocator::allocateMaxFlow()
 {
     mySolution.clear();
 
@@ -229,12 +246,15 @@ void cAllocator::allocate()
         for (int task : slot)
         {
             // loop over agents
-            for (int agent : findAgentsForTask(task))
+            for (int kag = 0; kag < myAgents.size(); kag++)
             {
-                // add link from agent to task agent is able to do
-                g.add(
-                    myAgents[agent].name(),
-                    myTaskType[task]);
+                if (myAgents[kag].isAble(myTask[task].myTaskType))
+                {
+                    // add link from agent to task agent is able to do
+                    g.add(
+                        myAgents[kag].name(),
+                        "task" + std::to_string(task));
+                }
             }
         }
 
@@ -247,79 +267,79 @@ void cAllocator::allocate()
 
 void cAllocator::allocateHungarian()
 {
-    mySolution.clear();
+    // mySolution.clear();
 
-    // loop over timeslots
-    for (auto &slot : mySlot)
-    {
-        // construct cost martix
-        // each agent gets a row, each task gets a column
+    // // loop over timeslots
+    // for (auto &slot : mySlot)
+    // {
+    //     // construct cost martix
+    //     // each agent gets a row, each task gets a column
 
-        std::vector<std::vector<double>> costMatrix;
-        for (auto &agent : myAgents)
-        {
-            std::vector<double> row;
-            double delta = 0;
-            for (int task : slot)
-            {
-                if (!agent.isAble(task))
-                    row.push_back(100);
-                else
-                {
-                    row.push_back(agent.cost() + delta);
+    //     std::vector<std::vector<double>> costMatrix;
+    //     for (auto &agent : myAgents)
+    //     {
+    //         std::vector<double> row;
+    //         double delta = 0;
+    //         for (auto &task : slot)
+    //         {
+    //             if (!agent.isAble(task.myTaskType))
+    //                 row.push_back(100);
+    //             else
+    //             {
+    //                 row.push_back(agent.cost() + delta);
 
-                    // we have assumed that each agent costs the same
-                    // no matter which task they do
-                    // The Hungarian algorithm needs a different cost for each task
-                    delta += 0.01;
-                }
-            }
-            costMatrix.push_back(row);
-        }
+    //                 // we have assumed that each agent costs the same
+    //                 // no matter which task they do
+    //                 // The Hungarian algorithm needs a different cost for each task
+    //                 delta += 0.01;
+    //             }
+    //         }
+    //         costMatrix.push_back(row);
+    //     }
 
-        // Subtract minimum cost in row from each cost in row
-        bool fsolve = true;
-        for (auto &row : costMatrix)
-        {
-            double rowMin = INT_MAX;
-            for (int cost : row)
-            {
-                if (cost < rowMin)
-                    rowMin = cost;
-            }
-            int countZero = 0;
-            for (double &cost : row)
-            {
-                cost -= rowMin;
-                if (cost < 0.00001)
-                    countZero++;
-            }
-            // check that there is just one zero in the row
-            if (countZero > 1)
-                fsolve = false;
-        }
-        if (!fsolve)
-            throw std::runtime_error(
-                "Hungarian algorithm failed");
+    //     // Subtract minimum cost in row from each cost in row
+    //     bool fsolve = true;
+    //     for (auto &row : costMatrix)
+    //     {
+    //         double rowMin = INT_MAX;
+    //         for (int cost : row)
+    //         {
+    //             if (cost < rowMin)
+    //                 rowMin = cost;
+    //         }
+    //         int countZero = 0;
+    //         for (double &cost : row)
+    //         {
+    //             cost -= rowMin;
+    //             if (cost < 0.00001)
+    //                 countZero++;
+    //         }
+    //         // check that there is just one zero in the row
+    //         if (countZero > 1)
+    //             fsolve = false;
+    //     }
+    //     if (!fsolve)
+    //         throw std::runtime_error(
+    //             "Hungarian algorithm failed");
 
-        // assign agent to task where modified cost is zero
+    //     // assign agent to task where modified cost is zero
 
-        raven::graph::cGraph g;
-        g.directed();
-        for (int kagent = 0; kagent < myAgents.size(); kagent++)
-        {
-            for (int ktask = 0; ktask < slot.taskCount(); ktask++)
-            {
-                if (costMatrix[kagent][ktask] < 0.000001)
-                {
-                    // asignment found
+    //     raven::graph::cGraph g;
+    //     g.directed();
+    //     for (int kagent = 0; kagent < myAgents.size(); kagent++)
+    //     {
+    //         for (int ktask = 0; ktask < slot.taskCount(); ktask++)
+    //         {
+    //             if (costMatrix[kagent][ktask] < 0.000001)
+    //             {
+    //                 // asignment found
 
-                    g.add(
-                        myAgents[kagent].name(),
-                        myTaskType[ktask]);
-                }
-            }
-        }
-        mySolution.push_back(g);
-    }
+    //                 g.add(
+    //                     myAgents[kagent].name(),
+    //                     myTaskType[ktask]);
+    //             }
+    //         }
+    //     }
+    //     mySolution.push_back(g);
+    // }
 }

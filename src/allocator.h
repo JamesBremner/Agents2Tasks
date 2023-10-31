@@ -8,14 +8,14 @@ class cAgent
 {
     std::string myName;
 
-    /// @brief tasks agent ready to do ( task id, cost )
-    std::vector<std::pair<int,double>> myTasks;
+    /// @brief tasks agent ready to do ( task type id, cost )
+    std::vector<std::pair<int, double>> myTasks;
 
 public:
     cAgent(
         const std::string &name,
         const std::vector<int> &vt,
-        double cost );
+        double cost);
 
     std::string name() const
     {
@@ -30,6 +30,16 @@ public:
         const std::vector<std::string> vTaskType) const;
 };
 
+class cTask
+{
+public:
+    int myTaskType;
+    int myIndex;
+    cTask( int iType, int i )
+      : myTaskType( iType),
+      myIndex( i )
+    {}
+};
 
 class cSlot
 {
@@ -41,7 +51,7 @@ public:
         const std::string &name,
         const std::vector<int> &vt)
         : myName(name),
-          myTasks(vt)
+          myTasks(vt)   
     {
     }
     std::string name() const
@@ -49,7 +59,8 @@ public:
         return myName;
     }
     std::string text(
-        const std::vector<std::string> vTaskType) const;
+        const std::vector<cTask>& vTask,
+        const std::vector<std::string>& vTaskType) const;
 
     int taskCount() const
     {
@@ -70,6 +81,7 @@ class cAllocator
 {
     std::vector<cAgent> myAgents;
     std::vector<std::string> myTaskType;
+    std::vector<cTask> myTask;
     std::vector<cSlot> mySlot;
     std::vector<raven::graph::cGraph> mySolution;
 
@@ -81,12 +93,10 @@ class cAllocator
 
     int findTaskType(const std::string &name);
 
-
     bool isAgent(
         const std::string &name,
-        int& iAgent) const;
+        int &iAgent) const;
     bool isSlot(const std::string &name);
-
 
     std::vector<int>
     taskTypeIndices(
@@ -102,7 +112,7 @@ public:
         const std::string &canDoTaskTypes,
         double cost = 1);
 
-    void addTask(
+    void addTaskType(
         const std::string &stype);
 
     void addSlot(
@@ -110,11 +120,11 @@ public:
         const std::string &vTask);
 
     /// @brief Allocate agents to tasks using max flow algorithm
-    void allocate();
+    void allocateMaxFlow();
 
     /// @brief  Allocate agents to tasks using Hungarian algorithm
     /// https://en.wikipedia.org/wiki/Hungarian_algorithm
-    
+
     void allocateHungarian();
 
     std::string text() const;
