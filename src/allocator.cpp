@@ -208,8 +208,11 @@ std::string cAllocator::text() const
             isAgent(mySolution[slot].userName(edge.first), iAgent);
             cost += myAgents[iAgent].cost();
 
+            auto stask = mySolution[slot].userName(edge.second).substr(4);
+            stask = myTaskType[myTask[atoi(stask.c_str())].myTaskType];
+
             ss << mySolution[slot].userName(edge.first)
-               << " does " << mySolution[slot].userName(edge.second)
+               << " does " << stask
                << "\n";
         }
         ss << "Cost " << cost << "\n++++++++++\n";
