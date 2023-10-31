@@ -7,14 +7,12 @@ public:
 
     cGUI();
 
-    virtual void draw(wex::shapes &S)
-    {
-        myPanel.text( allocator.text() );
-    }
-
 private:
     wex::gui &fm;
-    wex::panel & myPanel;
+    wex::tabbed& tabs;
+    wex::panel& plProblem;
+    wex::panel& plMaxFlow;
+    wex::panel& plHungarian;
 
     cAllocator allocator;
 

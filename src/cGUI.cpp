@@ -3,7 +3,10 @@
 
 cGUI::cGUI()
     : fm(wex::maker::make()),
-      myPanel(wex::maker::make<wex::panel>(fm))
+      tabs(wex::maker::make<wex::tabbed>(fm)),
+      plProblem(wex::maker::make<wex::panel>(tabs)),
+      plMaxFlow(wex::maker::make<wex::panel>(tabs)),
+      plHungarian(wex::maker::make<wex::panel>(tabs))
 {
 
     allocator.addTaskType("teacher");
@@ -20,7 +23,7 @@ cGUI::cGUI()
     allocator.addAgent(
         "Andrew",
         {"accountant teacher"},
-        5.0 );
+        5.0);
     allocator.addSlot(
         "28/OCT/2023 8:30",
         {"teacher teacher cleaner"});
@@ -36,22 +39,37 @@ cGUI::cGUI()
 
     // do the allocation
     allocator.allocateMaxFlow();
-    //allocator.allocateHungarian();
+    allocator.allocateHungarian();
 
-    fm.move({50,50,500,600});
+    fm.move({50, 50, 600, 700});
     fm.text("Agents2Tasks");
-    myPanel.move({0, 0, 500, 700});
+
+    tabs.move(0, 0, 600, 700);
+    tabs.tabWidth(200);
+    tabs.add("PROBLEM", plProblem);
+    tabs.add("MAX FLOW", plMaxFlow);
+    tabs.add("HUNGARIAN", plHungarian);
 
     menuCTOR();
 
-    fm.events().draw(
+    plProblem.events().draw(
         [&](PAINTSTRUCT &ps)
         {
-            wex::shapes S(ps);
-            draw(S);
+            plProblem.text(allocator.textProblem());
+        });
+    plMaxFlow.events().draw(
+        [&](PAINTSTRUCT &ps)
+        {
+            plMaxFlow.text(allocator.textMaxflow());
+        });
+    plHungarian.events().draw(
+        [&](PAINTSTRUCT &ps)
+        {
+            plHungarian.text(allocator.textHungarian());
         });
 
     fm.show();
+    tabs.select(0);
     fm.run();
 }
 
@@ -81,7 +99,7 @@ void cGUI::menuCTOR()
                    wex::inputbox ib;
                    ib.gridWidth(400);
                    ib.add("Name", "");
-                   ib.add("Cost","1.0");
+                   ib.add("Cost", "1.0");
                    ib.add("Tasks", "");
                    ib.showModal();
                    allocator.addAgent(

@@ -60,10 +60,10 @@ std::string cSlot::text(
 void cAllocator::clear()
 {
     myAgents.clear();
-    // myTasks.clear();
+    myTask.clear();
     myTaskType.clear();
     mySlot.clear();
-    mySolution.clear();
+
 }
 void cAllocator::addAgent(
     const std::string &name,
@@ -173,7 +173,7 @@ cAllocator::taskTypeIndices(
     return vTaskIndices;
 }
 
-std::string cAllocator::text() const
+std::string cAllocator::textProblem() const
 {
     std::stringstream ss;
 
@@ -197,21 +197,28 @@ std::string cAllocator::text() const
            << "\n";
     }
 
-    ss << "\nSolution\n==========\n";
-    for (int slot = 0; slot < mySolution.size(); slot++)
+    return ss.str();
+}
+
+std::string cAllocator::textSolution(
+    const solution_t& solution) const
+{
+    std::stringstream ss;
+        ss << "Solution\n==========\n";
+    for (int slot = 0; slot < solution.size(); slot++)
     {
         double cost = 0;
         ss << mySlot[slot].name() << "\n";
-        for (auto &edge : mySolution[slot].edgeList())
+        for (auto &edge : solution[slot].edgeList())
         {
             int iAgent;
-            isAgent(mySolution[slot].userName(edge.first), iAgent);
+            isAgent(solution[slot].userName(edge.first), iAgent);
             cost += myAgents[iAgent].cost();
 
-            auto stask = mySolution[slot].userName(edge.second).substr(4);
+            auto stask = solution[slot].userName(edge.second).substr(4);
             stask = myTaskType[myTask[atoi(stask.c_str())].myTaskType];
 
-            ss << mySolution[slot].userName(edge.first)
+            ss << solution[slot].userName(edge.first)
                << " does " << stask
                << "\n";
         }
@@ -234,7 +241,7 @@ std::vector<int> cAllocator::findAgentsForTask(int task)
 
 void cAllocator::allocateMaxFlow()
 {
-    mySolution.clear();
+    mySolutionMaxflow.clear();
 
     raven::graph::cGraph g;
 
@@ -264,85 +271,85 @@ void cAllocator::allocateMaxFlow()
         // apply pathfinder maximum flow allocation algorithm to the timeslot
         raven::graph::sGraphData gd;
         gd.g = g;
-        mySolution.push_back(alloc(gd));
+        mySolutionMaxflow.push_back(alloc(gd));
     }
 }
 
 void cAllocator::allocateHungarian()
 {
-    // mySolution.clear();
+    mySolutionHungarian.clear();
 
-    // // loop over timeslots
-    // for (auto &slot : mySlot)
-    // {
-    //     // construct cost martix
-    //     // each agent gets a row, each task gets a column
+    // loop over timeslots
+    for (auto &slot : mySlot)
+    {
+        // construct cost martix
+        // each agent gets a row, each task gets a column
 
-    //     std::vector<std::vector<double>> costMatrix;
-    //     for (auto &agent : myAgents)
-    //     {
-    //         std::vector<double> row;
-    //         double delta = 0;
-    //         for (auto &task : slot)
-    //         {
-    //             if (!agent.isAble(task.myTaskType))
-    //                 row.push_back(100);
-    //             else
-    //             {
-    //                 row.push_back(agent.cost() + delta);
+        std::vector<std::vector<double>> costMatrix;
+        for (auto &agent : myAgents)
+        {
+            std::vector<double> row;
+            double delta = 0;
+            for (int task : slot)
+            {
+                if (!agent.isAble(myTask[task].myTaskType))
+                    row.push_back(100);
+                else
+                {
+                    row.push_back(agent.cost() + delta);
 
-    //                 // we have assumed that each agent costs the same
-    //                 // no matter which task they do
-    //                 // The Hungarian algorithm needs a different cost for each task
-    //                 delta += 0.01;
-    //             }
-    //         }
-    //         costMatrix.push_back(row);
-    //     }
+                    // we have assumed that each agent costs the same
+                    // no matter which task they do
+                    // The Hungarian algorithm needs a different cost for each task
+                    delta += 0.01;
+                }
+            }
+            costMatrix.push_back(row);
+        }
 
-    //     // Subtract minimum cost in row from each cost in row
-    //     bool fsolve = true;
-    //     for (auto &row : costMatrix)
-    //     {
-    //         double rowMin = INT_MAX;
-    //         for (int cost : row)
-    //         {
-    //             if (cost < rowMin)
-    //                 rowMin = cost;
-    //         }
-    //         int countZero = 0;
-    //         for (double &cost : row)
-    //         {
-    //             cost -= rowMin;
-    //             if (cost < 0.00001)
-    //                 countZero++;
-    //         }
-    //         // check that there is just one zero in the row
-    //         if (countZero > 1)
-    //             fsolve = false;
-    //     }
-    //     if (!fsolve)
-    //         throw std::runtime_error(
-    //             "Hungarian algorithm failed");
+        // Subtract minimum cost in row from each cost in row
+        bool fsolve = true;
+        for (auto &row : costMatrix)
+        {
+            double rowMin = INT_MAX;
+            for (int cost : row)
+            {
+                if (cost < rowMin)
+                    rowMin = cost;
+            }
+            int countZero = 0;
+            for (double &cost : row)
+            {
+                cost -= rowMin;
+                if (cost < 0.00001)
+                    countZero++;
+            }
+            // check that there is just one zero in the row
+            if (countZero > 1)
+                fsolve = false;
+        }
+        if (!fsolve)
+            throw std::runtime_error(
+                "Hungarian algorithm failed");
 
-    //     // assign agent to task where modified cost is zero
+        // assign agent to task where modified cost is zero
 
-    //     raven::graph::cGraph g;
-    //     g.directed();
-    //     for (int kagent = 0; kagent < myAgents.size(); kagent++)
-    //     {
-    //         for (int ktask = 0; ktask < slot.taskCount(); ktask++)
-    //         {
-    //             if (costMatrix[kagent][ktask] < 0.000001)
-    //             {
-    //                 // asignment found
+        raven::graph::cGraph g;
+        g.directed();
+        for (int kagent = 0; kagent < myAgents.size(); kagent++)
+        {
+            for (int ktask = 0; ktask < slot.taskCount(); ktask++)
+            {
+                if (costMatrix[kagent][ktask] < 0.000001)
+                {
+                    // asignment found
 
-    //                 g.add(
-    //                     myAgents[kagent].name(),
-    //                     myTaskType[ktask]);
-    //             }
-    //         }
-    //     }
-    //     mySolution.push_back(g);
-    // }
+                    g.add(
+                        myAgents[kagent].name(),
+                        myTaskType[ktask]);
+                }
+            }
+        }
+        mySolutionHungarian.push_back(g);
+    }
 }

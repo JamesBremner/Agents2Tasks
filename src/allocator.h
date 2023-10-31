@@ -4,6 +4,8 @@
 
 #include "../../PathFinder/src/GraphTheory.h"
 
+typedef std::vector<raven::graph::cGraph> solution_t;
+
 class cAgent
 {
     std::string myName;
@@ -35,10 +37,11 @@ class cTask
 public:
     int myTaskType;
     int myIndex;
-    cTask( int iType, int i )
-      : myTaskType( iType),
-      myIndex( i )
-    {}
+    cTask(int iType, int i)
+        : myTaskType(iType),
+          myIndex(i)
+    {
+    }
 };
 
 class cSlot
@@ -51,7 +54,7 @@ public:
         const std::string &name,
         const std::vector<int> &vt)
         : myName(name),
-          myTasks(vt)   
+          myTasks(vt)
     {
     }
     std::string name() const
@@ -59,8 +62,8 @@ public:
         return myName;
     }
     std::string text(
-        const std::vector<cTask>& vTask,
-        const std::vector<std::string>& vTaskType) const;
+        const std::vector<cTask> &vTask,
+        const std::vector<std::string> &vTaskType) const;
 
     int taskCount() const
     {
@@ -79,11 +82,13 @@ public:
 
 class cAllocator
 {
-    std::vector<cAgent> myAgents;
-    std::vector<std::string> myTaskType;
-    std::vector<cTask> myTask;
-    std::vector<cSlot> mySlot;
-    std::vector<raven::graph::cGraph> mySolution;
+    std::vector<cAgent> myAgents;        // agents
+    std::vector<std::string> myTaskType; // task type names
+    std::vector<cTask> myTask;           // defined tasks
+    std::vector<cSlot> mySlot;           // slots containg tasks
+
+    solution_t mySolutionMaxflow;
+    solution_t mySolutionHungarian;
 
     /// @brief find task type by name
     /// @param name
@@ -127,5 +132,15 @@ public:
 
     void allocateHungarian();
 
-    std::string text() const;
+    std::string textProblem() const;
+    std::string textMaxflow() const
+    {
+        return textSolution(mySolutionMaxflow);
+    }
+    std::string textHungarian() const
+    {
+        return textSolution(mySolutionHungarian);
+    }
+    std::string textSolution(
+        const solution_t &solution) const;
 };
