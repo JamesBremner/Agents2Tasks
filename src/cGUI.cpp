@@ -39,7 +39,7 @@ cGUI::cGUI()
 
     // do the allocation
     allocator.allocateMaxFlow();
-    allocator.allocateHungarian();
+    allocator.hungarian();
 
     fm.move({50, 50, 600, 700});
     fm.text("Agents2Tasks");
@@ -65,7 +65,7 @@ cGUI::cGUI()
     plHungarian.events().draw(
         [&](PAINTSTRUCT &ps)
         {
-            plHungarian.text(allocator.textHungarian());
+            plHungarian.text(allocator.hungarianText());
         });
 
     fm.show();

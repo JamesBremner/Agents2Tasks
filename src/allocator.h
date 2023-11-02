@@ -6,6 +6,8 @@
 
 typedef std::vector<raven::graph::cGraph> solution_t;
 
+class cAllocator;
+
 class cAgent
 {
     std::string myName;
@@ -24,6 +26,10 @@ public:
         return myName;
     }
 
+    /// @brief true if agent can do task
+    /// @param task task type id
+    /// @return 
+
     bool isAble(int task) const;
 
     double cost() const;
@@ -37,9 +43,11 @@ class cTask
 public:
     int myTaskType;
     int myIndex;
+    bool fAssigned;
     cTask(int iType, int i)
         : myTaskType(iType),
-          myIndex(i)
+          myIndex(i),
+          fAssigned(false)
     {
     }
 };
@@ -70,6 +78,16 @@ public:
         return myTasks.size();
     }
 
+    int taskID( int taskpos) const
+    {
+        return myTasks[ taskpos ];
+    }
+
+    std::vector<int> getTasks() const
+    {
+        return myTasks;
+    }
+
     std::vector<int>::iterator begin()
     {
         return myTasks.begin();
@@ -80,8 +98,31 @@ public:
     }
 };
 
+class cHungarian
+{
+    double maxZero;
+    std::vector<int> myAgent;   // agent index in each column
+    std::vector<std::string> myTaskType;
+
+        void rowSubtract();
+
+public:
+    std::vector<std::vector<double>> myMxCost;
+
+    cHungarian( 
+        cAllocator& allocator,
+        cSlot& slot );
+
+    bool isSolvable();
+    bool isFinished() const;
+
+    std::pair<int,std::string> AssignReduce();
+};
+
 class cAllocator
 {
+    //typedef std::vector<std::vector<double>> hungarianCostMatrix_t;
+
     std::vector<cAgent> myAgents;        // agents
     std::vector<std::string> myTaskType; // task type names
     std::vector<cTask> myTask;           // defined tasks
@@ -109,6 +150,10 @@ class cAllocator
 
     std::vector<int> findAgentsForTask(int task);
 
+    /// @brief  construct cost martix, each agent gets a row, each task gets a column
+    /// @param slot
+    /// @return
+
 public:
     void clear();
 
@@ -130,14 +175,27 @@ public:
     /// @brief  Allocate agents to tasks using Hungarian algorithm
     /// https://en.wikipedia.org/wiki/Hungarian_algorithm
 
-    void allocateHungarian();
+    void hungarian();
+
+    std::vector<cAgent> getAgents() const
+    {
+        return myAgents;
+    }
+    std::string getTaskTypeName(int i ) const
+    {
+        return myTaskType[myTask[i].myTaskType];
+    }
+    int getTaskTypeID(int i ) const
+    {
+        return myTask[i].myTaskType;
+    }
 
     std::string textProblem() const;
     std::string textMaxflow() const
     {
         return textSolution(mySolutionMaxflow);
     }
-    std::string textHungarian() const
+    std::string hungarianText() const
     {
         return textSolution(mySolutionHungarian);
     }

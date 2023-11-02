@@ -63,7 +63,6 @@ void cAllocator::clear()
     myTask.clear();
     myTaskType.clear();
     mySlot.clear();
-
 }
 void cAllocator::addAgent(
     const std::string &name,
@@ -201,10 +200,10 @@ std::string cAllocator::textProblem() const
 }
 
 std::string cAllocator::textSolution(
-    const solution_t& solution) const
+    const solution_t &solution) const
 {
     std::stringstream ss;
-        ss << "Solution\n==========\n";
+    ss << "Solution\n==========\n";
     for (int slot = 0; slot < solution.size(); slot++)
     {
         double cost = 0;
@@ -275,81 +274,176 @@ void cAllocator::allocateMaxFlow()
     }
 }
 
-void cAllocator::allocateHungarian()
+cHungarian::cHungarian(
+    cAllocator& allocator,
+    cSlot &slot)
+    : maxZero(0.00001)
+{
+    const double unablePenalty = 1000;
+
+    for( int taskid : slot )
+    {
+        myTaskType.push_back( allocator.getTaskTypeName(taskid));
+    }
+
+    int iag = 0;
+    for (auto &agent : allocator.getAgents() )
+    {
+        myAgent.push_back(iag++);
+
+        std::vector<double> row;
+        double delta = 0;
+        for (int task : slot)
+        {
+            if (!agent.isAble(allocator.getTaskTypeID(task)))
+                row.push_back(unablePenalty);
+            else
+            {
+                row.push_back(agent.cost());
+
+                // we have assumed that each agent costs the same
+                // no matter which task they do
+                // The Hungarian algorithm needs a different cost for each task
+                delta += 0.01;
+            }
+        }
+        myMxCost.push_back(row);
+    }
+    rowSubtract();
+}
+
+void cHungarian::rowSubtract()
+{
+    for (auto &row : myMxCost)
+    {
+        double min = INT_MAX;
+        for (double c : row)
+        {
+            if (c < min)
+            {
+                min = c;
+            }
+        }
+        for (double &c : row)
+            c -= min;
+    }
+}
+
+bool cHungarian::isSolvable()
+{
+    if( myMxCost.size() == 1 )
+        return false;
+
+    for (auto &row : myMxCost)
+    {
+        int rowZeroCount = 0;
+        for (double c : row)
+        {
+            if (c < maxZero)
+            {
+                rowZeroCount++;
+                if (rowZeroCount > 1)
+                    return false;
+            }
+        }
+    }
+    for (int col = 0; col < myMxCost[0].size(); col++)
+    {
+        int colZeroCount = 0;
+        for (int row = 0; row < myMxCost.size(); row++)
+        {
+            if (myMxCost[row][col] < maxZero)
+            {
+                colZeroCount++;
+                if (colZeroCount > 1)
+                    return false;
+            }
+        }
+    }
+    return true;
+}
+
+bool cHungarian::isFinished() const
+{
+    if( ! myMxCost.size() ) 
+        return true;                // all agents assigned
+    return ( ! myMxCost[0].size() );    // check for all task assigned
+}
+
+std::pair<int, std::string> cHungarian::AssignReduce()
+{
+    std::pair<int, std::string> retAgentTask;
+    if (myMxCost.size() == 1)
+    {
+        // assign last task to last agent
+        retAgentTask.first = myAgent[0];
+        retAgentTask.second = myTaskType[0];
+        myMxCost.clear();
+        return retAgentTask;
+    }
+    for (int col = 0; col < myMxCost[0].size(); col++)
+    {
+        if (myMxCost[0][col] < maxZero)
+        {
+            retAgentTask.first = myAgent[0];
+            retAgentTask.second = myTaskType[col];
+
+            if (myMxCost.size() > 1)
+            {
+                std::vector<std::vector<double>> tmp;
+                for (int row = 1; row < myMxCost.size(); row++)
+                {
+                    std::vector<double> vr;
+                    for (int c = 0; c < myMxCost[0].size(); c++)
+                    {
+                        if (c != col)
+                            vr.push_back(myMxCost[row][c]);
+                    }
+                    tmp.push_back(vr);
+                }
+                myMxCost = tmp;
+
+                myAgent.erase(myAgent.begin());
+                myTaskType.erase(myTaskType.begin() + col);
+            }
+
+            return retAgentTask;
+        }
+    }
+    throw std::runtime_error(
+        "cHungarian::AssignReduce failed");
+}
+
+void cAllocator::hungarian()
 {
     mySolutionHungarian.clear();
 
     // loop over timeslots
     for (auto &slot : mySlot)
     {
-        // construct cost martix
-        // each agent gets a row, each task gets a column
-
-        std::vector<std::vector<double>> costMatrix;
-        for (auto &agent : myAgents)
-        {
-            std::vector<double> row;
-            double delta = 0;
-            for (int task : slot)
-            {
-                if (!agent.isAble(myTask[task].myTaskType))
-                    row.push_back(100);
-                else
-                {
-                    row.push_back(agent.cost() + delta);
-
-                    // we have assumed that each agent costs the same
-                    // no matter which task they do
-                    // The Hungarian algorithm needs a different cost for each task
-                    delta += 0.01;
-                }
-            }
-            costMatrix.push_back(row);
-        }
-
-        // Subtract minimum cost in row from each cost in row
-        bool fsolve = true;
-        for (auto &row : costMatrix)
-        {
-            double rowMin = INT_MAX;
-            for (int cost : row)
-            {
-                if (cost < rowMin)
-                    rowMin = cost;
-            }
-            int countZero = 0;
-            for (double &cost : row)
-            {
-                cost -= rowMin;
-                if (cost < 0.00001)
-                    countZero++;
-            }
-            // check that there is just one zero in the row
-            if (countZero > 1)
-                fsolve = false;
-        }
-        if (!fsolve)
-            throw std::runtime_error(
-                "Hungarian algorithm failed");
-
-        // assign agent to task where modified cost is zero
-
         raven::graph::cGraph g;
         g.directed();
-        for (int kagent = 0; kagent < myAgents.size(); kagent++)
-        {
-            for (int ktask = 0; ktask < slot.taskCount(); ktask++)
-            {
-                if (costMatrix[kagent][ktask] < 0.000001)
-                {
-                    // asignment found
 
-                    g.add(
-                        myAgents[kagent].name(),
-                        myTaskType[ktask]);
-                }
-            }
+        // std::cout << "=========\n"
+        //           << slot.name() << "\n";
+
+        cHungarian H(
+            *this,
+            slot);
+
+        while (!H.isFinished())
+        {
+            auto agentTask = H.AssignReduce();
+
+            // std::cout << myAgents[agentTask.first].name()
+            //           << " to " << agentTask.second
+            //           << "\n";
+
+            g.add(
+                myAgents[agentTask.first].name(),
+                agentTask.second );
         }
-        mySolutionHungarian.push_back(g);
+        mySolutionHungarian.push_back( g );
     }
+
 }
