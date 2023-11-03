@@ -78,6 +78,9 @@ void cAllocator::addAgent(
         name,
         taskTypeIndices(canDoTaskTypes),
         cost);
+
+    maxflow();
+    hungarian();
 }
 
 void cAllocator::addTaskType(
@@ -87,6 +90,9 @@ void cAllocator::addTaskType(
             myTaskType.begin(), myTaskType.end(), stype) != myTaskType.end())
         return;
     myTaskType.push_back(stype);
+
+    maxflow();
+    hungarian();
 }
 
 void cAllocator::addSlot(
@@ -113,6 +119,9 @@ void cAllocator::addSlot(
     mySlot.emplace_back(
         name,
         vTaskIndex);
+
+    maxflow();
+    hungarian();
 }
 
 bool cAllocator::isAgent(
@@ -208,17 +217,14 @@ std::string cAllocator::textSolution(
     {
         double cost = 0;
         ss << mySlot[slot].name() << "\n";
-        for (auto &edge : solution[slot].edgeList())
+        for (auto &edge : solution[slot])
         {
             int iAgent;
-            isAgent(solution[slot].userName(edge.first), iAgent);
+            isAgent(edge.first, iAgent);
             cost += myAgents[iAgent].cost();
 
-            auto stask = solution[slot].userName(edge.second).substr(4);
-            stask = myTaskType[myTask[atoi(stask.c_str())].myTaskType];
-
-            ss << solution[slot].userName(edge.first)
-               << " does " << stask
+            ss << edge.first
+               << " does " << edge.second
                << "\n";
         }
         ss << "Cost " << cost << "\n++++++++++\n";
@@ -238,7 +244,7 @@ std::vector<int> cAllocator::findAgentsForTask(int task)
     return ret;
 }
 
-void cAllocator::allocateMaxFlow()
+void cAllocator::maxflow()
 {
     mySolutionMaxflow.clear();
 
@@ -270,24 +276,35 @@ void cAllocator::allocateMaxFlow()
         // apply pathfinder maximum flow allocation algorithm to the timeslot
         raven::graph::sGraphData gd;
         gd.g = g;
-        mySolutionMaxflow.push_back(alloc(gd));
+        auto sg = alloc(gd);
+
+        slotsolution_t slotsolution;
+        for (auto &e : sg.edgeList())
+        {
+            auto stask = getTaskTypeName(
+                atoi(sg.userName(e.second).substr(4).c_str()));
+            slotsolution.push_back(std::make_pair(
+                sg.userName(e.first), stask));
+        }
+
+        mySolutionMaxflow.push_back(slotsolution);
     }
 }
 
 cHungarian::cHungarian(
-    cAllocator& allocator,
+    cAllocator &allocator,
     cSlot &slot)
     : maxZero(0.00001)
 {
     const double unablePenalty = 1000;
 
-    for( int taskid : slot )
+    for (int taskid : slot)
     {
-        myTaskType.push_back( allocator.getTaskTypeName(taskid));
+        myTaskType.push_back(allocator.getTaskTypeName(taskid));
     }
 
     int iag = 0;
-    for (auto &agent : allocator.getAgents() )
+    for (auto &agent : allocator.getAgents())
     {
         myAgent.push_back(iag++);
 
@@ -331,7 +348,7 @@ void cHungarian::rowSubtract()
 
 bool cHungarian::isSolvable()
 {
-    if( myMxCost.size() == 1 )
+    if (myMxCost.size() == 1)
         return false;
 
     for (auto &row : myMxCost)
@@ -365,9 +382,9 @@ bool cHungarian::isSolvable()
 
 bool cHungarian::isFinished() const
 {
-    if( ! myMxCost.size() ) 
-        return true;                // all agents assigned
-    return ( ! myMxCost[0].size() );    // check for all task assigned
+    if (!myMxCost.size())
+        return true;              // all agents assigned
+    return (!myMxCost[0].size()); // check for all task assigned
 }
 
 std::pair<int, std::string> cHungarian::AssignReduce()
@@ -431,19 +448,56 @@ void cAllocator::hungarian()
             *this,
             slot);
 
+        std::vector<std::pair<std::string, std::string>> slotsolution;
         while (!H.isFinished())
         {
             auto agentTask = H.AssignReduce();
+
+            slotsolution.push_back(
+                std::make_pair(
+                    myAgents[agentTask.first].name(),
+                    agentTask.second));
 
             // std::cout << myAgents[agentTask.first].name()
             //           << " to " << agentTask.second
             //           << "\n";
 
-            g.add(
-                myAgents[agentTask.first].name(),
-                agentTask.second );
+            // g.add(
+            //     myAgents[agentTask.first].name(),
+            //     agentTask.second);
         }
-        mySolutionHungarian.push_back( g );
+        mySolutionHungarian.push_back(slotsolution);
     }
+}
 
+void cAllocator::example1()
+{
+    clear();
+    addTaskType("teacher");
+    addTaskType("cleaner");
+    addTaskType("accountant");
+    addAgent(
+        "John",
+        {"teacher cleaner"},
+        3.0);
+    addAgent(
+        "Margaret",
+        {"accountant cleaner"},
+        4.0);
+    addAgent(
+        "Andrew",
+        {"accountant teacher"},
+        5.0);
+    addSlot(
+        "28/OCT/2023 8:30",
+        {"teacher teacher cleaner"});
+    addSlot(
+        "29/OCT/2023 10:00",
+        {"teacher accountant"});
+    addSlot(
+        "2/NOV/2023 8:30",
+        {"teacher teacher accountant"});
+    addSlot(
+        "3/NOV/2023 10:00",
+        {"teacher accountant"});
 }

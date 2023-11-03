@@ -4,7 +4,8 @@
 
 #include "../../PathFinder/src/GraphTheory.h"
 
-typedef std::vector<raven::graph::cGraph> solution_t;
+typedef std::vector<std::pair<std::string,std::string>> slotsolution_t;
+typedef std::vector<slotsolution_t> solution_t;
 
 class cAllocator;
 
@@ -169,8 +170,11 @@ public:
         const std::string &name,
         const std::string &vTask);
 
+    void example1();
+
     /// @brief Allocate agents to tasks using max flow algorithm
-    void allocateMaxFlow();
+    
+    void maxflow();
 
     /// @brief  Allocate agents to tasks using Hungarian algorithm
     /// https://en.wikipedia.org/wiki/Hungarian_algorithm

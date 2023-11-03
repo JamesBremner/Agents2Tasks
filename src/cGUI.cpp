@@ -9,36 +9,10 @@ cGUI::cGUI()
       plHungarian(wex::maker::make<wex::panel>(tabs))
 {
 
-    allocator.addTaskType("teacher");
-    allocator.addTaskType("cleaner");
-    allocator.addTaskType("accountant");
-    allocator.addAgent(
-        "John",
-        {"teacher cleaner"},
-        3.0);
-    allocator.addAgent(
-        "Margaret",
-        {"accountant cleaner"},
-        4.0);
-    allocator.addAgent(
-        "Andrew",
-        {"accountant teacher"},
-        5.0);
-    allocator.addSlot(
-        "28/OCT/2023 8:30",
-        {"teacher teacher cleaner"});
-    allocator.addSlot(
-        "29/OCT/2023 10:00",
-        {"teacher accountant"});
-    allocator.addSlot(
-        "2/NOV/2023 8:30",
-        {"teacher teacher accountant"});
-    allocator.addSlot(
-        "3/NOV/2023 10:00",
-        {"teacher accountant"});
+    allocator.example1();
 
     // do the allocation
-    allocator.allocateMaxFlow();
+    allocator.maxflow();
     allocator.hungarian();
 
     fm.move({50, 50, 600, 700});
@@ -88,6 +62,7 @@ void cGUI::menuCTOR()
                {
                    wex::inputbox ib;
                    ib.gridWidth(400);
+                   ib.text("Task");
                    ib.add("Task type", "");
                    ib.showModal();
                    allocator.addTaskType(ib.value("Task type"));
@@ -98,6 +73,7 @@ void cGUI::menuCTOR()
                {
                    wex::inputbox ib;
                    ib.gridWidth(400);
+                   ib.text("Agent");
                    ib.add("Name", "");
                    ib.add("Cost", "1.0");
                    ib.add("Tasks", "");
@@ -112,6 +88,7 @@ void cGUI::menuCTOR()
                [&](const std::string &title)
                {
                    wex::inputbox ib;
+                   ib.text("Timeslot");
                    ib.gridWidth(400);
                    ib.add("Name", "");
                    ib.add("Tasks", "");
