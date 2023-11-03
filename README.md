@@ -31,18 +31,18 @@ Allocate agents to tasks in multiple timeslots.
 
 `Edit | Clear` Clear problem specifications, ready to enter new specs from GUI.
 
-`Edit | Add task type`  Use GUI to add a task type
+`Edit | Add task type`  Use GUI to add a task type.
 
-`Edit |  Add Agent` Add an agent with task types the agent can be assigned to, using the GUI
+`Edit |  Add Agent` Add an agent with assignment cost and task types the agent can be assigned to, using the GUI.
 
-`Edit | Timeslot` Add a timeslot, along with the task types required, using the GUI
+`Edit | Timeslot` Add a timeslot, along with the task types required, using the GUI.
 
 
 # Algorithm
 
-Maximum flow maximises the number of tasks that are allocated in each timeslot.
+Maximum flow ( [Edmonds–Karp](https://en.wikipedia.org/wiki/Edmonds%E2%80%93Karp_algorithm) ) maximises the number of tasks that are allocated in each timeslot.
 
-The Hungarian algorithm is used to minimize the cost in each timeslot.
+The [Hungarian algorithm]( https://en.wikipedia.org/wiki/Hungarian_algorithm) is used to minimize the cost in each timeslot.
 
 
 
