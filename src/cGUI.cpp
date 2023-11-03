@@ -50,6 +50,37 @@ cGUI::cGUI()
 void cGUI::menuCTOR()
 {
     wex::menubar mbar(fm);
+
+    wex::menu file(fm);
+    file.append("Open",
+                [&](const std::string &title)
+                {
+                    wex::filebox fb(fm);
+                    auto fname = fb.open();
+                    fm.text("Agents2Tasks " + fname);
+                    allocator.readfile(fname);
+                    allocator.maxflow();
+                    allocator.hungarian();
+                    tabs.select(0);
+                });
+    file.append("Save",
+                [&](const std::string &title)
+                {
+                    wex::filebox fb(fm);
+                    auto fname = fb.save();
+                    allocator.writefile(fname);
+                });
+    file.append("Example1",
+                [&](const std::string &title)
+                {
+                    allocator.example1();
+
+                    // do the allocation
+                    allocator.maxflow();
+                    allocator.hungarian();
+                });
+    mbar.append("File", file);
+
     wex::menu add(fm);
     add.append("Clear",
                [&](const std::string &title)
@@ -66,6 +97,8 @@ void cGUI::menuCTOR()
                    ib.add("Task type", "");
                    ib.showModal();
                    allocator.addTaskType(ib.value("Task type"));
+                   allocator.maxflow();
+                   allocator.hungarian();
                    fm.update();
                });
     add.append("Add agent",
@@ -82,6 +115,8 @@ void cGUI::menuCTOR()
                        ib.value("Name"),
                        ib.value("Tasks"),
                        atof(ib.value("Cost").c_str()));
+                   allocator.maxflow();
+                   allocator.hungarian();
                    fm.update();
                });
     add.append("Add timeslot",
@@ -96,6 +131,8 @@ void cGUI::menuCTOR()
                    allocator.addSlot(
                        ib.value("Name"),
                        ib.value("Tasks"));
+                   allocator.maxflow();
+                   allocator.hungarian();
                    fm.update();
                });
     mbar.append("Edit", add);

@@ -1,0 +1,7 @@
+a John 3 teacher cleaner 
+a Margaret 4 accountant cleaner 
+a Andrew 5 accountant teacher 
+t 28/OCT/2023/8:30 teacher teacher cleaner 
+t 29/OCT/2023/10:00 teacher accountant 
+t 2/NOV/2023/8:30 teacher teacher accountant 
+t 3/NOV/2023/10:00 teacher accountant 

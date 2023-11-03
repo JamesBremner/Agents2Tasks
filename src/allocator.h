@@ -37,6 +37,10 @@ public:
 
     std::string text(
         const std::vector<std::string> vTaskType) const;
+
+    void writefile( 
+        std::ofstream& ofs,
+        const cAllocator& allocator );
 };
 
 class cTask
@@ -72,7 +76,7 @@ public:
     }
     std::string text(
         const std::vector<cTask> &vTask,
-        const std::vector<std::string> &vTaskType) const;
+        const cAllocator& allocator) const;
 
     int taskCount() const
     {
@@ -97,6 +101,10 @@ public:
     {
         return myTasks.end();
     }
+
+     void writefile( 
+        std::ofstream& ofs,
+        const cAllocator& allocator );
 };
 
 class cHungarian
@@ -172,6 +180,10 @@ public:
 
     void example1();
 
+    void readfile( const std::string& fname );
+    void writefile( 
+        const std::string& fname );
+
     /// @brief Allocate agents to tasks using max flow algorithm
     
     void maxflow();
@@ -185,9 +197,19 @@ public:
     {
         return myAgents;
     }
+
+    /// @brief getTaskTypeName
+    /// @param i index of task
+    /// @return type name
+
     std::string getTaskTypeName(int i ) const
     {
         return myTaskType[myTask[i].myTaskType];
+    }
+
+    std::string getTaskTypeNameFromTypeID(int i ) const
+    {
+        return myTaskType[i];
     }
     int getTaskTypeID(int i ) const
     {

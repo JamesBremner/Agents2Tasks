@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <iostream>
 #include <sstream>
+#include <fstream>
 
 #include "allocator.h"
 
@@ -46,15 +47,36 @@ double cAgent::cost() const
     // assume cost same for all tasks
     return myTasks[0].second;
 }
+void cAgent::writefile(
+    std::ofstream &ofs,
+    const cAllocator &allocator)
+{
+    ofs << "a " << myName << " " << myTasks[0].second << " ";
+    for (auto &it : myTasks)
+    {
+        ofs << allocator.getTaskTypeNameFromTypeID(it.first) << " ";
+    }
+    ofs << "\n";
+}
 std::string cSlot::text(
     const std::vector<cTask> &vTask,
-    const std::vector<std::string> &vTaskType) const
+    const cAllocator &allocator) const
 {
     std::stringstream ss;
     ss << myName << " tasks: ";
-    for (int tsk : myTasks)
-        ss << vTaskType[vTask[tsk].myTaskType] << " ";
+    for (int it : myTasks)
+        ss << allocator.getTaskTypeName(it) << " ";
     return ss.str();
+}
+
+void cSlot::writefile(
+    std::ofstream &ofs,
+    const cAllocator &allocator)
+{
+    ofs << "t " << myName << " ";
+    for (int it : myTasks)
+        ofs << allocator.getTaskTypeName(it) << " ";
+    ofs << "\n";
 }
 
 void cAllocator::clear()
@@ -79,8 +101,6 @@ void cAllocator::addAgent(
         taskTypeIndices(canDoTaskTypes),
         cost);
 
-    maxflow();
-    hungarian();
 }
 
 void cAllocator::addTaskType(
@@ -91,8 +111,7 @@ void cAllocator::addTaskType(
         return;
     myTaskType.push_back(stype);
 
-    maxflow();
-    hungarian();
+
 }
 
 void cAllocator::addSlot(
@@ -120,8 +139,6 @@ void cAllocator::addSlot(
         name,
         vTaskIndex);
 
-    maxflow();
-    hungarian();
 }
 
 bool cAllocator::isAgent(
@@ -201,7 +218,7 @@ std::string cAllocator::textProblem() const
     {
         ss << slot.text(
                   myTask,
-                  myTaskType)
+                  *this)
            << "\n";
     }
 
@@ -279,6 +296,8 @@ void cAllocator::maxflow()
         auto sg = alloc(gd);
 
         slotsolution_t slotsolution;
+
+        // loop over assignments
         for (auto &e : sg.edgeList())
         {
             auto stask = getTaskTypeName(
@@ -287,6 +306,7 @@ void cAllocator::maxflow()
                 sg.userName(e.first), stask));
         }
 
+        // store the assignments for this slot
         mySolutionMaxflow.push_back(slotsolution);
     }
 }
@@ -489,15 +509,69 @@ void cAllocator::example1()
         {"accountant teacher"},
         5.0);
     addSlot(
-        "28/OCT/2023 8:30",
+        "28/OCT/2023/8:30",
         {"teacher teacher cleaner"});
     addSlot(
-        "29/OCT/2023 10:00",
+        "29/OCT/2023/10:00",
         {"teacher accountant"});
     addSlot(
-        "2/NOV/2023 8:30",
+        "2/NOV/2023/8:30",
         {"teacher teacher accountant"});
     addSlot(
-        "3/NOV/2023 10:00",
+        "3/NOV/2023/10:00",
         {"teacher accountant"});
+}
+
+void cAllocator::readfile(const std::string &fname)
+{
+    std::ifstream ifs(fname);
+    if (!ifs.is_open())
+        throw std::runtime_error(
+            "Cannot open input file");
+
+    clear();
+    std::string line;
+    while (getline(ifs, line))
+    {
+        std::vector<std::string> vtoken;
+        std::stringstream sst(line);
+        std::string a;
+        while (getline(sst, a, ' '))
+            vtoken.push_back(a);
+        int p;
+
+        switch (line[0])
+        {
+        case 'a':
+            p = line.find(" ");
+            p = line.find(" ", p + 1);
+            p = line.find(" ", p + 1);
+            addAgent(
+                vtoken[1],
+                line.substr(p + 1),
+                atof(vtoken[2].c_str()));
+            break;
+
+        case 't':
+            p = line.find(" ");
+            p = line.find(" ", p + 1);
+            addSlot(
+                vtoken[1],
+                line.substr(p + 1));
+            break;
+        }
+    }
+}
+void cAllocator::writefile(const std::string &fname)
+{
+    std::ofstream ofs(fname);
+    if (!ofs.is_open())
+        throw std::runtime_error(
+            "Cannot open input file");
+
+    for (auto &a : myAgents)
+        a.writefile(ofs, *this);
+
+    for (auto &t : mySlot)
+        t.writefile(ofs, *this);
 }
