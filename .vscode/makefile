@@ -20,7 +20,7 @@ OPT = -g
 CCflags = -std=c++17 $(OPT) -D_mingw_
 
 # sources
-OBJ_starter = \
+OBJ_a2t = \
 	$(ODIR)/main.o \
 	$(ODIR)/cGUI.o \
 	$(ODIR)/allocator.o \
@@ -33,12 +33,14 @@ $(ODIR)/%.o: %.cpp allocator.h cGUI.h
 	g++  $(CCflags) \
 	-c -o $@ $< $(INCS)
 
-starter: $(OBJ_starter)
+a2t: $(OBJ_a2t)
 	g++ $(OPT) \
-	-o bin/starter.exe $^  \
+	-o bin/Agents2Tasks.exe $^  \
 	$(static_link_flags) $(LIBS)
 
 .PHONY: clean
 clean:
 	del /q .vscode\\obj\\*.o
+
+rebuild: clean a2t
 
