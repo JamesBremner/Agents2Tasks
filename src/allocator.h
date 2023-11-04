@@ -115,23 +115,38 @@ public:
 
 class cHungarian
 {
-    double maxZero;
-    std::vector<int> myAgent; // agent index in each column
-    std::vector<std::string> myTaskType;
+    const std::vector<cAgent>& myAgent;
 
-    void rowSubtract();
+    std::vector<std::vector<double>> myMxCost;  // cost matrix
+    std::vector<int> myRowAgent;                   // agent index in each row
+    std::vector<std::string> myColTaskType;        // task type index in each column
+
+    double maxZero;
+
+    void rowSubtract();         // subtract min row value from ech row column
+    bool isSolvable();          // check for a single zero in each row and column
+    bool isFinished() const;    // check for all asignments completed
+
+    /// @brief Assign agent to a task, remove agent and task from cost matrix
+    /// @return string pair, agent name and task type
+
+    std::pair<std::string, std::string> AssignReduce(); 
 
 public:
-    std::vector<std::vector<double>> myMxCost;
 
+    /// @brief Constructor
+    /// @param allocator containing proble specification
+    /// @param slot      slot to assign
+    
     cHungarian(
         cAllocator &allocator,
         cSlot &slot);
 
-    bool isSolvable();
-    bool isFinished() const;
+    /// @brief Assign agents to all tasks
+    /// @return agent/task pairs for all tasks in timeslot
 
-    std::pair<int, std::string> AssignReduce();
+    slotsolution_t assignAll();
+
 };
 
 /// @brief Assign agents to task in multiple independant slots
@@ -201,7 +216,7 @@ public:
 
     void hungarian();
 
-    std::vector<cAgent> getAgents() const
+    const std::vector<cAgent>& getAgents() const
     {
         return myAgents;
     }

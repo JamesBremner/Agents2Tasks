@@ -310,19 +310,20 @@ void cAllocator::maxflow()
 cHungarian::cHungarian(
     cAllocator &allocator,
     cSlot &slot)
-    : maxZero(0.00001)
+    : myAgent(allocator.getAgents()),
+      maxZero(0.00001)
 {
     const double unablePenalty = 1000;
 
     for (int taskid : slot)
     {
-        myTaskType.push_back(allocator.getTaskTypeName(taskid));
+        myColTaskType.push_back(allocator.getTaskTypeName(taskid));
     }
 
     int iag = 0;
     for (auto &agent : allocator.getAgents())
     {
-        myAgent.push_back(iag++);
+        myRowAgent.push_back(iag++);
 
         std::vector<double> row;
         double delta = 0;
@@ -343,6 +344,16 @@ cHungarian::cHungarian(
         myMxCost.push_back(row);
     }
     rowSubtract();
+}
+
+slotsolution_t cHungarian::assignAll()
+{
+    slotsolution_t ret;
+
+    while (!isFinished())
+        ret.push_back( AssignReduce() );
+
+    return ret;
 }
 
 void cHungarian::rowSubtract()
@@ -403,14 +414,14 @@ bool cHungarian::isFinished() const
     return (!myMxCost[0].size()); // check for all task assigned
 }
 
-std::pair<int, std::string> cHungarian::AssignReduce()
+std::pair<std::string, std::string> cHungarian::AssignReduce()
 {
-    std::pair<int, std::string> retAgentTask;
+    std::pair<std::string, std::string> retAgentTask;
     if (myMxCost.size() == 1)
     {
         // assign last task to last agent
-        retAgentTask.first = myAgent[0];
-        retAgentTask.second = myTaskType[0];
+        retAgentTask.first = myAgent[myRowAgent[0]].name();
+        retAgentTask.second = myColTaskType[0];
         myMxCost.clear();
         return retAgentTask;
     }
@@ -418,8 +429,8 @@ std::pair<int, std::string> cHungarian::AssignReduce()
     {
         if (myMxCost[0][col] < maxZero)
         {
-            retAgentTask.first = myAgent[0];
-            retAgentTask.second = myTaskType[col];
+            retAgentTask.first =  myAgent[myRowAgent[0]].name();
+            retAgentTask.second = myColTaskType[col];
 
             if (myMxCost.size() > 1)
             {
@@ -436,8 +447,8 @@ std::pair<int, std::string> cHungarian::AssignReduce()
                 }
                 myMxCost = tmp;
 
-                myAgent.erase(myAgent.begin());
-                myTaskType.erase(myTaskType.begin() + col);
+                myRowAgent.erase(myRowAgent.begin());
+                myColTaskType.erase(myColTaskType.begin() + col);
             }
 
             return retAgentTask;
@@ -454,35 +465,11 @@ void cAllocator::hungarian()
     // loop over timeslots
     for (auto &slot : mySlot)
     {
-        raven::graph::cGraph g;
-        g.directed();
-
-        // std::cout << "=========\n"
-        //           << slot.name() << "\n";
-
         cHungarian H(
             *this,
             slot);
 
-        std::vector<std::pair<std::string, std::string>> slotsolution;
-        while (!H.isFinished())
-        {
-            auto agentTask = H.AssignReduce();
-
-            slotsolution.push_back(
-                std::make_pair(
-                    myAgents[agentTask.first].name(),
-                    agentTask.second));
-
-            // std::cout << myAgents[agentTask.first].name()
-            //           << " to " << agentTask.second
-            //           << "\n";
-
-            // g.add(
-            //     myAgents[agentTask.first].name(),
-            //     agentTask.second);
-        }
-        mySolutionHungarian.push_back(slotsolution);
+        mySolutionHungarian.push_back(H.assignAll());
     }
 }
 
