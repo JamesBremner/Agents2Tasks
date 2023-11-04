@@ -100,7 +100,6 @@ void cAllocator::addAgent(
         name,
         taskTypeIndices(canDoTaskTypes),
         cost);
-
 }
 
 void cAllocator::addTaskType(
@@ -110,8 +109,6 @@ void cAllocator::addTaskType(
             myTaskType.begin(), myTaskType.end(), stype) != myTaskType.end())
         return;
     myTaskType.push_back(stype);
-
-
 }
 
 void cAllocator::addSlot(
@@ -138,7 +135,6 @@ void cAllocator::addSlot(
     mySlot.emplace_back(
         name,
         vTaskIndex);
-
 }
 
 bool cAllocator::isAgent(
@@ -574,4 +570,21 @@ void cAllocator::writefile(const std::string &fname)
 
     for (auto &t : mySlot)
         t.writefile(ofs, *this);
+
+    for (int slot = 0; slot < mySlot.size(); slot++)
+    {
+        for (auto &ap : mySolutionMaxflow[slot])
+        {
+            ofs << "F " << mySlot[slot].name()
+                << " " << ap.first << " to " << ap.second << "\n";
+        }
+    }
+    for (int slot = 0; slot < mySlot.size(); slot++)
+    {
+        for (auto &ap : mySolutionHungarian[slot])
+        {
+            ofs << "H " << mySlot[slot].name()
+                << " " << ap.first << " to " << ap.second << "\n";
+        }
+    }
 }

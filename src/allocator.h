@@ -4,10 +4,12 @@
 
 #include "../../PathFinder/src/GraphTheory.h"
 
-typedef std::vector<std::pair<std::string,std::string>> slotsolution_t;
+typedef std::vector<std::pair<std::string, std::string>> slotsolution_t;
 typedef std::vector<slotsolution_t> solution_t;
 
 class cAllocator;
+
+/// @brief An agent can be assigned to a task of cretian work type
 
 class cAgent
 {
@@ -29,7 +31,7 @@ public:
 
     /// @brief true if agent can do task
     /// @param task task type id
-    /// @return 
+    /// @return
 
     bool isAble(int task) const;
 
@@ -38,11 +40,12 @@ public:
     std::string text(
         const std::vector<std::string> vTaskType) const;
 
-    void writefile( 
-        std::ofstream& ofs,
-        const cAllocator& allocator );
+    void writefile(
+        std::ofstream &ofs,
+        const cAllocator &allocator);
 };
 
+/// @brief A task, unique to its timeslot, of a certain type
 class cTask
 {
 public:
@@ -57,10 +60,11 @@ public:
     }
 };
 
+/// @brief A timeslot with several task that need agents to be assigned
 class cSlot
 {
     std::string myName;
-    std::vector<int> myTasks;
+    std::vector<int> myTasks; // index of tasks in this slot
 
 public:
     cSlot(
@@ -76,16 +80,16 @@ public:
     }
     std::string text(
         const std::vector<cTask> &vTask,
-        const cAllocator& allocator) const;
+        const cAllocator &allocator) const;
 
     int taskCount() const
     {
         return myTasks.size();
     }
 
-    int taskID( int taskpos) const
+    int taskID(int taskpos) const
     {
-        return myTasks[ taskpos ];
+        return myTasks[taskpos];
     }
 
     std::vector<int> getTasks() const
@@ -102,35 +106,39 @@ public:
         return myTasks.end();
     }
 
-     void writefile( 
-        std::ofstream& ofs,
-        const cAllocator& allocator );
+    void writefile(
+        std::ofstream &ofs,
+        const cAllocator &allocator);
 };
+
+/// @brief Assign agents to slot, minimizing cost, using Hungarian algorithm
 
 class cHungarian
 {
     double maxZero;
-    std::vector<int> myAgent;   // agent index in each column
+    std::vector<int> myAgent; // agent index in each column
     std::vector<std::string> myTaskType;
 
-        void rowSubtract();
+    void rowSubtract();
 
 public:
     std::vector<std::vector<double>> myMxCost;
 
-    cHungarian( 
-        cAllocator& allocator,
-        cSlot& slot );
+    cHungarian(
+        cAllocator &allocator,
+        cSlot &slot);
 
     bool isSolvable();
     bool isFinished() const;
 
-    std::pair<int,std::string> AssignReduce();
+    std::pair<int, std::string> AssignReduce();
 };
+
+/// @brief Assign agents to task in multiple independant slots
 
 class cAllocator
 {
-    //typedef std::vector<std::vector<double>> hungarianCostMatrix_t;
+    // typedef std::vector<std::vector<double>> hungarianCostMatrix_t;
 
     std::vector<cAgent> myAgents;        // agents
     std::vector<std::string> myTaskType; // task type names
@@ -180,12 +188,12 @@ public:
 
     void example1();
 
-    void readfile( const std::string& fname );
-    void writefile( 
-        const std::string& fname );
+    void readfile(const std::string &fname);
+    void writefile(
+        const std::string &fname);
 
     /// @brief Allocate agents to tasks using max flow algorithm
-    
+
     void maxflow();
 
     /// @brief  Allocate agents to tasks using Hungarian algorithm
@@ -202,16 +210,16 @@ public:
     /// @param i index of task
     /// @return type name
 
-    std::string getTaskTypeName(int i ) const
+    std::string getTaskTypeName(int i) const
     {
         return myTaskType[myTask[i].myTaskType];
     }
 
-    std::string getTaskTypeNameFromTypeID(int i ) const
+    std::string getTaskTypeNameFromTypeID(int i) const
     {
         return myTaskType[i];
     }
-    int getTaskTypeID(int i ) const
+    int getTaskTypeID(int i) const
     {
         return myTask[i].myTaskType;
     }

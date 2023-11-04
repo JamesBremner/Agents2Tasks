@@ -5,3 +5,23 @@ t 28/OCT/2023/8:30 teacher teacher cleaner
 t 29/OCT/2023/10:00 teacher accountant 
 t 2/NOV/2023/8:30 teacher teacher accountant 
 t 3/NOV/2023/10:00 teacher accountant 
+F 28/OCT/2023/8:30 John to teacher
+F 28/OCT/2023/8:30 Andrew to teacher
+F 28/OCT/2023/8:30 Margaret to cleaner
+F 29/OCT/2023/10:00 John to teacher
+F 29/OCT/2023/10:00 Andrew to accountant
+F 2/NOV/2023/8:30 John to teacher
+F 2/NOV/2023/8:30 Andrew to teacher
+F 2/NOV/2023/8:30 Margaret to accountant
+F 3/NOV/2023/10:00 John to teacher
+F 3/NOV/2023/10:00 Andrew to accountant
+H 28/OCT/2023/8:30 John to teacher
+H 28/OCT/2023/8:30 Margaret to cleaner
+H 28/OCT/2023/8:30 Andrew to teacher
+H 29/OCT/2023/10:00 John to teacher
+H 29/OCT/2023/10:00 Margaret to accountant
+H 2/NOV/2023/8:30 John to teacher
+H 2/NOV/2023/8:30 Margaret to accountant
+H 2/NOV/2023/8:30 Andrew to teacher
+H 3/NOV/2023/10:00 John to teacher
+H 3/NOV/2023/10:00 Margaret to accountant
