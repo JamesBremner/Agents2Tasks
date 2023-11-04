@@ -25,6 +25,8 @@ Allocate agents to tasks in multiple timeslots.
 
 `File | Example1` Specify problem example 1 specifications
 
+The [file format](https://github.com/JamesBremner/Agents2Tasks/wiki/File-format) documentation
+
 ## Edit Menu
 
 ![image](https://github.com/JamesBremner/Agents2Tasks/assets/2046227/a757bd30-3c70-440c-8ff4-deff422cbac3)
