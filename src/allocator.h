@@ -284,3 +284,5 @@ public:
         return mySlot[mySlotCurrent].name();
     }
 };
+
+bool unitTest();

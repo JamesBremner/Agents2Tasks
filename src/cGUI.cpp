@@ -92,10 +92,24 @@ void cGUI::menuCTOR()
                     allocator.maxflow();
                     allocator.hungarian();
                 });
+    file.append("Unit Test",
+                [&](const std::string &title)
+                {
+                    if (!unitTest())
+                    {
+                        wex::msgbox mb("Unit test failed");
+                        throw std::runtime_error(
+                            "Unit test failed");
+                    }
+                    else
+                    {
+                        wex::msgbox mb("Unit test passed");
+                    }
+                });
     mbar.append("File", file);
 
     // EDIT menu
-    
+
     wex::menu add(fm);
     add.append("Clear",
                [&](const std::string &title)
@@ -178,7 +192,7 @@ void cGUI::plAssignCTOR()
     rbHungarian.move(300, 100, 120, 30);
     rbHungarian.text("Hungarian");
     rbHungarian.check();
-    
+
     // event handlers
 
     bnSlotFirst.events().click(

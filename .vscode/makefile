@@ -25,6 +25,7 @@ OBJ_a2t = \
 	$(ODIR)/cGUI.o \
 	$(ODIR)/allocator.o \
 	$(ODIR)/cHungarian.o \
+	$(ODIR)/unitTest.o \
 	$(ODIR)/cGraph.o \
 	$(ODIR)/GraphTheory.o \
 
