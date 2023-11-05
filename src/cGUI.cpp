@@ -16,6 +16,8 @@ cGUI::cGUI()
       rbHungarian(wex::maker::make<wex::radiobutton>(plAssignments))
 {
 
+    // run example problem 1
+
     allocator.example1();
 
     // do the allocation
@@ -25,13 +27,22 @@ cGUI::cGUI()
     fm.move({50, 50, 600, 700});
     fm.text("Agents2Tasks");
 
+    // construct tabs
+
     tabs.move(0, 0, 600, 700);
     tabs.tabWidth(200);
     tabs.add("PROBLEM", plProblem);
     tabs.add("ASSIGNMENTS", plAssignments);
 
+    // construct menus
+
     menuCTOR();
+
+    // construct assignment tab
+
     plAssignCTOR();
+
+    // handle problem tab draw event
 
     plProblem.events().draw(
         [&](PAINTSTRUCT &ps)
@@ -39,14 +50,19 @@ cGUI::cGUI()
             plProblem.text(allocator.textProblem());
         });
 
+    // initial display
     fm.show();
     tabs.select(0);
+
+    // pass control to event handler
     fm.run();
 }
 
 void cGUI::menuCTOR()
 {
     wex::menubar mbar(fm);
+
+    // FILE menu
 
     wex::menu file(fm);
     file.append("Open",
@@ -78,6 +94,8 @@ void cGUI::menuCTOR()
                 });
     mbar.append("File", file);
 
+    // EDIT menu
+    
     wex::menu add(fm);
     add.append("Clear",
                [&](const std::string &title)
@@ -137,6 +155,8 @@ void cGUI::menuCTOR()
 
 void cGUI::plAssignCTOR()
 {
+    // widgets
+
     lbSlotNameLabel.move(100, 10, 90, 30);
     lbSlotNameLabel.text("Time Slot");
     lbSlotName.move(200, 10, 200, 30);
@@ -158,6 +178,8 @@ void cGUI::plAssignCTOR()
     rbHungarian.move(300, 100, 120, 30);
     rbHungarian.text("Hungarian");
     rbHungarian.check();
+    
+    // event handlers
 
     bnSlotFirst.events().click(
         [this]()

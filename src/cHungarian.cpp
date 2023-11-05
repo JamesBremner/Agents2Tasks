@@ -15,26 +15,22 @@ cHungarian::cHungarian(
         myColTaskType.push_back(allocator.getTaskTypeName(taskid));
     }
 
+    // loop over the agents
     int iag = 0;
     for (auto &agent : allocator.getAgents())
     {
         myRowAgent.push_back(iag++);
 
+        // loop over tasks required by slot
         std::vector<double> row;
-        double delta = 0;
         for (int task : slot)
         {
+            // check if agent can be assigned to task
             if (!agent.isAble(allocator.getTaskTypeID(task)))
                 row.push_back(unablePenalty);
             else
-            {
                 row.push_back(agent.cost());
 
-                // we have assumed that each agent costs the same
-                // no matter which task they do
-                // The Hungarian algorithm needs a different cost for each task
-                delta += 0.01;
-            }
         }
         myMxCost.push_back(row);
     }
@@ -45,6 +41,7 @@ slotsolution_t cHungarian::assignAll()
 {
     slotsolution_t ret;
 
+    // loop until no more agents or no more task to be assigned
     while (!isFinished())
         ret.push_back( AssignReduce() );
 
@@ -53,8 +50,10 @@ slotsolution_t cHungarian::assignAll()
 
 void cHungarian::rowSubtract()
 {
+    // loop over rows in cost matrix
     for (auto &row : myMxCost)
     {
+        // determine minimum cost in row
         double min = INT_MAX;
         for (double c : row)
         {
@@ -63,6 +62,7 @@ void cHungarian::rowSubtract()
                 min = c;
             }
         }
+        // sebtract min cost from each column in row
         for (double &c : row)
             c -= min;
     }
@@ -73,6 +73,7 @@ bool cHungarian::isSolvable()
     if (myMxCost.size() == 1)
         return false;
 
+    // count zeroes in rows
     for (auto &row : myMxCost)
     {
         int rowZeroCount = 0;
@@ -81,11 +82,15 @@ bool cHungarian::isSolvable()
             if (c < maxZero)
             {
                 rowZeroCount++;
+
+                // check if more than one zero
                 if (rowZeroCount > 1)
                     return false;
             }
         }
     }
+
+    // count zeroes in cols
     for (int col = 0; col < myMxCost[0].size(); col++)
     {
         int colZeroCount = 0;
@@ -94,6 +99,8 @@ bool cHungarian::isSolvable()
             if (myMxCost[row][col] < maxZero)
             {
                 colZeroCount++;
+
+                // check if more than one
                 if (colZeroCount > 1)
                     return false;
             }
@@ -112,6 +119,8 @@ bool cHungarian::isFinished() const
 std::pair<std::string, std::string> cHungarian::AssignReduce()
 {
     std::pair<std::string, std::string> retAgentTask;
+
+    // check if just one agent left to be asigned
     if (myMxCost.size() == 1)
     {
         // assign last task to last agent
@@ -120,15 +129,20 @@ std::pair<std::string, std::string> cHungarian::AssignReduce()
         myMxCost.clear();
         return retAgentTask;
     }
+
+    // find 1st zero in column
     for (int col = 0; col < myMxCost[0].size(); col++)
     {
         if (myMxCost[0][col] < maxZero)
         {
+            // assign min cost agent to task
             retAgentTask.first =  myAgent[myRowAgent[0]].name();
             retAgentTask.second = myColTaskType[col];
 
+            // check if agents remain to be assigned
             if (myMxCost.size() > 1)
             {
+                // remove assigned agent and task from cost matrix
                 std::vector<std::vector<double>> tmp;
                 for (int row = 1; row < myMxCost.size(); row++)
                 {

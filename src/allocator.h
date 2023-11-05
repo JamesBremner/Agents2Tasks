@@ -119,7 +119,7 @@ class cHungarian
 
     std::vector<std::vector<double>> myMxCost;  // cost matrix
     std::vector<int> myRowAgent;                   // agent index in each row
-    std::vector<std::string> myColTaskType;        // task type index in each column
+    std::vector<std::string> myColTaskType;        // task type name in each column
 
     double maxZero;
 
