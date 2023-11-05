@@ -5,15 +5,15 @@ cGUI::cGUI()
     : fm(wex::maker::make()),
       tabs(wex::maker::make<wex::tabbed>(fm)),
       plProblem(wex::maker::make<wex::panel>(tabs)),
-      plHungarian(wex::maker::make<wex::panel>(tabs)),
-      lbSlotNameLabel(wex::maker::make<wex::label>(plHungarian)),
-      lbSlotName(wex::maker::make<wex::label>(plHungarian)),
-      bnSlotFirst(wex::maker::make<wex::button>(plHungarian)),
-      bnSlotPrev(wex::maker::make<wex::button>(plHungarian)),
-      bnSlotNext(wex::maker::make<wex::button>(plHungarian)),
-      bnSlotLast(wex::maker::make<wex::button>(plHungarian)),
-      rbMaxflow(wex::maker::make<wex::radiobutton>(plHungarian)),
-      rbHungarian(wex::maker::make<wex::radiobutton>(plHungarian))
+      plAssignments(wex::maker::make<wex::panel>(tabs)),
+      lbSlotNameLabel(wex::maker::make<wex::label>(plAssignments)),
+      lbSlotName(wex::maker::make<wex::label>(plAssignments)),
+      bnSlotFirst(wex::maker::make<wex::button>(plAssignments)),
+      bnSlotPrev(wex::maker::make<wex::button>(plAssignments)),
+      bnSlotNext(wex::maker::make<wex::button>(plAssignments)),
+      bnSlotLast(wex::maker::make<wex::button>(plAssignments)),
+      rbMaxflow(wex::maker::make<wex::radiobutton>(plAssignments)),
+      rbHungarian(wex::maker::make<wex::radiobutton>(plAssignments))
 {
 
     allocator.example1();
@@ -28,10 +28,10 @@ cGUI::cGUI()
     tabs.move(0, 0, 600, 700);
     tabs.tabWidth(200);
     tabs.add("PROBLEM", plProblem);
-    tabs.add("ASSIGNMENTS", plHungarian);
+    tabs.add("ASSIGNMENTS", plAssignments);
 
     menuCTOR();
-    plHungarianCTOR();
+    plAssignCTOR();
 
     plProblem.events().draw(
         [&](PAINTSTRUCT &ps)
@@ -135,7 +135,7 @@ void cGUI::menuCTOR()
     mbar.append("Edit", add);
 }
 
-void cGUI::plHungarianCTOR()
+void cGUI::plAssignCTOR()
 {
     lbSlotNameLabel.move(100, 10, 90, 30);
     lbSlotNameLabel.text("Time Slot");
@@ -163,38 +163,38 @@ void cGUI::plHungarianCTOR()
         [this]()
         {
             allocator.setSlotFirst();
-            plHungarian.update();
+            plAssignments.update();
         });
     bnSlotPrev.events().click(
         [this]()
         {
             allocator.setSlotPrev();
-            plHungarian.update();
+            plAssignments.update();
         });
     bnSlotNext.events().click(
         [this]()
         {
             allocator.setSlotNext();
-            plHungarian.update();
+            plAssignments.update();
         });
     bnSlotLast.events().click(
         [this]()
         {
             allocator.setSlotLast();
-            plHungarian.update();
+            plAssignments.update();
         });
     rbMaxflow.events().click(
         [this]()
         {
-            plHungarian.update();
+            plAssignments.update();
         });
     rbHungarian.events().click(
         [this]()
         {
-            plHungarian.update();
+            plAssignments.update();
         });
 
-    plHungarian.events().draw(
+    plAssignments.events().draw(
         [this](PAINTSTRUCT &ps)
         {
             lbSlotName.text(allocator.slotName());

@@ -11,7 +11,7 @@ private:
     wex::gui &fm;
     wex::tabbed& tabs;
     wex::panel& plProblem;
-    wex::panel& plHungarian;
+    wex::panel& plAssignments;
     wex::label& lbSlotNameLabel;
     wex::label& lbSlotName;
     wex::button& bnSlotFirst;
@@ -24,5 +24,5 @@ private:
     cAllocator allocator;
 
     void menuCTOR();
-    void plHungarianCTOR();
+    void plAssignCTOR();
 };
