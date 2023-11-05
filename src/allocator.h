@@ -163,6 +163,8 @@ class cAllocator
     solution_t mySolutionMaxflow;
     solution_t mySolutionHungarian;
 
+    int mySlotCurrent;
+
     /// @brief find task type by name
     /// @param name
     /// @return task type index
@@ -187,6 +189,11 @@ class cAllocator
     /// @return
 
 public:
+
+    cAllocator()
+    : mySlotCurrent( 0 )
+    {}
+
     void clear();
 
     void addAgent(
@@ -206,6 +213,27 @@ public:
     void readfile(const std::string &fname);
     void writefile(
         const std::string &fname);
+
+    void setSlotFirst()
+    {
+        mySlotCurrent = 0;
+    }
+    void setSlotPrev()
+    {
+        mySlotCurrent--;
+        if( mySlotCurrent < 0         )
+            mySlotCurrent = 0;
+    }
+    void setSlotNext()
+    {
+        mySlotCurrent++;
+        if( mySlotCurrent > mySlot.size()-1)
+            mySlotCurrent = mySlot.size()-1;
+    }
+    void setSlotLast()
+    {
+        mySlotCurrent = mySlot.size()-1;
+    }
 
     /// @brief Allocate agents to tasks using max flow algorithm
 
@@ -240,7 +268,7 @@ public:
     }
 
     std::string textProblem() const;
-    std::string textMaxflow() const
+    std::string maxflowText() const
     {
         return textSolution(mySolutionMaxflow);
     }
@@ -250,4 +278,9 @@ public:
     }
     std::string textSolution(
         const solution_t &solution) const;
+
+    std::string slotName() const
+    {
+        return mySlot[mySlotCurrent].name();
+    }
 };

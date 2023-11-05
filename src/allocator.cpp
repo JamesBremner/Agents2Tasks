@@ -225,23 +225,19 @@ std::string cAllocator::textSolution(
     const solution_t &solution) const
 {
     std::stringstream ss;
-    ss << "Solution\n==========\n";
-    for (int slot = 0; slot < solution.size(); slot++)
-    {
-        double cost = 0;
-        ss << mySlot[slot].name() << "\n";
-        for (auto &edge : solution[slot])
-        {
-            int iAgent;
-            isAgent(edge.first, iAgent);
-            cost += myAgents[iAgent].cost();
 
-            ss << edge.first
-               << " does " << edge.second
-               << "\n";
-        }
-        ss << "Cost " << cost << "\n++++++++++\n";
+    double cost = 0;
+    for (auto &edge : solution[mySlotCurrent])
+    {
+        int iAgent;
+        isAgent(edge.first, iAgent);
+        cost += myAgents[iAgent].cost();
+
+        ss << edge.first
+           << " does " << edge.second
+           << "\n";
     }
+    ss << "\nCost " << cost << "\n";
 
     return ss.str();
 }

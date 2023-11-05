@@ -5,8 +5,15 @@ cGUI::cGUI()
     : fm(wex::maker::make()),
       tabs(wex::maker::make<wex::tabbed>(fm)),
       plProblem(wex::maker::make<wex::panel>(tabs)),
-      plMaxFlow(wex::maker::make<wex::panel>(tabs)),
-      plHungarian(wex::maker::make<wex::panel>(tabs))
+      plHungarian(wex::maker::make<wex::panel>(tabs)),
+      lbSlotNameLabel(wex::maker::make<wex::label>(plHungarian)),
+      lbSlotName(wex::maker::make<wex::label>(plHungarian)),
+      bnSlotFirst(wex::maker::make<wex::button>(plHungarian)),
+      bnSlotPrev(wex::maker::make<wex::button>(plHungarian)),
+      bnSlotNext(wex::maker::make<wex::button>(plHungarian)),
+      bnSlotLast(wex::maker::make<wex::button>(plHungarian)),
+      rbMaxflow(wex::maker::make<wex::radiobutton>(plHungarian)),
+      rbHungarian(wex::maker::make<wex::radiobutton>(plHungarian))
 {
 
     allocator.example1();
@@ -21,25 +28,15 @@ cGUI::cGUI()
     tabs.move(0, 0, 600, 700);
     tabs.tabWidth(200);
     tabs.add("PROBLEM", plProblem);
-    tabs.add("MAX FLOW", plMaxFlow);
-    tabs.add("HUNGARIAN", plHungarian);
+    tabs.add("ASSIGNMENTS", plHungarian);
 
     menuCTOR();
+    plHungarianCTOR();
 
     plProblem.events().draw(
         [&](PAINTSTRUCT &ps)
         {
             plProblem.text(allocator.textProblem());
-        });
-    plMaxFlow.events().draw(
-        [&](PAINTSTRUCT &ps)
-        {
-            plMaxFlow.text(allocator.textMaxflow());
-        });
-    plHungarian.events().draw(
-        [&](PAINTSTRUCT &ps)
-        {
-            plHungarian.text(allocator.hungarianText());
         });
 
     fm.show();
@@ -136,4 +133,84 @@ void cGUI::menuCTOR()
                    fm.update();
                });
     mbar.append("Edit", add);
+}
+
+void cGUI::plHungarianCTOR()
+{
+    lbSlotNameLabel.move(100, 10, 90, 30);
+    lbSlotNameLabel.text("Time Slot");
+    lbSlotName.move(200, 10, 200, 30);
+    int x = 50;
+    bnSlotFirst.move(x, 50, 70, 30);
+    x += 100;
+    bnSlotPrev.move(x, 50, 70, 30);
+    x += 100;
+    bnSlotNext.move(x, 50, 70, 30);
+    x += 100;
+    bnSlotLast.move(x, 50, 70, 30);
+    bnSlotFirst.text("FIRST");
+    bnSlotPrev.text("PREV");
+    bnSlotNext.text("NEXT");
+    bnSlotLast.text("LAST");
+    x += 100;
+    rbMaxflow.move(50, 100, 120, 30);
+    rbMaxflow.text("Max Flow");
+    rbHungarian.move(300, 100, 120, 30);
+    rbHungarian.text("Hungarian");
+    rbHungarian.check();
+
+    bnSlotFirst.events().click(
+        [this]()
+        {
+            allocator.setSlotFirst();
+            plHungarian.update();
+        });
+    bnSlotPrev.events().click(
+        [this]()
+        {
+            allocator.setSlotPrev();
+            plHungarian.update();
+        });
+    bnSlotNext.events().click(
+        [this]()
+        {
+            allocator.setSlotNext();
+            plHungarian.update();
+        });
+    bnSlotLast.events().click(
+        [this]()
+        {
+            allocator.setSlotLast();
+            plHungarian.update();
+        });
+    rbMaxflow.events().click(
+        [this]()
+        {
+            plHungarian.update();
+        });
+    rbHungarian.events().click(
+        [this]()
+        {
+            plHungarian.update();
+        });
+
+    plHungarian.events().draw(
+        [this](PAINTSTRUCT &ps)
+        {
+            lbSlotName.text(allocator.slotName());
+            std::string sass;
+            switch (rbHungarian.checkedOffset())
+            {
+            case 0:
+            default:
+                sass = allocator.maxflowText();
+                break;
+            case 1:
+                sass = allocator.hungarianText();
+                break;
+            }
+            wex::shapes S(ps);
+            S.text(sass,
+                   {5, 150, 600, 700});
+        });
 }
