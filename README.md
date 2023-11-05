@@ -20,13 +20,15 @@ Radiobuttons allow user to switch between results from Maxflow and Hungarian alg
 
 ## File Menu
 
-![image](https://github.com/JamesBremner/Agents2Tasks/assets/2046227/d3c8e81c-4020-4cb4-83e0-272b24a80b1b)
+![image](https://github.com/JamesBremner/Agents2Tasks/assets/2046227/80208e92-4b69-4b3b-8f7d-99bda8cde22e)
 
 `File | Open`  Load problem specifcation from a file
 
 `File | Save`  Save problem specifications to a file
 
-`File | Example1` Specify problem example 1 specifications
+`File | Example1` Run example problem 1
+
+`File | Unit Test` Run unit test.
 
 The [file format](https://github.com/JamesBremner/Agents2Tasks/wiki/File-format) documentation
 
