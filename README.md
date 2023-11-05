@@ -1,19 +1,22 @@
 # Agents2Tasks
 
-Allocate agents to tasks in multiple timeslots.
+Allocate agents to tasks in multiple independant timeslots.
 
 
 ## Problem specifcations
 
-![image](https://github.com/JamesBremner/Agents2Tasks/assets/2046227/25c3d5a4-8316-462f-8bbf-0c66e4cbd677)
+![image](https://github.com/JamesBremner/Agents2Tasks/assets/2046227/b8aefa7d-7546-4b7e-bcaa-3e76508762c4)
 
-## MaxFlow Assignment
 
-![image](https://github.com/JamesBremner/Agents2Tasks/assets/2046227/fa074f44-8cbe-4885-bc46-13a779c2152c)
+## Assignment
 
-## Hungarian Assignment
+![image](https://github.com/JamesBremner/Agents2Tasks/assets/2046227/09b85d41-2c66-4970-b8c3-0b16f66e09b9)
 
-![image](https://github.com/JamesBremner/Agents2Tasks/assets/2046227/0712c46f-fae4-4a5b-801d-9591721f6185)
+Display shows assignments of agents to tasks one timeslot at a time.  
+
+Buttons allow user to navigate between timeslots.  
+
+Radiobuttons allow user to switch between results from Maxflow and Hungarian algorithm
 
 ## File Menu
 
