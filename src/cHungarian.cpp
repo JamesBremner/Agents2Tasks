@@ -30,11 +30,10 @@ cHungarian::cHungarian(
                 row.push_back(unablePenalty);
             else
                 row.push_back(agent.cost());
-
         }
         myMxCost.push_back(row);
     }
-    rowSubtract();
+    colSubtract();
 }
 
 slotsolution_t cHungarian::assignAll()
@@ -43,7 +42,7 @@ slotsolution_t cHungarian::assignAll()
 
     // loop until no more agents or no more task to be assigned
     while (!isFinished())
-        ret.push_back( AssignReduce() );
+        ret.push_back(AssignReduce());
 
     return ret;
 }
@@ -62,9 +61,25 @@ void cHungarian::rowSubtract()
                 min = c;
             }
         }
-        // sebtract min cost from each column in row
+        // subtract min cost from each column in row
         for (double &c : row)
             c -= min;
+    }
+}
+
+void cHungarian::colSubtract()
+{
+    for (int col = 0; col < myMxCost[0].size(); col++)
+    {
+        double min = INT_MAX;
+        for (auto &row : myMxCost)
+        {
+            double c = row[col];
+            if (c < min)
+                min = c;
+        }
+        for (auto &row : myMxCost)
+            row[col] -= min;
     }
 }
 
@@ -123,11 +138,29 @@ std::pair<std::string, std::string> cHungarian::AssignReduce()
     // check if just one agent left to be asigned
     if (myMxCost.size() == 1)
     {
-        // assign last task to last agent
+        // assign last agent to first available task
+        // ( assumes fixed cost for agent on any task)
         retAgentTask.first = myAgent[myRowAgent[0]].name();
         retAgentTask.second = myColTaskType[0];
         myMxCost.clear();
         return retAgentTask;
+    }
+
+    // check if just one task left to be assigned
+    if (myMxCost[0].size() == 1)
+    {
+
+        // assign cheapest agent to last task
+        for (int row = 0; row < myMxCost.size(); row++)
+        {
+            if (myMxCost[row][0] == 0)
+            {
+                retAgentTask.first = myAgent[myRowAgent[row]].name();
+                retAgentTask.second = myColTaskType[0];
+                myMxCost.clear();
+                return retAgentTask;
+            }
+        }
     }
 
     // find 1st zero in column
@@ -136,10 +169,10 @@ std::pair<std::string, std::string> cHungarian::AssignReduce()
         if (myMxCost[0][col] < maxZero)
         {
             // assign min cost agent to task
-            retAgentTask.first =  myAgent[myRowAgent[0]].name();
+            retAgentTask.first = myAgent[myRowAgent[0]].name();
             retAgentTask.second = myColTaskType[col];
 
-            // check if agents remain to be assigned
+            // check if multiple agents remain to be assigned
             if (myMxCost.size() > 1)
             {
                 // remove assigned agent and task from cost matrix
@@ -158,6 +191,8 @@ std::pair<std::string, std::string> cHungarian::AssignReduce()
 
                 myRowAgent.erase(myRowAgent.begin());
                 myColTaskType.erase(myColTaskType.begin() + col);
+
+                colSubtract();
             }
 
             return retAgentTask;

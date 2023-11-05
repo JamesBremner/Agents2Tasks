@@ -123,7 +123,8 @@ class cHungarian
 
     double maxZero;
 
-    void rowSubtract();         // subtract min row value from ech row column
+    void rowSubtract();         // subtract min row value from ech column
+    void colSubtract();         // subtract min col value from each row
     bool isSolvable();          // check for a single zero in each row and column
     bool isFinished() const;    // check for all asignments completed
 
