@@ -222,9 +222,10 @@ class cAllocator
 
     std::vector<int> findAgentsForTask(int task);
 
-    /// @brief  construct cost martix, each agent gets a row, each task gets a column
-    /// @param slot
-    /// @return
+    void writeFileSolution(
+        std::ofstream& ofs,
+        const char cid,
+        const solution_t& solution ) const;
 
 public:
 

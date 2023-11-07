@@ -371,7 +371,7 @@ void cAllocator::agents2tasks()
             pbestAgent->assign();
             agentsUnassignedCount--;
 
-            if( ! agentsUnassignedCount )
+            if (!agentsUnassignedCount)
                 break;
         }
         mySolutionAgents2Task.push_back(slotSolution);
@@ -455,7 +455,7 @@ void cAllocator::writefile(const std::string &fname)
     std::ofstream ofs(fname);
     if (!ofs.is_open())
         throw std::runtime_error(
-            "Cannot open input file");
+            "Cannot open output file");
 
     for (auto &a : myAgents)
         a.writefile(ofs, *this);
@@ -463,27 +463,31 @@ void cAllocator::writefile(const std::string &fname)
     for (auto &t : mySlot)
         t.writefile(ofs, *this);
 
+    writeFileSolution(
+        ofs,
+        'F',
+        mySolutionMaxflow    );
+    writeFileSolution(
+        ofs,
+        'H',
+        mySolutionHungarian    );
+    writeFileSolution(
+        ofs,
+        'A',
+        mySolutionAgents2Task    );
+}
+
+void cAllocator::writeFileSolution(
+    std::ofstream& ofs,
+    const char cid,
+    const solution_t &solution) const
+{
     for (int slot = 0; slot < mySlot.size(); slot++)
     {
-        for (auto &ap : mySolutionMaxflow[slot])
+        for (auto &ap : solution[slot])
         {
-            ofs << "F " << mySlot[slot].name()
-                << " " << ap.first << " to " << ap.second << "\n";
-        }
-    }
-    for (int slot = 0; slot < mySlot.size(); slot++)
-    {
-        for (auto &ap : mySolutionHungarian[slot])
-        {
-            ofs << "H " << mySlot[slot].name()
-                << " " << ap.first << " to " << ap.second << "\n";
-        }
-    }
-    for (int slot = 0; slot < mySlot.size(); slot++)
-    {
-        for (auto &ap : mySolutionAgents2Task[slot])
-        {
-            ofs << "A " << mySlot[slot].name()
+            ofs << cid 
+                << " " << mySlot[slot].name()
                 << " " << ap.first << " to " << ap.second << "\n";
         }
     }
