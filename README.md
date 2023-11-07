@@ -5,18 +5,19 @@ Allocate agents to tasks in multiple independant timeslots.
 
 ## Problem specifcations
 
-![image](https://github.com/JamesBremner/Agents2Tasks/assets/2046227/b8aefa7d-7546-4b7e-bcaa-3e76508762c4)
+![image](https://github.com/JamesBremner/Agents2Tasks/assets/2046227/49ba7a04-b0e0-4beb-a685-1eeeceac079c)
+
 
 
 ## Assignment
 
-![image](https://github.com/JamesBremner/Agents2Tasks/assets/2046227/09b85d41-2c66-4970-b8c3-0b16f66e09b9)
+![image](https://github.com/JamesBremner/Agents2Tasks/assets/2046227/24e90f9c-a438-43c5-8ad3-895d028bd2a5)
 
 Display shows assignments of agents to tasks one timeslot at a time.  
 
 Buttons allow user to navigate between timeslots.  
 
-Radiobuttons allow user to switch between results from Maxflow and Hungarian algorithm
+Radiobuttons allow user to switch between results from the optional algorithms: Maxflow, Hungarian or A2T.
 
 ## File Menu
 
@@ -49,7 +50,9 @@ The [file format](https://github.com/JamesBremner/Agents2Tasks/wiki/File-format)
 
 Maximum flow ( [Edmonds–Karp](https://en.wikipedia.org/wiki/Edmonds%E2%80%93Karp_algorithm) ) maximises the number of tasks that are allocated in each timeslot.
 
-The [Hungarian algorithm]( https://en.wikipedia.org/wiki/Hungarian_algorithm) is used to minimize the cost in each timeslot.
+The [Hungarian algorithm]( https://en.wikipedia.org/wiki/Hungarian_algorithm) is used to minimize the cost in each timeslot using the classic Hungarian cost matrix.
+
+The Agent2Task algorithm uses a strightforward assignment of the cheapest agent to each task in turn.
 
 
 
