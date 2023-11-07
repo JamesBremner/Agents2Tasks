@@ -479,4 +479,12 @@ void cAllocator::writefile(const std::string &fname)
                 << " " << ap.first << " to " << ap.second << "\n";
         }
     }
+    for (int slot = 0; slot < mySlot.size(); slot++)
+    {
+        for (auto &ap : mySolutionAgents2Task[slot])
+        {
+            ofs << "A " << mySlot[slot].name()
+                << " " << ap.first << " to " << ap.second << "\n";
+        }
+    }
 }
