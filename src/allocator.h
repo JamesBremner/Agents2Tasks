@@ -18,6 +18,8 @@ class cAgent
     /// @brief tasks agent ready to do ( task type id, cost )
     std::vector<std::pair<int, double>> myTasks;
 
+    bool fAssigned;
+
 public:
     cAgent(
         const std::string &name,
@@ -36,6 +38,15 @@ public:
     bool isAble(int task) const;
 
     double cost() const;
+
+    void assign( bool f = true )
+    {
+        fAssigned = f;
+    }
+    bool isAssigned() const
+    {
+        return fAssigned;
+    }
 
     std::string text(
         const std::vector<std::string> vTaskType) const;
@@ -116,10 +127,11 @@ public:
 class cHungarian
 {
     const std::vector<cAgent>& myAgent;
+    const std::vector<std::string>& myTaskType;
 
     std::vector<std::vector<double>> myMxCost;  // cost matrix
-    std::vector<int> myRowAgent;                   // agent index in each row
-    std::vector<std::string> myColTaskType;        // task type name in each column
+    std::vector<int> myRowAgent;                // agent index in each row
+    std::vector<int> myColTask;                 // task type index in each column
 
     double maxZero;
 
@@ -133,10 +145,21 @@ class cHungarian
 
     std::pair<std::string, std::string> AssignReduce(); 
 
+    int unAssignedAgentCount() const
+    {
+        return myMxCost.size();
+    }
+    int unAssignedTaskCount() const
+    {
+        if( ! unAssignedAgentCount() )
+            return 0;
+        return myMxCost[0].size();
+    }
+
 public:
 
     /// @brief Constructor
-    /// @param allocator containing proble specification
+    /// @param allocator containing problem specification
     /// @param slot      slot to assign
     
     cHungarian(
@@ -144,7 +167,7 @@ public:
         cSlot &slot);
 
     /// @brief Assign agents to all tasks
-    /// @return agent/task pairs for all tasks in timeslot
+    /// @return agent name,task type name pairs for all assignments in timeslot
 
     slotsolution_t assignAll();
 
@@ -154,8 +177,6 @@ public:
 
 class cAllocator
 {
-    // typedef std::vector<std::vector<double>> hungarianCostMatrix_t;
-
     std::vector<cAgent> myAgents;        // agents
     std::vector<std::string> myTaskType; // task type names
     std::vector<cTask> myTask;           // defined tasks
@@ -163,6 +184,7 @@ class cAllocator
 
     solution_t mySolutionMaxflow;
     solution_t mySolutionHungarian;
+    solution_t mySolutionAgents2Task;
 
     int mySlotCurrent;
 
@@ -245,9 +267,35 @@ public:
 
     void hungarian();
 
+/*
+<pre>
+ - LOOP T over unassigned tasks
+         - SET bestcost to MAX
+         - SET bestagent to null
+         - LOOP A over unassigned agents
+             - IF A cannot be assigned to T
+                 - CONTINUE
+             - IF cost of assigning A to T < bestcost
+                 - SET bestcost = cost of assigning A to T
+                 - SET bestAgent = A
+         - ENDLOOP A
+         - ASSIGN bestAgent to T
+         - IF no unassigned agents
+             - BREAK
+         - IF no unassigned tasks
+            - BREAK
+ - ENDLOOP T
+ </pre>
+*/
+    void agents2tasks();
+
     const std::vector<cAgent>& getAgents() const
     {
         return myAgents;
+    }
+    const std::vector<std::string>& getTaskTypeNames() const
+    {
+        return myTaskType;
     }
 
     /// @brief getTaskTypeName
@@ -276,6 +324,10 @@ public:
     std::string hungarianText() const
     {
         return textSolution(mySolutionHungarian);
+    }
+    std::string agents2TasksText() const
+    {
+        return textSolution(mySolutionAgents2Task);
     }
     std::string textSolution(
         const solution_t &solution) const;

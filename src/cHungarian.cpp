@@ -1,4 +1,5 @@
 #include <stdexcept>
+#include <iostream>
 
 #include "allocator.h"
 
@@ -6,13 +7,14 @@ cHungarian::cHungarian(
     cAllocator &allocator,
     cSlot &slot)
     : myAgent(allocator.getAgents()),
+      myTaskType(allocator.getTaskTypeNames()),
       maxZero(0.00001)
 {
     const double unablePenalty = 1000;
 
     for (int taskid : slot)
     {
-        myColTaskType.push_back(allocator.getTaskTypeName(taskid));
+        myColTask.push_back(allocator.getTaskTypeID(taskid));
     }
 
     // loop over the agents
@@ -126,9 +128,9 @@ bool cHungarian::isSolvable()
 
 bool cHungarian::isFinished() const
 {
-    if (!myMxCost.size())
-        return true;              // all agents assigned
-    return (!myMxCost[0].size()); // check for all task assigned
+    if ((!unAssignedTaskCount()) || (!unAssignedAgentCount()))
+        return true;
+    return false;
 }
 
 std::pair<std::string, std::string> cHungarian::AssignReduce()
@@ -136,61 +138,74 @@ std::pair<std::string, std::string> cHungarian::AssignReduce()
     std::pair<std::string, std::string> retAgentTask;
 
     // check if just one agent left to be asigned
-    if (myMxCost.size() == 1)
+    if (unAssignedAgentCount() == 1)
     {
         // assign last agent to first available task
         // ( assumes fixed cost for agent on any task)
         retAgentTask.first = myAgent[myRowAgent[0]].name();
-        retAgentTask.second = myColTaskType[0];
+        retAgentTask.second = myTaskType[myColTask[0]];
+        // std::cout << retAgentTask.first << " to "
+        //           << retAgentTask.second << "\n";
         myMxCost.clear();
         return retAgentTask;
     }
 
     // check if just one task left to be assigned
-    if (myMxCost[0].size() == 1)
+    if (unAssignedTaskCount() == 1)
     {
-
-        // assign cheapest agent to last task
-        for (int row = 0; row < myMxCost.size(); row++)
+        // assign cheapest unassigned agent to last task
+        for (int row = 0; row < unAssignedAgentCount(); row++)
         {
-            if (myMxCost[row][0] == 0)
+            double bestCost = INT_MAX;
+            int bestAgent = -1;
+            for (int ai : myRowAgent)
             {
-                retAgentTask.first = myAgent[myRowAgent[row]].name();
-                retAgentTask.second = myColTaskType[0];
-                myMxCost.clear();
-                return retAgentTask;
+                double cost = myAgent[ai].cost();
+                if (cost < bestCost)
+                {
+                    bestCost = cost;
+                    bestAgent = ai;
+                }
             }
+
+            retAgentTask.first = myAgent[bestAgent].name();
+            retAgentTask.second = myTaskType[myColTask[0]];
+            // std::cout << retAgentTask.first << " to "
+            //           << retAgentTask.second << "\n";
+            myMxCost.clear();
+            return retAgentTask;
         }
     }
 
     // find 1st zero in column
-    for (int col = 0; col < myMxCost[0].size(); col++)
+    for (int row = 0; row < unAssignedAgentCount(); row++)
     {
-        if (myMxCost[0][col] < maxZero)
+        if (myMxCost[row][0] < maxZero)
         {
             // assign min cost agent to task
-            retAgentTask.first = myAgent[myRowAgent[0]].name();
-            retAgentTask.second = myColTaskType[col];
+            retAgentTask.first = myAgent[myRowAgent[row]].name();
+            retAgentTask.second = myTaskType[myColTask[0]];
+            // std::cout << retAgentTask.first << " to "
+            //           << retAgentTask.second << "\n";
 
             // check if multiple agents remain to be assigned
             if (myMxCost.size() > 1)
             {
                 // remove assigned agent and task from cost matrix
                 std::vector<std::vector<double>> tmp;
-                for (int row = 1; row < myMxCost.size(); row++)
+                for (int r = 0; r < myMxCost.size(); r++)
                 {
+                    if (r == row)
+                        continue;
                     std::vector<double> vr;
-                    for (int c = 0; c < myMxCost[0].size(); c++)
-                    {
-                        if (c != col)
-                            vr.push_back(myMxCost[row][c]);
-                    }
+                    for (int col = 1; col < myMxCost[0].size(); col++)
+                        vr.push_back(myMxCost[row][0]);
                     tmp.push_back(vr);
                 }
                 myMxCost = tmp;
 
-                myRowAgent.erase(myRowAgent.begin());
-                myColTaskType.erase(myColTaskType.begin() + col);
+                myRowAgent.erase(myRowAgent.begin() + row);
+                myColTask.erase(myColTask.begin());
 
                 colSubtract();
             }

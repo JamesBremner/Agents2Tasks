@@ -20,6 +20,7 @@ private:
     wex::button& bnSlotLast;
     wex::radiobutton& rbMaxflow;
     wex::radiobutton& rbHungarian;
+    wex::radiobutton& rbAgent2Tasks;
 
     cAllocator allocator;
 

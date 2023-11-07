@@ -29,7 +29,7 @@ bool unitTest()
     auto result = allocator.hungarianText();
 
     std::string expected =
-        "John does teacher\nMargaret does cleaner\nAndrew does teacher\n\nCost 12\n";
+        "John does teacher\nMargaret does teacher\nAndrew does cleaner\n\nCost 12\n";
 
     if (expected != result)
         return false;
@@ -61,6 +61,39 @@ bool unitTest()
 
     allocator.hungarian();
     result = allocator.hungarianText();
+
+    expected =
+        "John does teacher\nMargaret does accountant\n\nCost 7\n";
+    if (expected != result)
+        return false;
+
+    allocator.clear();
+    allocator.addTaskType("teacher");
+    allocator.addTaskType("cleaner");
+    allocator.addTaskType("accountant");
+
+    // add most expensive agent first
+    // to test that the Hungarian optimizes the total slot cost
+    
+    allocator.addAgent(
+        "Andrew",
+        {"accountant teacher"},
+        5.0);
+
+    allocator.addAgent(
+        "John",
+        {"teacher cleaner"},
+        3.0);
+    allocator.addAgent(
+        "Margaret",
+        {"accountant cleaner"},
+        4.0);
+    allocator.addSlot(
+        "2/NOV/2023/8:30",
+        {"teacher accountant"});
+
+    allocator.agents2tasks();
+    result = allocator.agents2TasksText();
 
     expected =
         "John does teacher\nMargaret does accountant\n\nCost 7\n";

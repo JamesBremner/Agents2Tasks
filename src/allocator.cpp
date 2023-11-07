@@ -318,6 +318,55 @@ void cAllocator::hungarian()
     }
 }
 
+void cAllocator::agents2tasks()
+{
+    mySolutionAgents2Task.clear();
+
+    for (auto &slot : mySlot)
+    {
+        slotsolution_t slotSolution;
+        int agentsUnassignedCount = myAgents.size();
+        int tasksUnassignedCount = slot.taskCount();
+        for (auto &a : myAgents)
+            a.assign(false);
+
+        // loop over slot tasks
+        for (int &taskIndex : slot.getTasks())
+        {
+            cTask &task = myTask[taskIndex];
+
+            // find cheapest unassigned agent that can do the task
+            double bestCost = INT_MAX;
+            cAgent *pbestAgent = 0;
+            for (auto &agent : myAgents)
+            {
+                if (agent.isAssigned())
+                    continue;
+                if (!agent.isAble(task.myTaskType))
+                    continue;
+                double cost = agent.cost();
+                if (cost < bestCost)
+                {
+                    bestCost = cost;
+                    pbestAgent = &agent;
+                }
+            }
+            if (!pbestAgent)
+                continue;
+
+            // assign cheapest agent
+            slotSolution.push_back(std::make_pair(
+                pbestAgent->name(),
+                myTaskType[task.myTaskType]));
+            myTask[taskIndex].fAssigned = true;
+            tasksUnassignedCount--;
+            pbestAgent->assign();
+            agentsUnassignedCount--;
+        }
+        mySolutionAgents2Task.push_back(slotSolution);
+    }
+}
+
 void cAllocator::example1()
 {
     clear();

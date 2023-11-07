@@ -13,7 +13,8 @@ cGUI::cGUI()
       bnSlotNext(wex::maker::make<wex::button>(plAssignments)),
       bnSlotLast(wex::maker::make<wex::button>(plAssignments)),
       rbMaxflow(wex::maker::make<wex::radiobutton>(plAssignments)),
-      rbHungarian(wex::maker::make<wex::radiobutton>(plAssignments))
+      rbHungarian(wex::maker::make<wex::radiobutton>(plAssignments)),
+      rbAgent2Tasks(wex::maker::make<wex::radiobutton>(plAssignments))
 {
 
     // run example problem 1
@@ -23,6 +24,7 @@ cGUI::cGUI()
     // do the allocation
     allocator.maxflow();
     allocator.hungarian();
+    allocator.agents2tasks();
 
     fm.move({50, 50, 600, 700});
     fm.text("Agents2Tasks");
@@ -189,9 +191,11 @@ void cGUI::plAssignCTOR()
     x += 100;
     rbMaxflow.move(50, 100, 120, 30);
     rbMaxflow.text("Max Flow");
-    rbHungarian.move(300, 100, 120, 30);
+    rbHungarian.move(200, 100, 120, 30);
     rbHungarian.text("Hungarian");
     rbHungarian.check();
+    rbAgent2Tasks.move(350,100,120,30);
+    rbAgent2Tasks.text("Agent2Task");
 
     // event handlers
 
@@ -229,6 +233,11 @@ void cGUI::plAssignCTOR()
         {
             plAssignments.update();
         });
+    rbAgent2Tasks.events().click(
+        [this]()
+        {
+            plAssignments.update();
+        });
 
     plAssignments.events().draw(
         [this](PAINTSTRUCT &ps)
@@ -243,6 +252,9 @@ void cGUI::plAssignCTOR()
                 break;
             case 1:
                 sass = allocator.hungarianText();
+                break;
+            case 2:
+                sass = allocator.agents2TasksText();
                 break;
             }
             wex::shapes S(ps);
