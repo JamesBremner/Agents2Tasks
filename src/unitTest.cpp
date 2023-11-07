@@ -100,5 +100,43 @@ bool unitTest()
     if (expected != result)
         return false;
 
+    allocator.clear();
+    allocator.addTaskType("teacher");
+    
+    allocator.addAgent(
+        "Andrew",
+        {"teacher"},
+        1.0);
+    allocator.addAgent(
+        "John",
+        {"teacher cleaner"},
+        1.0);
+
+    allocator.addSlot(
+        "2/NOV/2023/8:30",
+        {"teacher"});
+    allocator.addSlot(
+        "3/NOV/2023/8:30",
+        {"teacher"});
+    allocator.addSlot(
+        "4/NOV/2023/8:30",
+        {"teacher"});
+
+    allocator.agents2tasks();
+
+    allocator.setSlotFirst();
+    result = allocator.agents2TasksText();
+    expected =
+        "Andrew does teacher\n\nCost 1\n";
+    if (expected != result)
+        return false;
+    allocator.setSlotNext();
+    result = allocator.agents2TasksText();
+    expected =
+        "John does teacher\n\nCost 1\n";
+    if (expected != result)
+        return false;
+
+
     return true;
 }

@@ -9,7 +9,7 @@ typedef std::vector<slotsolution_t> solution_t;
 
 class cAllocator;
 
-/// @brief An agent can be assigned to a task of cretian work type
+/// @brief An agent can be assigned to tasks of certain work types
 
 class cAgent
 {
@@ -18,9 +18,17 @@ class cAgent
     /// @brief tasks agent ready to do ( task type id, cost )
     std::vector<std::pair<int, double>> myTasks;
 
-    bool fAssigned;
+    bool fAssigned;     // true if assigned to task in current timeslot
+
+    int myAssignedCount;    // task assignments in all timeslots
 
 public:
+
+    /// @brief Constructor
+    /// @param name 
+    /// @param vt       // Indices of task types agent can do
+    /// @param cost     // Cost of assigning agent to any task
+
     cAgent(
         const std::string &name,
         const std::vector<int> &vt,
@@ -42,10 +50,17 @@ public:
     void assign( bool f = true )
     {
         fAssigned = f;
+        if( f )
+            myAssignedCount++;
     }
     bool isAssigned() const
     {
         return fAssigned;
+    }
+
+    int assignedCount() const
+    {
+        return myAssignedCount;
     }
 
     std::string text(

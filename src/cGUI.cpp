@@ -22,9 +22,9 @@ cGUI::cGUI()
     allocator.example1();
 
     // do the allocation
-    allocator.maxflow();
-    allocator.hungarian();
-    allocator.agents2tasks();
+    // allocator.maxflow();
+    // allocator.hungarian();
+    // allocator.agents2tasks();
 
     fm.move({50, 50, 600, 700});
     fm.text("Agents2Tasks");

@@ -10,7 +10,8 @@ cAgent::cAgent(
     const std::string &name,
     const std::vector<int> &vt,
     double cost)
-    : myName(name)
+    : myName(name),
+      myAssignedCount(0)
 {
     for (int t : vt)
     {
@@ -327,8 +328,15 @@ void cAllocator::agents2tasks()
         slotsolution_t slotSolution;
         int agentsUnassignedCount = myAgents.size();
         int tasksUnassignedCount = slot.taskCount();
+
         for (auto &a : myAgents)
             a.assign(false);
+        std::sort(
+            myAgents.begin(), myAgents.end(),
+            [](const cAgent &a, const cAgent &b)
+            {
+                return (a.assignedCount() < b.assignedCount());
+            });
 
         // loop over slot tasks
         for (int &taskIndex : slot.getTasks())
@@ -362,6 +370,9 @@ void cAllocator::agents2tasks()
             tasksUnassignedCount--;
             pbestAgent->assign();
             agentsUnassignedCount--;
+
+            if( ! agentsUnassignedCount )
+                break;
         }
         mySolutionAgents2Task.push_back(slotSolution);
     }
