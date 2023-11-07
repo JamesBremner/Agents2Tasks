@@ -22,9 +22,9 @@ cGUI::cGUI()
     allocator.example1();
 
     // do the allocation
-    // allocator.maxflow();
-    // allocator.hungarian();
-    // allocator.agents2tasks();
+    allocator.maxflow();
+    allocator.hungarian();
+    allocator.agents2tasks();
 
     fm.move({50, 50, 600, 700});
     fm.text("Agents2Tasks");
@@ -76,6 +76,7 @@ void cGUI::menuCTOR()
                     allocator.readfile(fname);
                     allocator.maxflow();
                     allocator.hungarian();
+                    allocator.agents2tasks();
                     tabs.select(0);
                 });
     file.append("Save",
@@ -93,6 +94,7 @@ void cGUI::menuCTOR()
                     // do the allocation
                     allocator.maxflow();
                     allocator.hungarian();
+                    allocator.agents2tasks();
                 });
     file.append("Unit Test",
                 [&](const std::string &title)
