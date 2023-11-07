@@ -52,7 +52,7 @@ Maximum flow ( [Edmonds–Karp](https://en.wikipedia.org/wiki/Edmonds%E2%80%93Ka
 
 The [Hungarian algorithm]( https://en.wikipedia.org/wiki/Hungarian_algorithm) is used to minimize the cost in each timeslot using the classic Hungarian cost matrix.
 
-The Agent2Task algorithm uses a strightforward assignment of the cheapest agent to each task in turn.
+The Agent2Task algorithm uses a strightforward assignment of the cheapest agent to each task in turn.  If there are more agents than tasks it will distribute the tasks between agents so that over multiple timeslots the workload of each agent is approximately even.
 
 
 
