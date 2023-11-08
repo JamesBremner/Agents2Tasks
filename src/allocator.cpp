@@ -329,8 +329,24 @@ void cAllocator::agents2tasks()
         int agentsUnassignedCount = myAgents.size();
         int tasksUnassignedCount = slot.taskCount();
 
+        // unassign all agents
         for (auto &a : myAgents)
             a.assign(false);
+
+        /* Sort agents in ascending order of previous assignments
+
+          So that if there are multiple agents of equal cost available to do a task,
+          the task will be assigned to the agent with the fewest assignments in the previous timeslots.
+
+          So the uneven distribution of work to agents when there are more agents than work
+          and the agents have the same cost per assignment 
+          will decrease as a percentage of total assignments
+          as the number of timeslots increases 
+          with a limit of +/- 1 assignments per agent.
+
+          https://github.com/JamesBremner/Agents2Tasks/issues/5#issuecomment-1801948876
+
+        */
         std::sort(
             myAgents.begin(), myAgents.end(),
             [](const cAgent &a, const cAgent &b)
@@ -371,6 +387,7 @@ void cAllocator::agents2tasks()
             pbestAgent->assign();
             agentsUnassignedCount--;
 
+            // check for all agents assigned
             if (!agentsUnassignedCount)
                 break;
         }
