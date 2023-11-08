@@ -18,14 +18,13 @@ class cAgent
     /// @brief tasks agent ready to do ( task type id, cost )
     std::vector<std::pair<int, double>> myTasks;
 
-    bool fAssigned;     // true if assigned to task in current timeslot
+    bool fAssigned; // true if assigned to task in current timeslot
 
-    int myAssignedCount;    // task assignments in all timeslots
+    int myAssignedCount; // task assignments in all timeslots
 
 public:
-
     /// @brief Constructor
-    /// @param name 
+    /// @param name
     /// @param vt       // Indices of task types agent can do
     /// @param cost     // Cost of assigning agent to any task
 
@@ -47,10 +46,10 @@ public:
 
     double cost() const;
 
-    void assign( bool f = true )
+    void assign(bool f = true)
     {
         fAssigned = f;
-        if( f )
+        if (f)
             myAssignedCount++;
     }
     bool isAssigned() const
@@ -141,24 +140,24 @@ public:
 
 class cHungarian
 {
-    const std::vector<cAgent>& myAgent;
-    const std::vector<std::string>& myTaskType;
+    const std::vector<cAgent> &myAgent;
+    const std::vector<std::string> &myTaskType;
 
-    std::vector<std::vector<double>> myMxCost;  // cost matrix
-    std::vector<int> myRowAgent;                // agent index in each row
-    std::vector<int> myColTask;                 // task type index in each column
+    std::vector<std::vector<double>> myMxCost; // cost matrix
+    std::vector<int> myRowAgent;               // agent index in each row
+    std::vector<int> myColTask;                // task type index in each column
 
     double maxZero;
 
-    void rowSubtract();         // subtract min row value from ech column
-    void colSubtract();         // subtract min col value from each row
-    bool isSolvable();          // check for a single zero in each row and column
-    bool isFinished() const;    // check for all asignments completed
+    void rowSubtract();      // subtract min row value from ech column
+    void colSubtract();      // subtract min col value from each row
+    bool isSolvable();       // check for a single zero in each row and column
+    bool isFinished() const; // check for all asignments completed
 
     /// @brief Assign agent to a task, remove agent and task from cost matrix
     /// @return string pair, agent name and task type
 
-    std::pair<std::string, std::string> AssignReduce(); 
+    std::pair<std::string, std::string> AssignReduce();
 
     int unAssignedAgentCount() const
     {
@@ -166,17 +165,16 @@ class cHungarian
     }
     int unAssignedTaskCount() const
     {
-        if( ! unAssignedAgentCount() )
+        if (!unAssignedAgentCount())
             return 0;
         return myMxCost[0].size();
     }
 
 public:
-
     /// @brief Constructor
     /// @param allocator containing problem specification
     /// @param slot      slot to assign
-    
+
     cHungarian(
         cAllocator &allocator,
         cSlot &slot);
@@ -185,7 +183,30 @@ public:
     /// @return agent name,task type name pairs for all assignments in timeslot
 
     slotsolution_t assignAll();
+};
 
+/// @brief Task assignment for all timeslots and one algorithm
+
+class cAssigns
+{
+    solution_t myAssigns;
+    std::vector<std::string> mySlotName;
+    std::vector<double> mySlotCost;
+
+public:
+    void clear();
+
+    void add(
+        const slotsolution_t &slotsolution,
+        const std::string &slotName,
+        double cost);
+
+    std::string text(
+        int slotIndex) const;
+
+    void writeFile(
+        std::ofstream &ofs,
+        const char cid) const;
 };
 
 /// @brief Assign agents to task in multiple independant slots
@@ -197,9 +218,9 @@ class cAllocator
     std::vector<cTask> myTask;           // defined tasks
     std::vector<cSlot> mySlot;           // slots containg tasks
 
-    solution_t mySolutionMaxflow;
-    solution_t mySolutionHungarian;
-    solution_t mySolutionAgents2Task;
+    cAssigns mySolutionMaxflow;
+    cAssigns mySolutionHungarian;
+    cAssigns mySolutionAgents2Task;
 
     int mySlotCurrent;
 
@@ -222,16 +243,11 @@ class cAllocator
 
     std::vector<int> findAgentsForTask(int task);
 
-    void writeFileSolution(
-        std::ofstream& ofs,
-        const char cid,
-        const solution_t& solution ) const;
-
 public:
-
     cAllocator()
-    : mySlotCurrent( 0 )
-    {}
+        : mySlotCurrent(0)
+    {
+    }
 
     void clear();
 
@@ -260,18 +276,18 @@ public:
     void setSlotPrev()
     {
         mySlotCurrent--;
-        if( mySlotCurrent < 0         )
+        if (mySlotCurrent < 0)
             mySlotCurrent = 0;
     }
     void setSlotNext()
     {
         mySlotCurrent++;
-        if( mySlotCurrent > mySlot.size()-1)
-            mySlotCurrent = mySlot.size()-1;
+        if (mySlotCurrent > mySlot.size() - 1)
+            mySlotCurrent = mySlot.size() - 1;
     }
     void setSlotLast()
     {
-        mySlotCurrent = mySlot.size()-1;
+        mySlotCurrent = mySlot.size() - 1;
     }
 
     /// @brief Allocate agents to tasks using max flow algorithm
@@ -283,33 +299,33 @@ public:
 
     void hungarian();
 
-/*
-<pre>
- - LOOP T over unassigned tasks
-         - SET bestcost to MAX
-         - SET bestagent to null
-         - LOOP A over unassigned agents
-             - IF A cannot be assigned to T
-                 - CONTINUE
-             - IF cost of assigning A to T < bestcost
-                 - SET bestcost = cost of assigning A to T
-                 - SET bestAgent = A
-         - ENDLOOP A
-         - ASSIGN bestAgent to T
-         - IF no unassigned agents
-             - BREAK
-         - IF no unassigned tasks
-            - BREAK
- - ENDLOOP T
- </pre>
-*/
+    /*
+    <pre>
+     - LOOP T over unassigned tasks
+             - SET bestcost to MAX
+             - SET bestagent to null
+             - LOOP A over unassigned agents
+                 - IF A cannot be assigned to T
+                     - CONTINUE
+                 - IF cost of assigning A to T < bestcost
+                     - SET bestcost = cost of assigning A to T
+                     - SET bestAgent = A
+             - ENDLOOP A
+             - ASSIGN bestAgent to T
+             - IF no unassigned agents
+                 - BREAK
+             - IF no unassigned tasks
+                - BREAK
+     - ENDLOOP T
+     </pre>
+    */
     void agents2tasks();
 
-    const std::vector<cAgent>& getAgents() const
+    const std::vector<cAgent> &getAgents() const
     {
         return myAgents;
     }
-    const std::vector<std::string>& getTaskTypeNames() const
+    const std::vector<std::string> &getTaskTypeNames() const
     {
         return myTaskType;
     }
@@ -333,20 +349,21 @@ public:
     }
 
     std::string textProblem() const;
+
     std::string maxflowText() const
     {
-        return textSolution(mySolutionMaxflow);
+        return mySolutionMaxflow.text(mySlotCurrent);
     }
     std::string hungarianText() const
     {
-        return textSolution(mySolutionHungarian);
+        return mySolutionHungarian.text(mySlotCurrent);
     }
     std::string agents2TasksText() const
     {
-        return textSolution(mySolutionAgents2Task);
+        return mySolutionAgents2Task.text(mySlotCurrent);
     }
-    std::string textSolution(
-        const solution_t &solution) const;
+    double slotCost(
+        slotsolution_t &solution) const;
 
     std::string slotName() const
     {

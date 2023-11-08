@@ -80,6 +80,60 @@ void cSlot::writefile(
     ofs << "\n";
 }
 
+void cAssigns::clear()
+{
+    myAssigns.clear();
+    mySlotName.clear();
+    mySlotCost.clear();
+}
+
+void cAssigns::add(
+    const slotsolution_t &vps,
+    const std::string &slotName,
+    double cost)
+{
+    myAssigns.push_back(vps);
+    mySlotName.push_back(slotName);
+    mySlotCost.push_back(cost);
+}
+
+std::string cAssigns::text(
+    int slotIndex) const
+{
+    std::stringstream ss;
+
+    double cost = 0;
+    for (auto &edge : myAssigns[slotIndex])
+    {
+        // int iAgent;
+        // isAgent(edge.first, iAgent);
+        // cost += myAgents[iAgent].cost();
+
+        ss << edge.first
+           << " does " << edge.second
+           << "\n";
+    }
+    ss << "\nCost " << mySlotCost[slotIndex] << "\n";
+
+    return ss.str();
+}
+
+void cAssigns::writeFile(
+    std::ofstream &ofs,
+    const char cid) const
+{
+    int slotID = 0;
+    for (auto &slot : myAssigns)
+    {
+        for (auto &ap : slot)
+        {
+            ofs << cid
+                << " " << mySlotName[slotID++]
+                << " " << ap.first << " to " << ap.second << "\n";
+        }
+    }
+}
+
 void cAllocator::clear()
 {
     myAgents.clear();
@@ -222,25 +276,17 @@ std::string cAllocator::textProblem() const
     return ss.str();
 }
 
-std::string cAllocator::textSolution(
-    const solution_t &solution) const
+double cAllocator::slotCost(
+    slotsolution_t &solution) const
 {
-    std::stringstream ss;
-
     double cost = 0;
-    for (auto &edge : solution[mySlotCurrent])
+    for (auto &edge : solution)
     {
         int iAgent;
         isAgent(edge.first, iAgent);
         cost += myAgents[iAgent].cost();
-
-        ss << edge.first
-           << " does " << edge.second
-           << "\n";
     }
-    ss << "\nCost " << cost << "\n";
-
-    return ss.str();
+    return cost;
 }
 
 std::vector<int> cAllocator::findAgentsForTask(int task)
@@ -300,7 +346,10 @@ void cAllocator::maxflow()
         }
 
         // store the assignments for this slot
-        mySolutionMaxflow.push_back(slotsolution);
+        mySolutionMaxflow.add(
+            slotsolution,
+            slot.name(),
+            slotCost(slotsolution));
     }
 }
 
@@ -315,7 +364,12 @@ void cAllocator::hungarian()
             *this,
             slot);
 
-        mySolutionHungarian.push_back(H.assignAll());
+        auto slotSolution = H.assignAll();
+
+        mySolutionHungarian.add(
+            slotSolution,
+            slot.name(),
+            slotCost(slotSolution));
     }
 }
 
@@ -339,9 +393,9 @@ void cAllocator::agents2tasks()
           the task will be assigned to the agent with the fewest assignments in the previous timeslots.
 
           So the uneven distribution of work to agents when there are more agents than work
-          and the agents have the same cost per assignment 
+          and the agents have the same cost per assignment
           will decrease as a percentage of total assignments
-          as the number of timeslots increases 
+          as the number of timeslots increases
           with a limit of +/- 1 assignments per agent.
 
           https://github.com/JamesBremner/Agents2Tasks/issues/5#issuecomment-1801948876
@@ -391,7 +445,10 @@ void cAllocator::agents2tasks()
             if (!agentsUnassignedCount)
                 break;
         }
-        mySolutionAgents2Task.push_back(slotSolution);
+        mySolutionAgents2Task.add(
+            slotSolution,
+            slot.name(),
+            slotCost(slotSolution));
     }
 }
 
@@ -480,32 +537,13 @@ void cAllocator::writefile(const std::string &fname)
     for (auto &t : mySlot)
         t.writefile(ofs, *this);
 
-    writeFileSolution(
+    mySolutionMaxflow.writeFile(
         ofs,
-        'F',
-        mySolutionMaxflow    );
-    writeFileSolution(
+        'F');
+    mySolutionHungarian.writeFile(
         ofs,
-        'H',
-        mySolutionHungarian    );
-    writeFileSolution(
+        'H');
+    mySolutionAgents2Task.writeFile(
         ofs,
-        'A',
-        mySolutionAgents2Task    );
-}
-
-void cAllocator::writeFileSolution(
-    std::ofstream& ofs,
-    const char cid,
-    const solution_t &solution) const
-{
-    for (int slot = 0; slot < mySlot.size(); slot++)
-    {
-        for (auto &ap : solution[slot])
-        {
-            ofs << cid 
-                << " " << mySlot[slot].name()
-                << " " << ap.first << " to " << ap.second << "\n";
-        }
-    }
+        'A');
 }
