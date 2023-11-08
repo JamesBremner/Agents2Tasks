@@ -128,9 +128,10 @@ void cAssigns::writeFile(
         for (auto &ap : slot)
         {
             ofs << cid
-                << " " << mySlotName[slotID++]
+                << " " << mySlotName[slotID]
                 << " " << ap.first << " to " << ap.second << "\n";
         }
+        slotID++;
     }
 }
 
