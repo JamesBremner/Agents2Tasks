@@ -24,6 +24,26 @@
             }
         },
         {
+            "label": "console",
+            "options": {
+                "cwd": "${workspaceFolder}"
+               },
+            "command": "mingw32-make.exe",
+            "args": [
+                "-f",
+                ".vscode/makefile",
+                "console"
+            ],
+
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
             "label": "rebuild",
             "options": {
                 "cwd": "${workspaceFolder}"

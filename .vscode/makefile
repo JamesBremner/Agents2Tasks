@@ -27,6 +27,15 @@ OBJ_a2t = \
 	$(ODIR)/cHungarian.o \
 	$(ODIR)/unitTest.o \
 	$(ODIR)/cGraph.o \
+	$(ODIR)/GraphTheory.o 
+
+
+OBJ_console = \
+	$(ODIR)/console.o \
+	$(ODIR)/allocator.o \
+	$(ODIR)/cHungarian.o \
+	$(ODIR)/unitTest.o \
+	$(ODIR)/cGraph.o \
 	$(ODIR)/GraphTheory.o \
 
 ### COMPILE
@@ -40,9 +49,14 @@ a2t: $(OBJ_a2t)
 	-o bin/Agents2Tasks.exe $^  \
 	$(static_link_flags) $(LIBS)
 
+console: $(OBJ_console)
+	g++ $(OPT) \
+	-o bin/Agents2TasksConsole.exe $^  \
+	$(static_link_flags) $(LIBS)
+
 .PHONY: clean
 clean:
 	del /q .vscode\\obj\\*.o
 
-rebuild: clean a2t
+rebuild: clean a2t console
 
