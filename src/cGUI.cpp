@@ -19,12 +19,12 @@ cGUI::cGUI()
 
     // run example problem 1
 
-    allocator.example1();
+    // allocator.example1();
 
-    // do the allocation
-    allocator.maxflow();
-    allocator.hungarian();
-    allocator.agents2tasks();
+    // // do the allocation
+    // allocator.maxflow();
+    // allocator.hungarian();
+    // allocator.agents2tasks();
 
     fm.move({50, 50, 600, 700});
     fm.text("Agents2Tasks");

@@ -40,7 +40,7 @@ OBJ_console = \
 
 ### COMPILE
 
-$(ODIR)/%.o: %.cpp allocator.h cGUI.h
+$(ODIR)/%.o: %.cpp allocator.h cGUI.h cAgent.h
 	g++  $(CCflags) \
 	-c -o $@ $< $(INCS)
 

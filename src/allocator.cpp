@@ -40,6 +40,27 @@ bool cAgent::isAble(int task) const
                     return false;
                 }) != myTasks.end());
 }
+
+bool cAgent::isAssignedRecently(
+    int day,
+    const std::string &taskname) const
+{
+    if (std::find_if(
+            myAssignedDays.begin(), myAssignedDays.end(),
+            [&](const std::pair<int, std::string> daytype)
+            {
+                if (daytype.first != day &&
+                    daytype.first != day - 1)
+                    return false;
+                if (daytype.second != taskname)
+                    return false;
+                return true;
+            }) != myAssignedDays.end())
+        return true;
+
+    return false;
+}
+
 double cAgent::cost() const
 {
     if (!myTasks.size())
@@ -48,6 +69,17 @@ double cAgent::cost() const
     // assume cost same for all tasks
     return myTasks[0].second;
 }
+
+void cAgent::assign(
+    int day,
+    const std::string &taskTypeName)
+{
+    fAssigned = true;
+    myAssignedCount++;
+    myAssignedDays.push_back(
+        std::make_pair(day, taskTypeName));
+}
+
 void cAgent::writefile(
     std::ofstream &ofs,
     const cAllocator &allocator)
@@ -386,7 +418,7 @@ void cAllocator::agents2tasks()
 
         // unassign all agents
         for (auto &a : myAgents)
-            a.assign(false);
+            a.unAssign();
 
         /* Sort agents in ascending order of previous assignments
 
@@ -419,10 +451,21 @@ void cAllocator::agents2tasks()
             cAgent *pbestAgent = 0;
             for (auto &agent : myAgents)
             {
+                // already assigned in this slot
                 if (agent.isAssigned())
                     continue;
+
+                // can't do the task
                 if (!agent.isAble(task.myTaskType))
                     continue;
+
+                // assigned to task type recently
+                if (agent.isAssignedRecently(
+                        slot.day(),
+                        myTaskType[task.myTaskType]))
+                    continue;
+
+                // is cheapest so far
                 double cost = agent.cost();
                 if (cost < bestCost)
                 {
@@ -434,12 +477,16 @@ void cAllocator::agents2tasks()
                 continue;
 
             // assign cheapest agent
-            slotSolution.push_back(std::make_pair(
-                pbestAgent->name(),
-                myTaskType[task.myTaskType]));
+            auto taskTypeName = myTaskType[task.myTaskType];
+            slotSolution.push_back(
+                std::make_pair(
+                    pbestAgent->name(),
+                    taskTypeName));
             myTask[taskIndex].fAssigned = true;
             tasksUnassignedCount--;
-            pbestAgent->assign();
+            pbestAgent->assign(
+                slot.day(),
+                taskTypeName);
             agentsUnassignedCount--;
 
             // check for all agents assigned

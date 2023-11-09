@@ -9,66 +9,7 @@ typedef std::vector<slotsolution_t> solution_t;
 
 class cAllocator;
 
-/// @brief An agent can be assigned to tasks of certain work types
-
-class cAgent
-{
-    std::string myName;
-
-    /// @brief tasks agent ready to do ( task type id, cost )
-    std::vector<std::pair<int, double>> myTasks;
-
-    bool fAssigned; // true if assigned to task in current timeslot
-
-    int myAssignedCount; // task assignments in all timeslots
-
-public:
-    /// @brief Constructor
-    /// @param name
-    /// @param vt       // Indices of task types agent can do
-    /// @param cost     // Cost of assigning agent to any task
-
-    cAgent(
-        const std::string &name,
-        const std::vector<int> &vt,
-        double cost);
-
-    std::string name() const
-    {
-        return myName;
-    }
-
-    /// @brief true if agent can do task
-    /// @param task task type id
-    /// @return
-
-    bool isAble(int task) const;
-
-    double cost() const;
-
-    void assign(bool f = true)
-    {
-        fAssigned = f;
-        if (f)
-            myAssignedCount++;
-    }
-    bool isAssigned() const
-    {
-        return fAssigned;
-    }
-
-    int assignedCount() const
-    {
-        return myAssignedCount;
-    }
-
-    std::string text(
-        const std::vector<std::string> vTaskType) const;
-
-    void writefile(
-        std::ofstream &ofs,
-        const cAllocator &allocator);
-};
+#include "cAgent.h"
 
 /// @brief A task, unique to its timeslot, of a certain type
 class cTask
@@ -103,6 +44,18 @@ public:
     {
         return myName;
     }
+
+    /// @brief get integer representation for day containing timeslot
+    /// @return integer day
+    ///
+    /// Assumes slot name format YYYYMMDDHHMM
+    /// returns int( YYYYMMDD )
+
+    int day() const
+    {
+        return atoi( myName.substr(0,8).c_str());
+    }
+
     std::string text(
         const std::vector<cTask> &vTask,
         const cAllocator &allocator) const;
