@@ -10,9 +10,11 @@ public:
           bnDisplay(wex::maker::make<wex::button>(fm)),
           plDisplay(wex::maker::make<wex::panel>(fm))
     {
+        // App window
         fm.move({50, 50, 400, 400});
         fm.text("A2T Starter");
 
+        // Start button
         bnStart.move(100, 50, 200, 30);
         bnStart.text("Start A2T");
         bnStart.events().click(
@@ -27,6 +29,7 @@ public:
                 }
             });
 
+        // Display button
         bnDisplay.move(100, 100, 200, 30);
         bnDisplay.text("Display Results");
         bnDisplay.events().click(
@@ -47,29 +50,12 @@ public:
 
             });
 
+        // Display
         plDisplay.move(0, 150, 400, 400);
-
-        fm.events().draw(
-            [&](PAINTSTRUCT &ps)
-            {
-                wex::shapes S(ps);
-                draw(S);
-            });
-
         fm.show();
-
         fm.run();
     }
-    /** Draw nothing
-     *
-     * An application should over-ride this method
-     * to perform any drawing reuired
-     */
-    virtual void draw(wex::shapes &S)
-    {
-    }
-
-protected:
+private:
     wex::gui &fm;
     wex::button &bnStart;
     wex::button &bnDisplay;
