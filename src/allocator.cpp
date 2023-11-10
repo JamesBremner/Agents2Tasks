@@ -89,12 +89,17 @@ bool cAgent::isAssignedRecently(
             myAssignedDays.begin(), myAssignedDays.end(),
             [&, this](const std::pair<std::chrono::system_clock::time_point, std::string> prev_assign)
             {
+                // check blocking period over
                 if (std::chrono::duration_cast<std::chrono::hours>(timepoint(day) - prev_assign.first).count() > hours_blocked)
                     return false;
 
+                // check task type is different
                 if (prev_assign.second != taskname)
                     return false;
+
+                // the assignment is blocked by a previous one
                 return true;
+                
             }) != myAssignedDays.end())
         return true;
 

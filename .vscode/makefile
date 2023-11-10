@@ -38,6 +38,9 @@ OBJ_console = \
 	$(ODIR)/cGraph.o \
 	$(ODIR)/GraphTheory.o \
 
+OBJ_starter = \
+	$(ODIR)/A2TStarter.o \
+
 ### COMPILE
 
 $(ODIR)/%.o: %.cpp allocator.h cGUI.h cAgent.h
@@ -52,6 +55,11 @@ a2t: $(OBJ_a2t)
 console: $(OBJ_console)
 	g++ $(OPT) \
 	-o bin/Agents2TasksConsole.exe $^  \
+	$(static_link_flags) $(LIBS)
+
+starter: $(OBJ_starter)
+	g++ $(OPT) \
+	-o bin/Agents2TasksStarter.exe $^  \
 	$(static_link_flags) $(LIBS)
 
 .PHONY: clean
