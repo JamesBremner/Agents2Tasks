@@ -1,6 +1,6 @@
 /// @brief An agent can be assigned to tasks of certain work types
 
-typedef timepoint_t std::chrono::system_clock::time_point;
+typedef std::chrono::system_clock::time_point timepoint_t;
 
 class cAgent
 {
