@@ -137,6 +137,38 @@ bool unitTest()
     if (expected != result)
         return false;
 
+// test https://github.com/JamesBremner/Agents2Tasks/issues/10
+
+    allocator.clear();
+    allocator.addTaskType("teacher");
+    
+    allocator.addAgent(
+        "Andrew",
+        {"teacher"},
+        1.0);
+
+
+    allocator.addSlot(
+        "202310311000",
+        {"teacher"});
+    allocator.addSlot(
+        "202311011300",
+        {"teacher"});
+
+    allocator.agents2tasks();
+
+    allocator.setSlotFirst();
+    result = allocator.agents2TasksText();
+    expected =
+        "Andrew does teacher\n\nCost 1\n";
+    if (expected != result)
+        return false;
+    allocator.setSlotNext();
+    result = allocator.agents2TasksText();
+    expected =
+        "\nCost 0\n";
+    if (expected != result)
+        return false;
 
     return true;
 }
