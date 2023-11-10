@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <chrono>
 
 #include "../../PathFinder/src/GraphTheory.h"
 
@@ -53,7 +54,7 @@ public:
 
     int day() const
     {
-        return atoi( myName.substr(0,8).c_str());
+        return atoi(myName.substr(0, 8).c_str());
     }
 
     std::string text(

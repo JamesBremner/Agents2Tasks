@@ -1,0 +1,8 @@
+a Alice 1 teacher 
+t 202310311000 teacher 
+t 202311011300 teacher 
+F 202310311000 Alice to teacher
+F 202311011300 Alice to teacher
+H 202310311000 Alice to teacher
+H 202311011300 Alice to teacher
+A 202310311000 Alice to teacher

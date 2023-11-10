@@ -1,5 +1,7 @@
 /// @brief An agent can be assigned to tasks of certain work types
 
+typedef timepoint_t std::chrono::system_clock::time_point;
+
 class cAgent
 {
     std::string myName;
@@ -11,8 +13,10 @@ class cAgent
 
     int myAssignedCount; // number of task assignments in all timeslots
 
-    /// @brief previous assignments ( day, type name )
-    std::vector<std::pair<int,std::string>> myAssignedDays;
+    /// @brief previous assignments ( 00:00:01 on day assignment, task type name )
+    std::vector<
+        std::pair<timepoint_t, std::string>>
+        myAssignedDays;
 
 public:
     /// @brief Constructor
@@ -49,7 +53,7 @@ public:
 
     void assign(
         int day,
-        const std::string& taskTypeName);
+        const std::string &taskTypeName);
 
     bool isAssigned() const
     {
@@ -57,13 +61,13 @@ public:
     }
 
     /// @brief true if agent assigned recently to task of same type
-    /// @param day 
-    /// @param taskname 
-    /// @return 
-    
-    bool isAssignedRecently( 
+    /// @param day
+    /// @param taskname
+    /// @return
+
+    bool isAssignedRecently(
         int day,
-         const std::string& taskname ) const;
+        const std::string &taskname) const;
 
     int assignedCount() const
     {

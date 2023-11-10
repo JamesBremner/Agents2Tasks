@@ -41,26 +41,6 @@ bool cAgent::isAble(int task) const
                 }) != myTasks.end());
 }
 
-bool cAgent::isAssignedRecently(
-    int day,
-    const std::string &taskname) const
-{
-    if (std::find_if(
-            myAssignedDays.begin(), myAssignedDays.end(),
-            [&](const std::pair<int, std::string> daytype)
-            {
-                if (daytype.first != day &&
-                    daytype.first != day - 1)
-                    return false;
-                if (daytype.second != taskname)
-                    return false;
-                return true;
-            }) != myAssignedDays.end())
-        return true;
-
-    return false;
-}
-
 double cAgent::cost() const
 {
     if (!myTasks.size())
@@ -70,6 +50,24 @@ double cAgent::cost() const
     return myTasks[0].second;
 }
 
+/// @brief start of blocked time
+/// @param day integer rep of timeslot day e.g. 20231110
+/// @return set time to 1 second after midnight of the morning of the assignment
+///
+/// we need to block re-assignment to the same task type for two complete days
+
+timepoint_t
+timepoint(int day)
+{
+    std::tm timeinfo = std::tm();
+    timeinfo.tm_year = day / 10000;
+    timeinfo.tm_mon = (day - timeinfo.tm_year * 10000) / 100;
+    timeinfo.tm_mday = (day - timeinfo.tm_year * 10000 - timeinfo.tm_mon * 100);
+    timeinfo.tm_sec = 1;
+    std::time_t tt = std::mktime(&timeinfo);
+    return std::chrono::system_clock::from_time_t(tt);
+}
+
 void cAgent::assign(
     int day,
     const std::string &taskTypeName)
@@ -77,7 +75,30 @@ void cAgent::assign(
     fAssigned = true;
     myAssignedCount++;
     myAssignedDays.push_back(
-        std::make_pair(day, taskTypeName));
+        std::make_pair(timepoint(day), taskTypeName));
+}
+
+bool cAgent::isAssignedRecently(
+    int day,
+    const std::string &taskname) const
+{
+    // https://github.com/JamesBremner/Agents2Tasks/issues/8
+    const int hours_blocked = 48;
+
+    if (std::find_if(
+            myAssignedDays.begin(), myAssignedDays.end(),
+            [&, this](const std::pair<std::chrono::system_clock::time_point, std::string> prev_assign)
+            {
+                if (std::chrono::duration_cast<std::chrono::hours>(timepoint(day) - prev_assign.first).count() > hours_blocked)
+                    return false;
+
+                if (prev_assign.second != taskname)
+                    return false;
+                return true;
+            }) != myAssignedDays.end())
+        return true;
+
+    return false;
 }
 
 void cAgent::writefile(
@@ -465,7 +486,7 @@ void cAllocator::agents2tasks()
                         myTaskType[task.myTaskType]))
                     continue;
 
-                // is cheapest so far
+                // is cheapest so far?
                 double cost = agent.cost();
                 if (cost < bestCost)
                 {
@@ -477,13 +498,19 @@ void cAllocator::agents2tasks()
                 continue;
 
             // assign cheapest agent
+
+            // add agent name, task type name pair to slot solution
             auto taskTypeName = myTaskType[task.myTaskType];
             slotSolution.push_back(
                 std::make_pair(
                     pbestAgent->name(),
                     taskTypeName));
+
+            // mark task as assigned
             myTask[taskIndex].fAssigned = true;
             tasksUnassignedCount--;
+
+            // mark agent as assigned
             pbestAgent->assign(
                 slot.day(),
                 taskTypeName);

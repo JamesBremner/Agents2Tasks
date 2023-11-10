@@ -1,0 +1,141 @@
+a Irene&White&white@gmail.com&1961-07-02 1 Cleaner 
+a Andrew&White&white@gmail.com&1998-06-07 1 Cleaner 
+a Andrew&Black&black@gmail.com&1998-06-07 1 Cleaner 
+a Irene&Black&black@gmail.com&1961-07-02 1 Cleaner 
+a Andrew&Smith&smith@gmail.com&1998-06-07 1 Cleaner 
+a Margaret&Walsh&walsh@gmail.com&2010-01-01 1 MAS 
+a Kamil&Dalecki&rejkid@gmail.com&1992-08-28 1 MAS 
+a Andrew&Bolt&osiekkolawy@gmail.com&1961-03-24 1 MAS 
+a Irene&Smith&smith@gmail.com&1961-07-02 1 Cleaner Acolyte 
+a Janusz&Dalecki&rejkid@gmail.com&1961-03-24 1 Cleaner Acolyte 
+a Renata&Dalecka&rejkid@gmail.com&1961-07-02 1 Reader1 
+a Isabel&Dalecka&rejkid@gmail.com&1998-06-07 1 Reader2 
+a John&White&white@gmail.com&1961-03-24 1 EMHC Reader1 
+a John&Black&black@gmail.com&1961-03-24 1 EMHC Reader1 Acolyte 
+a John&Smith&smith@gmail.com&1961-03-24 1 EMHC Reader2 
+t 202310220830 Acolyte Acolyte MAS MAS Reader1 Reader2 EMHC EMHC 
+t 202310221000 Acolyte  MAS MAS Reader1 Reader2 EMHC  
+t 202310290830 Acolyte  MAS  Reader1 Reader2 EMHC EMHC 
+t 202310291000 Acolyte  MAS  Reader1 Reader2  EMHC 
+t 202311050830 Acolyte  MAS  Reader1 Reader2 EMHC  
+t 202311051000 Acolyte Acolyte MAS MAS Reader1 Reader2 EMHC EMHC 
+F 202310220830 Irene&Smith&smith@gmail.com&1961-07-02 to Acolyte
+F 202310220830 Janusz&Dalecki&rejkid@gmail.com&1961-03-24 to Acolyte
+F 202310220830 Kamil&Dalecki&rejkid@gmail.com&1992-08-28 to MAS
+F 202310220830 Margaret&Walsh&walsh@gmail.com&2010-01-01 to MAS
+F 202310220830 John&Black&black@gmail.com&1961-03-24 to Reader1
+F 202310220830 Isabel&Dalecka&rejkid@gmail.com&1998-06-07 to Reader2
+F 202310220830 John&White&white@gmail.com&1961-03-24 to EMHC
+F 202310220830 John&Smith&smith@gmail.com&1961-03-24 to EMHC
+F 202310221000 Irene&Smith&smith@gmail.com&1961-07-02 to Acolyte
+F 202310221000 Kamil&Dalecki&rejkid@gmail.com&1992-08-28 to MAS
+F 202310221000 Margaret&Walsh&walsh@gmail.com&2010-01-01 to MAS
+F 202310221000 John&Black&black@gmail.com&1961-03-24 to Reader1
+F 202310221000 Isabel&Dalecka&rejkid@gmail.com&1998-06-07 to Reader2
+F 202310221000 John&White&white@gmail.com&1961-03-24 to EMHC
+F 202310290830 Irene&Smith&smith@gmail.com&1961-07-02 to Acolyte
+F 202310290830 Kamil&Dalecki&rejkid@gmail.com&1992-08-28 to MAS
+F 202310290830 John&Black&black@gmail.com&1961-03-24 to Reader1
+F 202310290830 Isabel&Dalecka&rejkid@gmail.com&1998-06-07 to Reader2
+F 202310290830 John&White&white@gmail.com&1961-03-24 to EMHC
+F 202310290830 John&Smith&smith@gmail.com&1961-03-24 to EMHC
+F 202310291000 Irene&Smith&smith@gmail.com&1961-07-02 to Acolyte
+F 202310291000 Kamil&Dalecki&rejkid@gmail.com&1992-08-28 to MAS
+F 202310291000 John&Black&black@gmail.com&1961-03-24 to Reader1
+F 202310291000 Isabel&Dalecka&rejkid@gmail.com&1998-06-07 to Reader2
+F 202310291000 John&White&white@gmail.com&1961-03-24 to EMHC
+F 202311050830 Irene&Smith&smith@gmail.com&1961-07-02 to Acolyte
+F 202311050830 Kamil&Dalecki&rejkid@gmail.com&1992-08-28 to MAS
+F 202311050830 John&Black&black@gmail.com&1961-03-24 to Reader1
+F 202311050830 Isabel&Dalecka&rejkid@gmail.com&1998-06-07 to Reader2
+F 202311050830 John&White&white@gmail.com&1961-03-24 to EMHC
+F 202311051000 Irene&Smith&smith@gmail.com&1961-07-02 to Acolyte
+F 202311051000 Janusz&Dalecki&rejkid@gmail.com&1961-03-24 to Acolyte
+F 202311051000 Kamil&Dalecki&rejkid@gmail.com&1992-08-28 to MAS
+F 202311051000 Margaret&Walsh&walsh@gmail.com&2010-01-01 to MAS
+F 202311051000 John&Black&black@gmail.com&1961-03-24 to Reader1
+F 202311051000 Isabel&Dalecka&rejkid@gmail.com&1998-06-07 to Reader2
+F 202311051000 John&White&white@gmail.com&1961-03-24 to EMHC
+F 202311051000 John&Smith&smith@gmail.com&1961-03-24 to EMHC
+H 202310220830 Irene&Smith&smith@gmail.com&1961-07-02 to Acolyte
+H 202310220830 Irene&White&white@gmail.com&1961-07-02 to Acolyte
+H 202310220830 Isabel&Dalecka&rejkid@gmail.com&1998-06-07 to MAS
+H 202310220830 Kamil&Dalecki&rejkid@gmail.com&1992-08-28 to MAS
+H 202310220830 John&White&white@gmail.com&1961-03-24 to Reader1
+H 202310220830 Andrew&White&white@gmail.com&1998-06-07 to Reader2
+H 202310220830 Janusz&Dalecki&rejkid@gmail.com&1961-03-24 to EMHC
+H 202310220830 Andrew&Black&black@gmail.com&1998-06-07 to EMHC
+H 202310221000 Irene&Smith&smith@gmail.com&1961-07-02 to Acolyte
+H 202310221000 Irene&White&white@gmail.com&1961-07-02 to 
+H 202310221000 Isabel&Dalecka&rejkid@gmail.com&1998-06-07 to MAS
+H 202310221000 Kamil&Dalecki&rejkid@gmail.com&1992-08-28 to MAS
+H 202310221000 John&White&white@gmail.com&1961-03-24 to Reader1
+H 202310221000 Andrew&White&white@gmail.com&1998-06-07 to Reader2
+H 202310221000 Janusz&Dalecki&rejkid@gmail.com&1961-03-24 to EMHC
+H 202310221000 Andrew&Black&black@gmail.com&1998-06-07 to 
+H 202310290830 Irene&Smith&smith@gmail.com&1961-07-02 to Acolyte
+H 202310290830 Irene&White&white@gmail.com&1961-07-02 to 
+H 202310290830 Isabel&Dalecka&rejkid@gmail.com&1998-06-07 to MAS
+H 202310290830 Kamil&Dalecki&rejkid@gmail.com&1992-08-28 to 
+H 202310290830 John&White&white@gmail.com&1961-03-24 to Reader1
+H 202310290830 Andrew&White&white@gmail.com&1998-06-07 to Reader2
+H 202310290830 Janusz&Dalecki&rejkid@gmail.com&1961-03-24 to EMHC
+H 202310290830 Andrew&Black&black@gmail.com&1998-06-07 to EMHC
+H 202310291000 Irene&Smith&smith@gmail.com&1961-07-02 to Acolyte
+H 202310291000 Irene&White&white@gmail.com&1961-07-02 to 
+H 202310291000 Isabel&Dalecka&rejkid@gmail.com&1998-06-07 to MAS
+H 202310291000 Kamil&Dalecki&rejkid@gmail.com&1992-08-28 to 
+H 202310291000 John&White&white@gmail.com&1961-03-24 to Reader1
+H 202310291000 Andrew&White&white@gmail.com&1998-06-07 to Reader2
+H 202310291000 Janusz&Dalecki&rejkid@gmail.com&1961-03-24 to 
+H 202310291000 Andrew&Black&black@gmail.com&1998-06-07 to EMHC
+H 202311050830 Irene&Smith&smith@gmail.com&1961-07-02 to Acolyte
+H 202311050830 Irene&White&white@gmail.com&1961-07-02 to 
+H 202311050830 Isabel&Dalecka&rejkid@gmail.com&1998-06-07 to MAS
+H 202311050830 Kamil&Dalecki&rejkid@gmail.com&1992-08-28 to 
+H 202311050830 John&White&white@gmail.com&1961-03-24 to Reader1
+H 202311050830 Andrew&White&white@gmail.com&1998-06-07 to Reader2
+H 202311050830 Janusz&Dalecki&rejkid@gmail.com&1961-03-24 to EMHC
+H 202311050830 Andrew&Black&black@gmail.com&1998-06-07 to 
+H 202311051000 Irene&Smith&smith@gmail.com&1961-07-02 to Acolyte
+H 202311051000 Irene&White&white@gmail.com&1961-07-02 to Acolyte
+H 202311051000 Isabel&Dalecka&rejkid@gmail.com&1998-06-07 to MAS
+H 202311051000 Kamil&Dalecki&rejkid@gmail.com&1992-08-28 to MAS
+H 202311051000 John&White&white@gmail.com&1961-03-24 to Reader1
+H 202311051000 Andrew&White&white@gmail.com&1998-06-07 to Reader2
+H 202311051000 Janusz&Dalecki&rejkid@gmail.com&1961-03-24 to EMHC
+H 202311051000 Andrew&Black&black@gmail.com&1998-06-07 to EMHC
+A 202310220830 Irene&Smith&smith@gmail.com&1961-07-02 to Acolyte
+A 202310220830 Janusz&Dalecki&rejkid@gmail.com&1961-03-24 to Acolyte
+A 202310220830 Kamil&Dalecki&rejkid@gmail.com&1992-08-28 to MAS
+A 202310220830 Margaret&Walsh&walsh@gmail.com&2010-01-01 to MAS
+A 202310220830 John&White&white@gmail.com&1961-03-24 to Reader1
+A 202310220830 Isabel&Dalecka&rejkid@gmail.com&1998-06-07 to Reader2
+A 202310220830 John&Smith&smith@gmail.com&1961-03-24 to EMHC
+A 202310220830 John&Black&black@gmail.com&1961-03-24 to EMHC
+A 202310221000 John&Black&black@gmail.com&1961-03-24 to Acolyte
+A 202310221000 Andrew&Bolt&osiekkolawy@gmail.com&1961-03-24 to MAS
+A 202310221000 Renata&Dalecka&rejkid@gmail.com&1961-07-02 to Reader1
+A 202310221000 John&Smith&smith@gmail.com&1961-03-24 to Reader2
+A 202310221000 John&White&white@gmail.com&1961-03-24 to EMHC
+A 202310290830 Irene&Smith&smith@gmail.com&1961-07-02 to Acolyte
+A 202310290830 Andrew&Bolt&osiekkolawy@gmail.com&1961-03-24 to MAS
+A 202310290830 Renata&Dalecka&rejkid@gmail.com&1961-07-02 to Reader1
+A 202310290830 Isabel&Dalecka&rejkid@gmail.com&1998-06-07 to Reader2
+A 202310290830 John&White&white@gmail.com&1961-03-24 to EMHC
+A 202310290830 John&Smith&smith@gmail.com&1961-03-24 to EMHC
+A 202310291000 Janusz&Dalecki&rejkid@gmail.com&1961-03-24 to Acolyte
+A 202310291000 Kamil&Dalecki&rejkid@gmail.com&1992-08-28 to MAS
+A 202310291000 John&Black&black@gmail.com&1961-03-24 to Reader1
+A 202310291000 John&Smith&smith@gmail.com&1961-03-24 to Reader2
+A 202311050830 Janusz&Dalecki&rejkid@gmail.com&1961-03-24 to Acolyte
+A 202311050830 Margaret&Walsh&walsh@gmail.com&2010-01-01 to MAS
+A 202311050830 Renata&Dalecka&rejkid@gmail.com&1961-07-02 to Reader1
+A 202311050830 Isabel&Dalecka&rejkid@gmail.com&1998-06-07 to Reader2
+A 202311050830 John&Black&black@gmail.com&1961-03-24 to EMHC
+A 202311051000 Irene&Smith&smith@gmail.com&1961-07-02 to Acolyte
+A 202311051000 John&Black&black@gmail.com&1961-03-24 to Acolyte
+A 202311051000 Kamil&Dalecki&rejkid@gmail.com&1992-08-28 to MAS
+A 202311051000 Andrew&Bolt&osiekkolawy@gmail.com&1961-03-24 to MAS
+A 202311051000 John&White&white@gmail.com&1961-03-24 to Reader1
+A 202311051000 John&Smith&smith@gmail.com&1961-03-24 to Reader2
