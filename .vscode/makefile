@@ -25,6 +25,7 @@ OBJ_a2t = \
 	$(ODIR)/cGUI.o \
 	$(ODIR)/allocator.o \
 	$(ODIR)/cHungarian.o \
+	$(ODIR)/Janusz.o \
 	$(ODIR)/unitTest.o \
 	$(ODIR)/cGraph.o \
 	$(ODIR)/GraphTheory.o 
@@ -34,6 +35,7 @@ OBJ_console = \
 	$(ODIR)/console.o \
 	$(ODIR)/allocator.o \
 	$(ODIR)/cHungarian.o \
+	$(ODIR)/Janusz.o \
 	$(ODIR)/unitTest.o \
 	$(ODIR)/cGraph.o \
 	$(ODIR)/GraphTheory.o \

@@ -92,7 +92,7 @@ bool unitTest()
         "2/NOV/2023/8:30",
         {"teacher accountant"});
 
-    allocator.agents2tasks();
+    Janusz(allocator);
     result = allocator.agents2TasksText();
 
     expected =
@@ -122,7 +122,7 @@ bool unitTest()
         "4/NOV/2023/8:30",
         {"teacher"});
 
-    allocator.agents2tasks();
+    Janusz(allocator);
 
     allocator.setSlotFirst();
     result = allocator.agents2TasksText();
@@ -155,7 +155,7 @@ bool unitTest()
         "202311011300",
         {"teacher"});
 
-    allocator.agents2tasks();
+    Janusz(allocator);
 
     allocator.setSlotFirst();
     result = allocator.agents2TasksText();

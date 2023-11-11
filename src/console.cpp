@@ -13,7 +13,7 @@ main(int argc, char *argv[])
     readfile(A,argv[1]);
     A.maxflow();
     A.hungarian();
-    A.agents2tasks();
+    Janusz(A);
     writefile( A, argv[2] );
 
     return 0;

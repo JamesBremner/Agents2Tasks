@@ -76,7 +76,7 @@ void cGUI::menuCTOR()
                     readfile(allocator,fname);
                     allocator.maxflow();
                     allocator.hungarian();
-                    allocator.agents2tasks();
+                    Janusz(allocator);
                     tabs.select(0);
                 });
     file.append("Save",
@@ -93,7 +93,7 @@ void cGUI::menuCTOR()
                     // do the allocation
                     allocator.maxflow();
                     allocator.hungarian();
-                    allocator.agents2tasks();
+                    Janusz( allocator );
                 });
     file.append("Unit Test",
                 [&](const std::string &title)

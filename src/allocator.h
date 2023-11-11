@@ -181,6 +181,7 @@ public:
     }
 
     void clear();
+    void clearSolution();
 
     void addAgent(
         const std::string &name,
@@ -217,6 +218,25 @@ public:
         mySlotCurrent = mySlot.size() - 1;
     }
 
+    void unassignAgents()
+    {
+        for (auto &a : myAgent)
+            a.unAssign();
+    }
+
+    void sortAgentsByAssignedCount();
+
+    void add(
+        const slotsolution_t &slotsolution,
+        const std::string &slotName,
+        double cost)
+    {
+        mySolutionAgents2Task.add(
+            slotsolution,
+             slotName,
+              cost);
+    }
+
     /// @brief Allocate agents to tasks using max flow algorithm
 
     void maxflow();
@@ -226,9 +246,11 @@ public:
 
     void hungarian();
 
-    void agents2tasks();
-
-    const std::vector<cAgent> &getAgents() const
+    std::vector<cAgent> &getAgents()
+    {
+        return myAgent;
+    }
+    const std::vector<cAgent> &getconstAgents() const
     {
         return myAgent;
     }
@@ -256,6 +278,11 @@ public:
     int getTaskTypeID(int i) const
     {
         return myTask[i].taskType();
+    }
+
+    cTask &task(int index)
+    {
+        return myTask[index];
     }
 
     std::string textProblem() const;
@@ -286,6 +313,14 @@ public:
 void readfile(
     cAllocator &allocator,
     const std::string &fname);
+
+/// @brief Assign agents to tasks with constraints by Janusz Dalecki
+/// @param allocator 
+///
+/// https://github.com/JamesBremner/Agents2Tasks
+
+void Janusz(
+    cAllocator &allocator);
 
 void writefile(
     const cAllocator &allocator,

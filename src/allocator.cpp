@@ -117,8 +117,7 @@ void cAgent::writefile(
     ofs << "\n";
 }
 std::string cSlot::text(
-    const cAllocator &allocator
-) const
+    const cAllocator &allocator) const
 {
     std::stringstream ss;
     ss << myName << " tasks: ";
@@ -198,6 +197,10 @@ void cAllocator::clear()
     myTask.clear();
     cTask::clear();
     mySlot.clear();
+}
+void cAllocator::clearSolution()
+{
+    mySolutionAgents2Task.clear();
 }
 void cAllocator::addAgent(
     const std::string &name,
@@ -439,103 +442,14 @@ void cAllocator::hungarian()
     }
 }
 
-void cAllocator::agents2tasks()
+void cAllocator::sortAgentsByAssignedCount()
 {
-    mySolutionAgents2Task.clear();
-
-    for (auto &slot : mySlot)
-    {
-        slotsolution_t slotSolution;
-        int agentsUnassignedCount = myAgent.size();
-        int tasksUnassignedCount = slot.taskCount();
-
-        // unassign all agents
-        for (auto &a : myAgent)
-            a.unAssign();
-
-        /* Sort agents in ascending order of previous assignments
-
-          So that if there are multiple agents of equal cost available to do a task,
-          the task will be assigned to the agent with the fewest assignments in the previous timeslots.
-
-          So the uneven distribution of work to agents when there are more agents than work
-          and the agents have the same cost per assignment
-          will decrease as a percentage of total assignments
-          as the number of timeslots increases
-          with a limit of +/- 1 assignments per agent.
-
-          https://github.com/JamesBremner/Agents2Tasks/issues/5#issuecomment-1801948876
-
-        */
-        std::sort(
-            myAgent.begin(), myAgent.end(),
-            [](const cAgent &a, const cAgent &b)
-            {
-                return (a.assignedCount() < b.assignedCount());
-            });
-
-        // loop over slot tasks
-        for (int &taskIndex : slot.getTasks())
+    std::sort(
+        myAgent.begin(), myAgent.end(),
+        [](const cAgent &a, const cAgent &b)
         {
-            cTask &task = myTask[taskIndex];
-
-            // find cheapest unassigned agent that can do the task
-            double bestCost = INT_MAX;
-            cAgent *pbestAgent = 0;
-            for (auto &agent : myAgent)
-            {
-                // already assigned in this slot
-                if (agent.isAssigned())
-                    continue;
-
-                // can't do the task
-                if (!agent.isAble(task.taskType()))
-                    continue;
-
-                // assigned to task type recently
-                if (agent.isAssignedRecently(
-                        slot.day(),
-                        task.typeName()))
-                    continue;
-
-                // is cheapest so far?
-                double cost = agent.cost();
-                if (cost < bestCost)
-                {
-                    bestCost = cost;
-                    pbestAgent = &agent;
-                }
-            }
-            if (!pbestAgent)
-                continue;
-
-            // assign cheapest agent
-
-            // add agent name, task type name pair to slot solution
-            slotSolution.push_back(
-                std::make_pair(
-                    pbestAgent->name(),
-                    task.typeName()));
-
-            // mark task as assigned
-            myTask[taskIndex].assign();
-            tasksUnassignedCount--;
-
-            // mark agent as assigned
-            pbestAgent->assign(
-                slot.day(),
-                task.typeName());
-            agentsUnassignedCount--;
-
-            // check for all agents assigned
-            if (!agentsUnassignedCount)
-                break;
-        }
-        mySolutionAgents2Task.add(
-            slotSolution,
-            slot.name(),
-            slotCost(slotSolution));
-    }
+            return (a.assignedCount() < b.assignedCount());
+        });
 }
 
 void cAllocator::example1()
@@ -571,8 +485,8 @@ void cAllocator::example1()
 }
 
 void readfile(
-     cAllocator &allocator,
-     const std::string &fname)
+    cAllocator &allocator,
+    const std::string &fname)
 {
     std::ifstream ifs(fname);
     if (!ifs.is_open())
@@ -621,7 +535,7 @@ void writefile(
         throw std::runtime_error(
             "Cannot open output file");
 
-    for (auto &a : allocator.getAgents() )
+    for (auto &a : allocator.getconstAgents())
         a.writefile(ofs);
 
     for (auto &t : allocator.getSlots())
