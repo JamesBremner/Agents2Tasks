@@ -73,7 +73,7 @@ void cGUI::menuCTOR()
                     wex::filebox fb(fm);
                     auto fname = fb.open();
                     fm.text("Agents2Tasks " + fname);
-                    allocator.readfile(fname);
+                    readfile(allocator,fname);
                     allocator.maxflow();
                     allocator.hungarian();
                     allocator.agents2tasks();

@@ -196,8 +196,6 @@ public:
 
     void example1();
 
-    void readfile(const std::string &fname);
-
     void setSlotFirst()
     {
         mySlotCurrent = 0;
@@ -282,6 +280,12 @@ public:
         return mySlot[mySlotCurrent].name();
     }
 };
+
+// Declare free functions
+
+void readfile(
+    cAllocator &allocator,
+    const std::string &fname);
 
 void writefile(
     const cAllocator &allocator,

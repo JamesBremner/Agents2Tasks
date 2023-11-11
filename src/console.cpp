@@ -10,7 +10,7 @@ main(int argc, char *argv[])
     }
 
     cAllocator A;
-    A.readfile(argv[1]);
+    readfile(A,argv[1]);
     A.maxflow();
     A.hungarian();
     A.agents2tasks();

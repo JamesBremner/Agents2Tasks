@@ -570,14 +570,16 @@ void cAllocator::example1()
         {"teacher accountant"});
 }
 
-void cAllocator::readfile(const std::string &fname)
+void readfile(
+     cAllocator &allocator,
+     const std::string &fname)
 {
     std::ifstream ifs(fname);
     if (!ifs.is_open())
         throw std::runtime_error(
             "Cannot open input file");
 
-    clear();
+    allocator.clear();
     std::string line;
     while (getline(ifs, line))
     {
@@ -594,7 +596,7 @@ void cAllocator::readfile(const std::string &fname)
             p = line.find(" ");
             p = line.find(" ", p + 1);
             p = line.find(" ", p + 1);
-            addAgent(
+            allocator.addAgent(
                 vtoken[1],
                 line.substr(p + 1),
                 atof(vtoken[2].c_str()));
@@ -603,7 +605,7 @@ void cAllocator::readfile(const std::string &fname)
         case 't':
             p = line.find(" ");
             p = line.find(" ", p + 1);
-            addSlot(
+            allocator.addSlot(
                 vtoken[1],
                 line.substr(p + 1));
             break;
