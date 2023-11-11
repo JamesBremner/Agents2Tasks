@@ -107,7 +107,7 @@ bool cAgent::isAssignedRecently(
 }
 
 void cAgent::writefile(
-    std::ofstream &ofs)
+    std::ofstream &ofs) const
 {
     ofs << "a " << myName << " " << myTasks[0].second << " ";
     for (auto &it : myTasks)
@@ -129,7 +129,7 @@ std::string cSlot::text(
 
 void cSlot::writefile(
     std::ofstream &ofs,
-    const cAllocator &allocator)
+    const cAllocator &allocator) const
 {
     ofs << "t " << myName << " ";
     for (int it : myTasks)
@@ -610,26 +610,28 @@ void cAllocator::readfile(const std::string &fname)
         }
     }
 }
-void cAllocator::writefile(const std::string &fname)
+void writefile(
+    const cAllocator &allocator,
+    const std::string &fname)
 {
     std::ofstream ofs(fname);
     if (!ofs.is_open())
         throw std::runtime_error(
             "Cannot open output file");
 
-    for (auto &a : myAgent)
+    for (auto &a : allocator.getAgents() )
         a.writefile(ofs);
 
-    for (auto &t : mySlot)
-        t.writefile(ofs, *this);
+    for (auto &t : allocator.getSlots())
+        t.writefile(ofs, allocator);
 
-    mySolutionMaxflow.writeFile(
-        ofs,
-        'F');
-    mySolutionHungarian.writeFile(
-        ofs,
-        'H');
-    mySolutionAgents2Task.writeFile(
+    // mySolutionMaxflow.writeFile(
+    //     ofs,
+    //     'F');
+    // mySolutionHungarian.writeFile(
+    //     ofs,
+    //     'H');
+    allocator.getSolutionAgents2Task().writeFile(
         ofs,
         'A');
 }

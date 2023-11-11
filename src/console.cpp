@@ -14,7 +14,7 @@ main(int argc, char *argv[])
     A.maxflow();
     A.hungarian();
     A.agents2tasks();
-    A.writefile(argv[2]);
+    writefile( A, argv[2] );
 
     return 0;
 }

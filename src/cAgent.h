@@ -77,5 +77,5 @@ public:
     std::string text() const;
 
     void writefile(
-        std::ofstream &ofs);
+        std::ofstream &ofs) const;
 };

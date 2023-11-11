@@ -83,8 +83,7 @@ void cGUI::menuCTOR()
                 [&](const std::string &title)
                 {
                     wex::filebox fb(fm);
-                    auto fname = fb.save();
-                    allocator.writefile(fname);
+                    writefile(allocator,fb.save());
                 });
     file.append("Example1",
                 [&](const std::string &title)

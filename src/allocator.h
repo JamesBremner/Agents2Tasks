@@ -45,7 +45,7 @@ public:
     }
 
     std::string text(
-        const cAllocator &allocator ) const;
+        const cAllocator &allocator) const;
 
     int taskCount() const
     {
@@ -73,7 +73,7 @@ public:
 
     void writefile(
         std::ofstream &ofs,
-        const cAllocator &allocator);
+        const cAllocator &allocator) const;
 };
 
 /// @brief Assign agents to slot, minimizing cost, using Hungarian algorithm
@@ -197,8 +197,6 @@ public:
     void example1();
 
     void readfile(const std::string &fname);
-    void writefile(
-        const std::string &fname);
 
     void setSlotFirst()
     {
@@ -235,6 +233,14 @@ public:
     const std::vector<cAgent> &getAgents() const
     {
         return myAgent;
+    }
+    const std::vector<cSlot> &getSlots() const
+    {
+        return mySlot;
+    }
+    const cAssigns &getSolutionAgents2Task() const
+    {
+        return mySolutionAgents2Task;
     }
 
     /// @brief getTaskTypeName
@@ -276,5 +282,9 @@ public:
         return mySlot[mySlotCurrent].name();
     }
 };
+
+void writefile(
+    const cAllocator &allocator,
+    const std::string &fname);
 
 bool unitTest();
