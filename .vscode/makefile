@@ -43,7 +43,7 @@ OBJ_starter = \
 
 ### COMPILE
 
-$(ODIR)/%.o: %.cpp allocator.h cGUI.h cAgent.h
+$(ODIR)/%.o: %.cpp allocator.h cGUI.h cAgent.h cTask.h
 	g++  $(CCflags) \
 	-c -o $@ $< $(INCS)
 

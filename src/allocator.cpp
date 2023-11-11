@@ -6,6 +6,8 @@
 
 #include "allocator.h"
 
+std::vector<std::string> cTask::vTaskType;
+
 cAgent::cAgent(
     const std::string &name,
     const std::vector<int> &vt,
@@ -19,13 +21,12 @@ cAgent::cAgent(
     }
 }
 
-std::string cAgent::text(
-    const std::vector<std::string> vTaskType) const
+std::string cAgent::text() const
 {
     std::stringstream ss;
     ss << myName << " ready for: ";
     for (auto &tsk : myTasks)
-        ss << vTaskType[tsk.first]
+        ss << cTask::typeName(tsk.first)
            << " at cost " << tsk.second << " ";
     return ss.str();
 }
@@ -99,7 +100,6 @@ bool cAgent::isAssignedRecently(
 
                 // the assignment is blocked by a previous one
                 return true;
-                
             }) != myAssignedDays.end())
         return true;
 
@@ -107,24 +107,23 @@ bool cAgent::isAssignedRecently(
 }
 
 void cAgent::writefile(
-    std::ofstream &ofs,
-    const cAllocator &allocator)
+    std::ofstream &ofs)
 {
     ofs << "a " << myName << " " << myTasks[0].second << " ";
     for (auto &it : myTasks)
     {
-        ofs << allocator.getTaskTypeNameFromTypeID(it.first) << " ";
+        ofs << cTask::typeName(it.first) << " ";
     }
     ofs << "\n";
 }
 std::string cSlot::text(
-    const std::vector<cTask> &vTask,
-    const cAllocator &allocator) const
+    const cAllocator &allocator
+) const
 {
     std::stringstream ss;
     ss << myName << " tasks: ";
-    for (int it : myTasks)
-        ss << allocator.getTaskTypeName(it) << " ";
+    for (int taskID : myTasks)
+        ss << allocator.getTaskTypeName(taskID) << " ";
     return ss.str();
 }
 
@@ -195,9 +194,9 @@ void cAssigns::writeFile(
 
 void cAllocator::clear()
 {
-    myAgents.clear();
+    myAgent.clear();
     myTask.clear();
-    myTaskType.clear();
+    cTask::clear();
     mySlot.clear();
 }
 void cAllocator::addAgent(
@@ -210,7 +209,7 @@ void cAllocator::addAgent(
         throw std::runtime_error(
             "Duplicate agent name" + name);
 
-    myAgents.emplace_back(
+    myAgent.emplace_back(
         name,
         taskTypeIndices(canDoTaskTypes),
         cost);
@@ -219,10 +218,15 @@ void cAllocator::addAgent(
 void cAllocator::addTaskType(
     const std::string &stype)
 {
+    cTask::addTaskType(stype);
+}
+void cTask::addTaskType(
+    const std::string &stype)
+{
     if (std::find(
-            myTaskType.begin(), myTaskType.end(), stype) != myTaskType.end())
+            vTaskType.begin(), vTaskType.end(), stype) != vTaskType.end())
         return;
-    myTaskType.push_back(stype);
+    vTaskType.push_back(stype);
 }
 
 void cAllocator::addSlot(
@@ -241,7 +245,7 @@ void cAllocator::addSlot(
     {
         int taskIndex = myTask.end() - myTask.begin();
         myTask.emplace_back(
-            findTaskType(a),
+            cTask::findType(a),
             taskIndex);
         vTaskIndex.push_back(taskIndex);
     }
@@ -256,17 +260,17 @@ bool cAllocator::isAgent(
     int &iAgent) const
 {
     auto it = std::find_if(
-        myAgents.begin(), myAgents.end(),
+        myAgent.begin(), myAgent.end(),
         [name](const cAgent &ag)
         {
             return (ag.name() == name);
         });
-    if (it == myAgents.end())
+    if (it == myAgent.end())
     {
         iAgent = -1;
         return false;
     }
-    iAgent = it - myAgents.begin();
+    iAgent = it - myAgent.begin();
     return true;
 }
 bool cAllocator::isSlot(const std::string &name)
@@ -279,21 +283,21 @@ bool cAllocator::isSlot(const std::string &name)
                 }) != mySlot.end());
 }
 
-int cAllocator::findTaskType(const std::string &name)
+int cTask::findType(const std::string &name)
 {
-    int task;
+    int tasktype;
     auto it = std::find(
-        myTaskType.begin(), myTaskType.end(), name);
-    if (it == myTaskType.end())
+        vTaskType.begin(), vTaskType.end(), name);
+    if (it == vTaskType.end())
     {
-        myTaskType.push_back(name);
-        task = (myTaskType.size() - 1);
+        vTaskType.push_back(name);
+        tasktype = (vTaskType.size() - 1);
     }
     else
     {
-        task = it - myTaskType.begin();
+        tasktype = it - vTaskType.begin();
     }
-    return task;
+    return tasktype;
 }
 
 std::vector<int>
@@ -304,8 +308,16 @@ cAllocator::taskTypeIndices(
     std::stringstream sst(sTask);
     std::string a;
     while (getline(sst, a, ' '))
-        vTaskIndices.push_back(findTaskType(a));
+        vTaskIndices.push_back(cTask::findType(a));
     return vTaskIndices;
+}
+
+std::string cTask::typeText()
+{
+    std::stringstream ss;
+    for (auto &task : vTaskType)
+        ss << task << " ";
+    return ss.str();
 }
 
 std::string cAllocator::textProblem() const
@@ -313,23 +325,18 @@ std::string cAllocator::textProblem() const
     std::stringstream ss;
 
     ss << "Task types\n==========\n";
-    for (auto &task : myTaskType)
-        ss << task << " ";
-    ss << "\n\n";
+    ss << cTask::typeText() << "\n\n";
 
     ss << "Agents\n==========\n";
-    for (auto &agent : myAgents)
+    for (auto &agent : myAgent)
     {
-        ss << agent.text(myTaskType) << "\n\n";
+        ss << agent.text() << "\n\n";
     }
 
     ss << "Time slots\n==========\n";
     for (auto &slot : mySlot)
     {
-        ss << slot.text(
-                  myTask,
-                  *this)
-           << "\n";
+        ss << slot.text(*this) << "\n";
     }
 
     return ss.str();
@@ -343,7 +350,7 @@ double cAllocator::slotCost(
     {
         int iAgent;
         isAgent(edge.first, iAgent);
-        cost += myAgents[iAgent].cost();
+        cost += myAgent[iAgent].cost();
     }
     return cost;
 }
@@ -351,9 +358,9 @@ double cAllocator::slotCost(
 std::vector<int> cAllocator::findAgentsForTask(int task)
 {
     std::vector<int> ret;
-    for (int kag = 0; kag < myAgents.size(); kag++)
+    for (int kag = 0; kag < myAgent.size(); kag++)
     {
-        if (myAgents[kag].isAble(task))
+        if (myAgent[kag].isAble(task))
             ret.push_back(kag);
     }
     return ret;
@@ -376,13 +383,13 @@ void cAllocator::maxflow()
         for (int task : slot)
         {
             // loop over agents
-            for (int kag = 0; kag < myAgents.size(); kag++)
+            for (int kag = 0; kag < myAgent.size(); kag++)
             {
-                if (myAgents[kag].isAble(myTask[task].myTaskType))
+                if (myAgent[kag].isAble(myTask[task].taskType()))
                 {
                     // add link from agent to task agent is able to do
                     g.add(
-                        myAgents[kag].name(),
+                        myAgent[kag].name(),
                         "task" + std::to_string(task));
                 }
             }
@@ -439,11 +446,11 @@ void cAllocator::agents2tasks()
     for (auto &slot : mySlot)
     {
         slotsolution_t slotSolution;
-        int agentsUnassignedCount = myAgents.size();
+        int agentsUnassignedCount = myAgent.size();
         int tasksUnassignedCount = slot.taskCount();
 
         // unassign all agents
-        for (auto &a : myAgents)
+        for (auto &a : myAgent)
             a.unAssign();
 
         /* Sort agents in ascending order of previous assignments
@@ -461,7 +468,7 @@ void cAllocator::agents2tasks()
 
         */
         std::sort(
-            myAgents.begin(), myAgents.end(),
+            myAgent.begin(), myAgent.end(),
             [](const cAgent &a, const cAgent &b)
             {
                 return (a.assignedCount() < b.assignedCount());
@@ -475,20 +482,20 @@ void cAllocator::agents2tasks()
             // find cheapest unassigned agent that can do the task
             double bestCost = INT_MAX;
             cAgent *pbestAgent = 0;
-            for (auto &agent : myAgents)
+            for (auto &agent : myAgent)
             {
                 // already assigned in this slot
                 if (agent.isAssigned())
                     continue;
 
                 // can't do the task
-                if (!agent.isAble(task.myTaskType))
+                if (!agent.isAble(task.taskType()))
                     continue;
 
                 // assigned to task type recently
                 if (agent.isAssignedRecently(
                         slot.day(),
-                        myTaskType[task.myTaskType]))
+                        task.typeName()))
                     continue;
 
                 // is cheapest so far?
@@ -505,20 +512,19 @@ void cAllocator::agents2tasks()
             // assign cheapest agent
 
             // add agent name, task type name pair to slot solution
-            auto taskTypeName = myTaskType[task.myTaskType];
             slotSolution.push_back(
                 std::make_pair(
                     pbestAgent->name(),
-                    taskTypeName));
+                    task.typeName()));
 
             // mark task as assigned
-            myTask[taskIndex].fAssigned = true;
+            myTask[taskIndex].assign();
             tasksUnassignedCount--;
 
             // mark agent as assigned
             pbestAgent->assign(
                 slot.day(),
-                taskTypeName);
+                task.typeName());
             agentsUnassignedCount--;
 
             // check for all agents assigned
@@ -611,8 +617,8 @@ void cAllocator::writefile(const std::string &fname)
         throw std::runtime_error(
             "Cannot open output file");
 
-    for (auto &a : myAgents)
-        a.writefile(ofs, *this);
+    for (auto &a : myAgent)
+        a.writefile(ofs);
 
     for (auto &t : mySlot)
         t.writefile(ofs, *this);

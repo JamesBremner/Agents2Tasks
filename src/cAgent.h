@@ -74,10 +74,8 @@ public:
         return myAssignedCount;
     }
 
-    std::string text(
-        const std::vector<std::string> vTaskType) const;
+    std::string text() const;
 
     void writefile(
-        std::ofstream &ofs,
-        const cAllocator &allocator);
+        std::ofstream &ofs);
 };

@@ -12,20 +12,7 @@ class cAllocator;
 
 #include "cAgent.h"
 
-/// @brief A task, unique to its timeslot, of a certain type
-class cTask
-{
-public:
-    int myTaskType;
-    int myIndex;
-    bool fAssigned;
-    cTask(int iType, int i)
-        : myTaskType(iType),
-          myIndex(i),
-          fAssigned(false)
-    {
-    }
-};
+#include "cTask.h"
 
 /// @brief A timeslot with several task that need agents to be assigned
 class cSlot
@@ -58,8 +45,7 @@ public:
     }
 
     std::string text(
-        const std::vector<cTask> &vTask,
-        const cAllocator &allocator) const;
+        const cAllocator &allocator ) const;
 
     int taskCount() const
     {
@@ -167,24 +153,15 @@ public:
 
 class cAllocator
 {
-    std::vector<cAgent> myAgents;        // agents
-    std::vector<std::string> myTaskType; // task type names
-    std::vector<cTask> myTask;           // defined tasks
-    std::vector<cSlot> mySlot;           // slots containg tasks
+    std::vector<cAgent> myAgent; // agents
+    std::vector<cTask> myTask;   // defined tasks
+    std::vector<cSlot> mySlot;   // slots containg tasks
 
     cAssigns mySolutionMaxflow;
     cAssigns mySolutionHungarian;
     cAssigns mySolutionAgents2Task;
 
     int mySlotCurrent;
-
-    /// @brief find task type by name
-    /// @param name
-    /// @return task type index
-    ///
-    /// If task type absent, add it.
-
-    int findTaskType(const std::string &name);
 
     bool isAgent(
         const std::string &name,
@@ -253,35 +230,11 @@ public:
 
     void hungarian();
 
-    /*
-    <pre>
-     - LOOP T over unassigned tasks
-             - SET bestcost to MAX
-             - SET bestagent to null
-             - LOOP A over unassigned agents
-                 - IF A cannot be assigned to T
-                     - CONTINUE
-                 - IF cost of assigning A to T < bestcost
-                     - SET bestcost = cost of assigning A to T
-                     - SET bestAgent = A
-             - ENDLOOP A
-             - ASSIGN bestAgent to T
-             - IF no unassigned agents
-                 - BREAK
-             - IF no unassigned tasks
-                - BREAK
-     - ENDLOOP T
-     </pre>
-    */
     void agents2tasks();
 
     const std::vector<cAgent> &getAgents() const
     {
-        return myAgents;
-    }
-    const std::vector<std::string> &getTaskTypeNames() const
-    {
-        return myTaskType;
+        return myAgent;
     }
 
     /// @brief getTaskTypeName
@@ -290,16 +243,15 @@ public:
 
     std::string getTaskTypeName(int i) const
     {
-        return myTaskType[myTask[i].myTaskType];
+        return myTask[i].typeName();
     }
+    /// @brief getTaskTypeID
+    /// @param i index of task
+    /// @return type name id
 
-    std::string getTaskTypeNameFromTypeID(int i) const
-    {
-        return myTaskType[i];
-    }
     int getTaskTypeID(int i) const
     {
-        return myTask[i].myTaskType;
+        return myTask[i].taskType();
     }
 
     std::string textProblem() const;

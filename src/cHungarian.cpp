@@ -7,7 +7,7 @@ cHungarian::cHungarian(
     cAllocator &allocator,
     cSlot &slot)
     : myAgent(allocator.getAgents()),
-      myTaskType(allocator.getTaskTypeNames()),
+      myTaskType(cTask::getTypeNames()),
       maxZero(0.00001)
 {
     const double unablePenalty = 1000;
