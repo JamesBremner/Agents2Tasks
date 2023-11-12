@@ -27,19 +27,31 @@ void Janusz(cAllocator &A)
           https://github.com/JamesBremner/Agents2Tasks/issues/5#issuecomment-1801948876
 
         */
+
         A.sortAgentsByAssignedCount();
 
+        /* Sort slot tasks into ascending order of number of agents capable of doing each task
+
+        So that agents with rare capabilities are not 'wasted' by being assigned to tasks
+        that could have been done by many other agents
+
+        https://github.com/JamesBremner/Agents2Tasks/issues/13
+
+        */
+
+        auto sortedTaskIndex = A.sortTasksByAgentCount( slot );
+
         // loop over slot tasks
-        for (int &taskIndex : slot.getTasks())
+        for (int taskIndex : sortedTaskIndex)
         {
             cTask &task = A.task(taskIndex);
 
             // find cheapest unassigned agent that can do the task
             double bestCost = INT_MAX;
             cAgent *pbestAgent = 0;
-            for (auto& agent : A.getAgents() )
+            for (auto &agent : A.getAgents())
             {
-                //std::cout << "try " << agent.name() << " for " << task.typeName() << "\n";
+                // std::cout << "try " << agent.name() << " for " << task.typeName() << "\n";
 
                 // already assigned in this slot
                 if (agent.isAssigned())
@@ -68,7 +80,7 @@ void Janusz(cAllocator &A)
 
             // assign cheapest agent
 
-            //std::cout << "assigning " << pbestAgent->name() << " to " << task.typeName() << "\n";
+            // std::cout << "assigning " << pbestAgent->name() << " to " << task.typeName() << "\n";
 
             // add agent name, task type name pair to slot solution
             slotSolution.push_back(
@@ -86,10 +98,15 @@ void Janusz(cAllocator &A)
                 task.typeName());
             agentsUnassignedCount--;
 
+            if (tasksUnassignedCount)
+                std::cout << "Slot " << slot.name() << " unassigned tasks\n";
+
             // check for all agents assigned
             if (!agentsUnassignedCount)
                 break;
-        }
+
+        } // end of slot loop
+
         A.add(
             slotSolution,
             slot.name(),

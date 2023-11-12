@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include <string>
 #include <vector>
 #include <chrono>
@@ -172,8 +173,7 @@ class cAllocator
     taskTypeIndices(
         const std::string &vTask);
 
-    std::vector<int> findAgentsForTask(int task);
-
+   
 public:
     cAllocator()
         : mySlotCurrent(0)
@@ -204,6 +204,9 @@ public:
     
     bool isSlotSane();
 
+    std::vector<int> findAgentsForTask(int task);
+
+
     void setSlotFirst()
     {
         mySlotCurrent = 0;
@@ -232,6 +235,8 @@ public:
     }
 
     void sortAgentsByAssignedCount();
+    std::vector<int> sortTasksByAgentCount(
+    const cSlot& slot);
 
     void add(
         const slotsolution_t &slotsolution,

@@ -420,6 +420,8 @@ void cAllocator::maxflow()
                     g.add(
                         myAgent[kag].name(),
                         "task" + std::to_string(task));
+
+                    std::cout << myAgent[kag].name() << " can do " << task << "\n";
                 }
             }
         }
@@ -476,6 +478,31 @@ void cAllocator::sortAgentsByAssignedCount()
         {
             return (a.assignedCount() < b.assignedCount());
         });
+}
+
+std::vector<int> cAllocator::sortTasksByAgentCount(
+    const cSlot& slot)
+{
+        std::vector<std::pair<int, int>> task_agentCount;
+        for (int &taskIndex : slot.getTasks())
+        {
+            task_agentCount.push_back(std::make_pair(
+                taskIndex, 
+                findAgentsForTask(task(taskIndex).taskType()).size()));
+        }
+
+        std::sort(
+            task_agentCount.begin(), task_agentCount.end(),
+            [](const std::pair<int, int> &a, const std::pair<int, int> &b)
+            {
+                return (a.second < b.second);
+            });
+
+        std::vector<int> sortedTaskIndex;
+        for (auto &pair : task_agentCount)
+            sortedTaskIndex.push_back( pair.first );
+
+        return sortedTaskIndex;
 }
 
 void cAllocator::example1()

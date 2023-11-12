@@ -189,14 +189,14 @@ void cGUI::plAssignCTOR()
     bnSlotPrev.text("PREV");
     bnSlotNext.text("NEXT");
     bnSlotLast.text("LAST");
-    x += 100;
+
     rbMaxflow.move(50, 100, 120, 30);
     rbMaxflow.text("Max Flow");
     rbHungarian.move(200, 100, 120, 30);
     rbHungarian.text("Hungarian");
-    rbHungarian.check();
     rbAgent2Tasks.move(350,100,120,30);
     rbAgent2Tasks.text("Agent2Task");
+    rbAgent2Tasks.check();
 
     // event handlers
 
