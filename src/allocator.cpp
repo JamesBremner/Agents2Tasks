@@ -158,6 +158,11 @@ std::string cAssigns::text(
 {
     std::stringstream ss;
 
+    if( ! myAssigns.size() )
+        return "No tasks assigned\n";
+    if( ! myAssigns[slotIndex].size() )
+        return "No tasks assigned\n";
+
     double cost = 0;
     for (auto &edge : myAssigns[slotIndex])
     {

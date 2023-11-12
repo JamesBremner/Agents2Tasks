@@ -71,6 +71,9 @@ void cHungarian::rowSubtract()
 
 void cHungarian::colSubtract()
 {
+    if( ! myMxCost.size() )
+        return;
+        
     for (int col = 0; col < myMxCost[0].size(); col++)
     {
         double min = INT_MAX;
