@@ -139,21 +139,12 @@ bool unitTest()
 
 // test https://github.com/JamesBremner/Agents2Tasks/issues/10
 
-    allocator.clear();
-    allocator.addTaskType("teacher");
-    
-    allocator.addAgent(
-        "Andrew",
-        {"teacher"},
-        1.0);
-
-
-    allocator.addSlot(
-        "202310311000",
-        {"teacher"});
-    allocator.addSlot(
-        "202311011300",
-        {"teacher"});
+    readstring( 
+        allocator,
+        "a Andrew 1 teacher\n"
+        "a Bob 1 cleaner\n"
+        "t 20231031100 teacher\n"
+        "t 20231101130 teacher\n" );
 
     Janusz(allocator);
 
@@ -169,6 +160,16 @@ bool unitTest()
         "\nCost 0\n";
     if (expected != result)
         return false;
+
+    readstring( 
+        allocator,
+        "a Alice 1 teacher cleaner\n"
+        "a Bob 1 cleaner\n"
+        "t 202311091000 cleaner teacher\n" );
+    Janusz(allocator);
+    allocator.setSlotFirst();
+    result = allocator.agents2TasksText();
+
 
     return true;
 }

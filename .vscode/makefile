@@ -27,6 +27,7 @@ OBJ_a2t = \
 	$(ODIR)/cHungarian.o \
 	$(ODIR)/Janusz.o \
 	$(ODIR)/unitTest.o \
+	$(ODIR)/input.o \
 	$(ODIR)/cGraph.o \
 	$(ODIR)/GraphTheory.o 
 
@@ -37,6 +38,7 @@ OBJ_console = \
 	$(ODIR)/cHungarian.o \
 	$(ODIR)/Janusz.o \
 	$(ODIR)/unitTest.o \
+	$(ODIR)/input.o \
 	$(ODIR)/cGraph.o \
 	$(ODIR)/GraphTheory.o \
 

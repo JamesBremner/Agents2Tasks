@@ -258,6 +258,27 @@ void cAllocator::addSlot(
         vTaskIndex);
 }
 
+bool cAllocator::isSlotSane()
+{
+    int prev = -1;
+    for (auto &slot : mySlot)
+    {
+        int day = slot.day();
+        if (!day)
+            throw std::runtime_error(
+                "Timeslot badly formatted " + slot.name());
+        if (prev == -1)
+        {
+            prev = day;
+            continue;
+        }
+        if (prev >= day)
+            throw std::runtime_error(
+                "Timeslots out of order at " + slot.name());
+    }
+    return true;
+}
+
 bool cAllocator::isAgent(
     const std::string &name,
     int &iAgent) const
@@ -484,48 +505,6 @@ void cAllocator::example1()
         {"teacher accountant"});
 }
 
-void readfile(
-    cAllocator &allocator,
-    const std::string &fname)
-{
-    std::ifstream ifs(fname);
-    if (!ifs.is_open())
-        throw std::runtime_error(
-            "Cannot open input file");
-
-    allocator.clear();
-    std::string line;
-    while (getline(ifs, line))
-    {
-        std::vector<std::string> vtoken;
-        std::stringstream sst(line);
-        std::string a;
-        while (getline(sst, a, ' '))
-            vtoken.push_back(a);
-        int p;
-
-        switch (line[0])
-        {
-        case 'a':
-            p = line.find(" ");
-            p = line.find(" ", p + 1);
-            p = line.find(" ", p + 1);
-            allocator.addAgent(
-                vtoken[1],
-                line.substr(p + 1),
-                atof(vtoken[2].c_str()));
-            break;
-
-        case 't':
-            p = line.find(" ");
-            p = line.find(" ", p + 1);
-            allocator.addSlot(
-                vtoken[1],
-                line.substr(p + 1));
-            break;
-        }
-    }
-}
 void writefile(
     const cAllocator &allocator,
     const std::string &fname)

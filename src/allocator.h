@@ -197,6 +197,13 @@ public:
 
     void example1();
 
+    /// @brief Check sanity of timeslot names and order
+    /// @return true if OK
+    ///
+    /// if not OK throws runtime_error exception
+    
+    bool isSlotSane();
+
     void setSlotFirst()
     {
         mySlotCurrent = 0;
@@ -313,6 +320,13 @@ public:
 void readfile(
     cAllocator &allocator,
     const std::string &fname);
+void readstring(
+    cAllocator &allocator,
+    const std::string &sin);
+
+void input(
+    cAllocator &allocator,
+    std::istream& ifs);
 
 /// @brief Assign agents to tasks with constraints by Janusz Dalecki
 /// @param allocator 
