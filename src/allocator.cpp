@@ -265,13 +265,16 @@ void cAllocator::addSlot(
 
 bool cAllocator::isSlotSane()
 {
-    int prev = -1;
+    long long  prev = -1;
     for (auto &slot : mySlot)
     {
-        int t = atoi(slot.name().c_str());
+        long long t = atoll(slot.name().c_str());
         if (!t)
             throw std::runtime_error("10 "
                 "Timeslot badly formatted " + slot.name());
+        if( std::to_string(t) != slot.name() )
+            throw std::runtime_error("17 "
+            "timeslot overflow");
         if (prev == -1)
         {
             prev = t;
