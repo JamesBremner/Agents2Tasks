@@ -101,7 +101,7 @@ void cGUI::menuCTOR()
                     if (!unitTest())
                     {
                         wex::msgbox mb("Unit test failed");
-                        throw std::runtime_error(
+                        throw std::runtime_error("16 "
                             "Unit test failed");
                     }
                     else

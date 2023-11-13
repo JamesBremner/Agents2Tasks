@@ -3,23 +3,20 @@
 #include "allocator.h"
 
 void errorHandler(
-    const std::string &fname,
     const std::string &msg)
 {
-    std::ofstream ofs(fname);
-    if (!ofs.is_open())
-        std::cout << "Cannot open output file\n";
-    ofs << msg << "\n";
-    ofs.close();
-    std::cout << msg << "\n";
-    exit(2);
+    int status = atoi(msg.c_str());
+    if( ! status)
+        status = 2;
+    std::cout << msg << "\n" << "status " << status << "\n";
+    exit(status);
 }
 
 main(int argc, char *argv[])
 {
     if (argc != 3)
         errorHandler(
-            "Agents2TasksConsole.txt",
+            "3 "
             "Usage: Agents2TasksConsole (input file path) ( output file path )");
 
     try
@@ -34,7 +31,6 @@ main(int argc, char *argv[])
     catch (std::exception &e)
     {
         errorHandler(
-            argv[2],
             e.what());
     }
 

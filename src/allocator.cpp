@@ -214,7 +214,7 @@ void cAllocator::addAgent(
 {
     int iAgent;
     if (isAgent(name, iAgent))
-        throw std::runtime_error(
+        throw std::runtime_error("12 "
             "Duplicate agent name" + name);
 
     myAgent.emplace_back(
@@ -242,7 +242,7 @@ void cAllocator::addSlot(
     const std::string &sTaskTypeName)
 {
     if (isSlot(name))
-        throw std::runtime_error(
+        throw std::runtime_error("13 "
             "Duplicate slot name" + name);
 
     // loop over tasks in slot
@@ -270,16 +270,16 @@ bool cAllocator::isSlotSane()
     {
         int t = atoi(slot.name().c_str());
         if (!t)
-            throw std::runtime_error(
-                "10 Timeslot badly formatted " + slot.name());
+            throw std::runtime_error("10 "
+                "Timeslot badly formatted " + slot.name());
         if (prev == -1)
         {
             prev = t;
             continue;
         }
         if (prev >= t)
-            throw std::runtime_error(
-                "11 Timeslots out of order at " + slot.name());
+            throw std::runtime_error("11 "
+                "Timeslots out of order at " + slot.name());
     }
     return true;
 }
@@ -543,7 +543,7 @@ void writefile(
 {
     std::ofstream ofs(fname);
     if (!ofs.is_open())
-        throw std::runtime_error(
+        throw std::runtime_error("14 "
             "Cannot open output file");
 
     for (auto &a : allocator.getconstAgents())

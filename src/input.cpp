@@ -8,7 +8,7 @@ void readfile(
 {
     std::ifstream ifs(fname);
     if (!ifs.is_open())
-        throw std::runtime_error(
+        throw std::runtime_error("15 "
             "Cannot open input file");
     input(allocator, ifs);
 }
