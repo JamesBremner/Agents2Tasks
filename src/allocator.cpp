@@ -158,9 +158,9 @@ std::string cAssigns::text(
 {
     std::stringstream ss;
 
-    if( ! myAssigns.size() )
+    if (!myAssigns.size())
         return "No tasks assigned\n";
-    if( ! myAssigns[slotIndex].size() )
+    if (!myAssigns[slotIndex].size())
         return "No tasks assigned\n";
 
     double cost = 0;
@@ -215,7 +215,8 @@ void cAllocator::addAgent(
     int iAgent;
     if (isAgent(name, iAgent))
         throw std::runtime_error("12 "
-            "Duplicate agent name" + name);
+                                 "Duplicate agent name" +
+                                 name);
 
     myAgent.emplace_back(
         name,
@@ -243,7 +244,8 @@ void cAllocator::addSlot(
 {
     if (isSlot(name))
         throw std::runtime_error("13 "
-            "Duplicate slot name" + name);
+                                 "Duplicate slot name" +
+                                 name);
 
     // loop over tasks in slot
     std::vector<int> vTaskIndex;
@@ -265,16 +267,26 @@ void cAllocator::addSlot(
 
 bool cAllocator::isSlotSane()
 {
-    long long  prev = -1;
+    /* Convert timeslot names to 64 bit integers so that their order can be checked
+
+    While pointers to integers, or to anything else, are 64 bits long, the integers themselves are 32 bits long on 64 bit compilers.
+
+    If 64 bit integers are required, then they have to be explicitly declared using long long or int64.
+
+    For some discussion on this https://stackoverflow.com/q/17489857/16582
+    */
+    long long prev = -1;
+
     for (auto &slot : mySlot)
     {
         long long t = atoll(slot.name().c_str());
         if (!t)
             throw std::runtime_error("10 "
-                "Timeslot badly formatted " + slot.name());
-        if( std::to_string(t) != slot.name() )
+                                     "Timeslot badly formatted " +
+                                     slot.name());
+        if (std::to_string(t) != slot.name())
             throw std::runtime_error("17 "
-            "timeslot overflow");
+                                     "timeslot overflow");
         if (prev == -1)
         {
             prev = t;
@@ -282,7 +294,8 @@ bool cAllocator::isSlotSane()
         }
         if (prev >= t)
             throw std::runtime_error("11 "
-                "Timeslots out of order at " + slot.name());
+                                     "Timeslots out of order at " +
+                                     slot.name());
     }
     return true;
 }
@@ -484,28 +497,28 @@ void cAllocator::sortAgentsByAssignedCount()
 }
 
 std::vector<int> cAllocator::sortTasksByAgentCount(
-    const cSlot& slot)
+    const cSlot &slot)
 {
-        std::vector<std::pair<int, int>> task_agentCount;
-        for (int &taskIndex : slot.getTasks())
+    std::vector<std::pair<int, int>> task_agentCount;
+    for (int &taskIndex : slot.getTasks())
+    {
+        task_agentCount.push_back(std::make_pair(
+            taskIndex,
+            findAgentsForTask(task(taskIndex).taskType()).size()));
+    }
+
+    std::sort(
+        task_agentCount.begin(), task_agentCount.end(),
+        [](const std::pair<int, int> &a, const std::pair<int, int> &b)
         {
-            task_agentCount.push_back(std::make_pair(
-                taskIndex, 
-                findAgentsForTask(task(taskIndex).taskType()).size()));
-        }
+            return (a.second < b.second);
+        });
 
-        std::sort(
-            task_agentCount.begin(), task_agentCount.end(),
-            [](const std::pair<int, int> &a, const std::pair<int, int> &b)
-            {
-                return (a.second < b.second);
-            });
+    std::vector<int> sortedTaskIndex;
+    for (auto &pair : task_agentCount)
+        sortedTaskIndex.push_back(pair.first);
 
-        std::vector<int> sortedTaskIndex;
-        for (auto &pair : task_agentCount)
-            sortedTaskIndex.push_back( pair.first );
-
-        return sortedTaskIndex;
+    return sortedTaskIndex;
 }
 
 void cAllocator::example1()
@@ -547,7 +560,7 @@ void writefile(
     std::ofstream ofs(fname);
     if (!ofs.is_open())
         throw std::runtime_error("14 "
-            "Cannot open output file");
+                                 "Cannot open output file");
 
     for (auto &a : allocator.getconstAgents())
         a.writefile(ofs);
