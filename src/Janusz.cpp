@@ -105,11 +105,12 @@ void Janusz(cAllocator &A)
             if (!agentsUnassignedCount)
                 break;
 
-        } // end of slot loop
+        } // end of task loop
 
         A.add(
             slotSolution,
             slot.name(),
             A.slotCost(slotSolution));
-    }
+
+    }   // end of slot loop
 }
