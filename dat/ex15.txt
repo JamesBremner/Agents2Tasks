@@ -1,0 +1,35 @@
+a iwhite@gmail.com&1961-07-02&C 1 Cleaner 
+a iblack@gmail.com&1961-07-02&B 1 Cleaner 
+a awhite@gmail.com&1998-06-07&C 1 Cleaner 
+a ablack@gmail.com&1998-06-07&B 1 Cleaner 
+a asmith@gmail.com&1998-06-07&A 1 Cleaner 
+a rejkid@gmail.com&1961-07-02& 1 Reader1 
+a osiekkolawy@gmail.com&1961-03-24&B 1 MAS 
+a ismith@gmail.com&1961-07-02&A 1 Cleaner Acolyte 
+a rejkid@gmail.com&1961-03-24&A 1 Cleaner Acolyte 
+a mwalsh@gmail.com&2010-01-01& 1 MAS 
+a rejkid@gmail.com&1992-08-28& 1 MAS 
+a rejkid@gmail.com&1998-06-07& 1 Reader2 
+a jwhite@gmail.com&1961-03-24& 1 EMHC Reader1 
+a jsmith@gmail.com&1961-03-24& 1 EMHC Reader2 
+a jblack@gmail.com&1961-03-24& 1 EMHC Reader1 Acolyte 
+t 202310220830 Acolyte Acolyte MAS MAS Reader1 Reader2 EMHC EMHC 
+t 202310221000 Acolyte  MAS MAS Reader1 Reader2 EMHC  
+t 202310290830 Acolyte  MAS  Reader1 Reader2 EMHC EMHC 
+t 202310291000 Acolyte  MAS  Reader1 Reader2  EMHC 
+t 202311050830 Acolyte  MAS  Reader1 Reader2 EMHC  
+t 202311051000 Acolyte Acolyte MAS MAS Reader1 Reader2 EMHC EMHC 
+A 202310220830 ismith@gmail.com&1961-07-02&A to Acolyte
+A 202310220830 rejkid@gmail.com&1961-03-24&A to Acolyte
+A 202310220830 mwalsh@gmail.com&2010-01-01& to MAS
+A 202310220830 rejkid@gmail.com&1992-08-28& to MAS
+A 202310220830 jwhite@gmail.com&1961-03-24& to Reader1
+A 202310220830 rejkid@gmail.com&1998-06-07& to Reader2
+A 202310220830 jblack@gmail.com&1961-03-24& to EMHC
+A 202310220830 jsmith@gmail.com&1961-03-24& to EMHC
+A 202310221000 jblack@gmail.com&1961-03-24& to Acolyte
+A 202310221000 osiekkolawy@gmail.com&1961-03-24&B to MAS
+A 202310221000 rejkid@gmail.com&1961-07-02& to Reader1
+A 202310221000 jsmith@gmail.com&1961-03-24& to Reader2
+A 202310221000 jwhite@gmail.com&1961-03-24& to EMHC
+A 202310290830 jblack@gmail.com&1961-03-24& to Reader1

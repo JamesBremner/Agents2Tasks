@@ -268,18 +268,18 @@ bool cAllocator::isSlotSane()
     int prev = -1;
     for (auto &slot : mySlot)
     {
-        int day = slot.day();
-        if (!day)
+        int t = atoi(slot.name().c_str());
+        if (!t)
             throw std::runtime_error(
-                "Timeslot badly formatted " + slot.name());
+                "10 Timeslot badly formatted " + slot.name());
         if (prev == -1)
         {
-            prev = day;
+            prev = t;
             continue;
         }
-        if (prev >= day)
+        if (prev >= t)
             throw std::runtime_error(
-                "Timeslots out of order at " + slot.name());
+                "11 Timeslots out of order at " + slot.name());
     }
     return true;
 }
