@@ -9,14 +9,24 @@ class cAgent
     /// @brief tasks agent ready to do ( task type id, cost )
     std::vector<std::pair<int, double>> myTasks;
 
-    bool fAssigned; // true if assigned to task in current timeslot
+    /* true if assigned to task in current timeslot
 
-    int myAssignedCount; // number of task assignments in all timeslots
+    Prevent assigning an agent two tasks in one timeslot
+    */
 
-    /// @brief previous assignments ( 00:00:01 on day assignment, task type name )
-    std::vector<
-        std::pair<timepoint_t, std::string>>
-        myAssignedDays;
+    bool fAssigned;
+
+    /* number of task assignments in all timeslots so far
+
+        This allows the total worload to be balanced between agents
+        by assigning tasks to capable agents that have been assigned the least
+
+        https://github.com/JamesBremner/Agents2Tasks/issues/5#issuecomment-1799230242
+    */
+
+    int myAssignedCount; 
+
+    timepoint_t myLastAssignmentTime;   //  00:00:01 on day of previous assignment 
 
 public:
     /// @brief Constructor

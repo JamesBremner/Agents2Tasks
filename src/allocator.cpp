@@ -70,8 +70,8 @@ timepoint(int day)
 
     // convert timeinfo to 1 second after midnight of the morning of the assignment
     timeinfo->tm_year = day / 10000 - 1900;
-    timeinfo->tm_mon = (day - (timeinfo->tm_year+1900) * 10000) / 100;
-    timeinfo->tm_mday = (day - (timeinfo->tm_year+1900) * 10000 - timeinfo->tm_mon * 100);
+    timeinfo->tm_mon = (day - (timeinfo->tm_year + 1900) * 10000) / 100;
+    timeinfo->tm_mday = (day - (timeinfo->tm_year + 1900) * 10000 - timeinfo->tm_mon * 100);
     timeinfo->tm_hour = 0;
     timeinfo->tm_min = 0;
     timeinfo->tm_sec = 1;
@@ -89,8 +89,9 @@ void cAgent::assign(
 {
     fAssigned = true;
     myAssignedCount++;
-    myAssignedDays.push_back(
-        std::make_pair(timepoint(day), taskTypeName));
+    // myAssignedDays.push_back(
+    //     std::make_pair(timepoint(day), taskTypeName));
+    myLastAssignmentTime = timepoint(day);
 }
 
 bool cAgent::isAssignedRecently(
@@ -100,24 +101,13 @@ bool cAgent::isAssignedRecently(
     // https://github.com/JamesBremner/Agents2Tasks/issues/8
     const int hours_blocked = 48;
 
-    if (std::find_if(
-            myAssignedDays.begin(), myAssignedDays.end(),
-            [&, this](const std::pair<std::chrono::system_clock::time_point, std::string> prev_assign)
-            {
-                // check blocking period over
-                if (std::chrono::duration_cast<std::chrono::hours>(timepoint(day) - prev_assign.first).count() > hours_blocked)
-                    return false;
+    if (
+        std::chrono::duration_cast<std::chrono::hours>(
+            timepoint(day) - myLastAssignmentTime)
+            .count() > hours_blocked)
+        return false;
 
-                // check task type is different
-                if (prev_assign.second != taskname)
-                    return false;
-
-                // the assignment is blocked by a previous one
-                return true;
-            }) != myAssignedDays.end())
-        return true;
-
-    return false;
+    return true;
 }
 
 void cAgent::writefile(
