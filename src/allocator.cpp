@@ -258,7 +258,7 @@ void cAllocator::addSlot(
 {
     if (isSlot(name))
         throw std::runtime_error("13 "
-                                 "Duplicate slot name" +
+                                 "Duplicate slot name " +
                                  name);
 
     // loop over tasks in slot

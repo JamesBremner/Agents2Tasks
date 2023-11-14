@@ -21,7 +21,7 @@ bool unitTest()
         {"accountant teacher"},
         5.0);
     allocator.addSlot(
-        "28/OCT/2023/8:30",
+        "202310280830",
         {"teacher teacher cleaner"});
 
     allocator.hungarian();
@@ -56,7 +56,7 @@ bool unitTest()
         {"accountant cleaner"},
         4.0);
     allocator.addSlot(
-        "2/NOV/2023/8:30",
+        "202311020830",
         {"teacher accountant"});
 
     allocator.hungarian();
@@ -89,7 +89,7 @@ bool unitTest()
         {"accountant cleaner"},
         4.0);
     allocator.addSlot(
-        "2/NOV/2023/8:30",
+         "202311020830",
         {"teacher accountant"});
 
     Janusz(allocator);
@@ -113,13 +113,13 @@ bool unitTest()
         1.0);
 
     allocator.addSlot(
-        "2/NOV/2023/8:30",
+         "202311020830",
         {"teacher"});
     allocator.addSlot(
-        "3/NOV/2023/8:30",
+         "202311030830",
         {"teacher"});
     allocator.addSlot(
-        "4/NOV/2023/8:30",
+         "202311040830",
         {"teacher"});
 
     Janusz(allocator);
@@ -157,7 +157,7 @@ bool unitTest()
     allocator.setSlotNext();
     result = allocator.agents2TasksText();
     expected =
-        "\nCost 0\n";
+        "No tasks assigned\n";
     if (expected != result)
         return false;
 
