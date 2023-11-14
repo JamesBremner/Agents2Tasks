@@ -89,8 +89,6 @@ void cAgent::assign(
 {
     fAssigned = true;
     myAssignedCount++;
-    // myAssignedDays.push_back(
-    //     std::make_pair(timepoint(day), taskTypeName));
     myLastAssignmentTime = timepoint(day);
 }
 
