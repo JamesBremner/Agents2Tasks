@@ -216,6 +216,5 @@ std::pair<std::string, std::string> cHungarian::AssignReduce()
             return retAgentTask;
         }
     }
-    throw std::runtime_error(
-        "cHungarian::AssignReduce failed");
+    throw std::runtime_error("18 cHungarian::AssignReduce failed");
 }

@@ -60,12 +60,26 @@ double cAgent::cost() const
 timepoint_t
 timepoint(int day)
 {
-    std::tm timeinfo = std::tm();
-    timeinfo.tm_year = day / 10000;
-    timeinfo.tm_mon = (day - timeinfo.tm_year * 10000) / 100;
-    timeinfo.tm_mday = (day - timeinfo.tm_year * 10000 - timeinfo.tm_mon * 100);
-    timeinfo.tm_sec = 1;
-    std::time_t tt = std::mktime(&timeinfo);
+    // setup timeinfo with current time
+    // https://cplusplus.com/reference/ctime/mktime/
+
+    std::tm *timeinfo;
+    time_t rawtime;
+    time(&rawtime);
+    timeinfo = localtime(&rawtime);
+
+    // convert timeinfo to 1 second after midnight of the morning of the assignment
+    timeinfo->tm_year = day / 10000 - 1900;
+    timeinfo->tm_mon = (day - (timeinfo->tm_year+1900) * 10000) / 100;
+    timeinfo->tm_mday = (day - (timeinfo->tm_year+1900) * 10000 - timeinfo->tm_mon * 100);
+    timeinfo->tm_hour = 0;
+    timeinfo->tm_min = 0;
+    timeinfo->tm_sec = 1;
+
+    // convert timeinfo to std::chrono timepoint
+    std::time_t tt = std::mktime(timeinfo);
+    if (tt == -1)
+        throw std::runtime_error("20 Cannot parse timeslot timestamp");
     return std::chrono::system_clock::from_time_t(tt);
 }
 
@@ -443,9 +457,17 @@ void cAllocator::maxflow()
         }
 
         // apply pathfinder maximum flow allocation algorithm to the timeslot
-        raven::graph::sGraphData gd;
-        gd.g = g;
-        auto sg = alloc(gd);
+        raven::graph::cGraph sg;
+        try
+        {
+            raven::graph::sGraphData gd;
+            gd.g = g;
+            sg = alloc(gd);
+        }
+        catch (std::exception &e)
+        {
+            throw std::runtime_error("19 max flow error in PathFinder library");
+        }
 
         slotsolution_t slotsolution;
 

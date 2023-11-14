@@ -13,11 +13,11 @@ a rejkid@gmail.com&1998-06-07& 1 Reader2
 a jwhite@gmail.com&1961-03-24& 1 EMHC Reader1 
 a jsmith@gmail.com&1961-03-24& 1 EMHC Reader2 
 a jblack@gmail.com&1961-03-24& 1 EMHC Reader1 Acolyte 
-t 202310220830 Acolyte Acolyte MAS MAS Reader1 Reader2 EMHC EMHC 
-t 202310221000 Acolyte  MAS MAS Reader1 Reader2 EMHC  
-t 202310290830 Acolyte  MAS  Reader1 Reader2 EMHC EMHC 
-t 202310291000 Acolyte  MAS  Reader1 Reader2  EMHC 
-t 202311050830 Acolyte  MAS  Reader1 Reader2 EMHC  
+t 202310220830 Acolyte Acolyte MAS MAS Reader1 Reader2 EMHC EMHC
+t 202310221000 Acolyte MAS MAS Reader1 Reader2 EMHC
+t 202310290830 Acolyte MAS Reader1 Reader2 EMHC EMHC
+t 202310291000 Acolyte MAS Reader1 Reader2 EMHC
+t 202311050830 Acolyte MAS Reader1 Reader2 EMHC
 t 202311051000 Acolyte Acolyte MAS MAS Reader1 Reader2 EMHC EMHC 
 A 202310220830 ismith@gmail.com&1961-07-02&A to Acolyte
 A 202310220830 rejkid@gmail.com&1961-03-24&A to Acolyte
