@@ -40,10 +40,12 @@ void input(
             p = line.find(" ");
             p = line.find(" ", p + 1);
             p = line.find(" ", p + 1);
+            p = line.find(" ", p + 1);
             allocator.addAgent(
                 vtoken[1],
                 line.substr(p + 1),
-                atof(vtoken[2].c_str()));
+                atof(vtoken[2].c_str()),
+                vtoken[3]);
             break;
 
         case 't':

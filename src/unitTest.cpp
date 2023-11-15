@@ -11,15 +11,18 @@ bool unitTest()
     allocator.addAgent(
         "John",
         {"teacher cleaner"},
-        3.0);
+        3.0,
+        "none");
     allocator.addAgent(
         "Margaret",
         {"accountant cleaner"},
-        4.0);
+        4.0,
+        "none");
     allocator.addAgent(
         "Andrew",
         {"accountant teacher"},
-        5.0);
+        5.0,
+        "none");
     allocator.addSlot(
         "202310280830",
         {"teacher teacher cleaner"});
@@ -45,16 +48,19 @@ bool unitTest()
     allocator.addAgent(
         "Andrew",
         {"accountant teacher"},
-        5.0);
+        5.0,
+        "none");
 
     allocator.addAgent(
         "John",
         {"teacher cleaner"},
-        3.0);
+        3.0,
+        "none");
     allocator.addAgent(
         "Margaret",
         {"accountant cleaner"},
-        4.0);
+        4.0,
+        "none");
     allocator.addSlot(
         "202311020830",
         {"teacher accountant"});
@@ -78,16 +84,19 @@ bool unitTest()
     allocator.addAgent(
         "Andrew",
         {"accountant teacher"},
-        5.0);
+        5.0,
+        "none");
 
     allocator.addAgent(
         "John",
         {"teacher cleaner"},
-        3.0);
+        3.0,
+        "none");
     allocator.addAgent(
         "Margaret",
         {"accountant cleaner"},
-        4.0);
+        4.0,
+        "none");
     allocator.addSlot(
          "202311020830",
         {"teacher accountant"});
@@ -106,11 +115,13 @@ bool unitTest()
     allocator.addAgent(
         "Andrew",
         {"teacher"},
-        1.0);
+        1.0,\
+        "none");
     allocator.addAgent(
         "John",
         {"teacher cleaner"},
-        1.0);
+        1.0,
+        "none");
 
     allocator.addSlot(
          "202311020830",

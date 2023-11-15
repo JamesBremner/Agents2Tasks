@@ -146,7 +146,8 @@ void cGUI::menuCTOR()
                    allocator.addAgent(
                        ib.value("Name"),
                        ib.value("Tasks"),
-                       atof(ib.value("Cost").c_str()));
+                       atof(ib.value("Cost").c_str()),
+                       "none");
                    allocator.maxflow();
                    allocator.hungarian();
                    fm.update();

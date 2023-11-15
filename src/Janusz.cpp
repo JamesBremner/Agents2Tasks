@@ -28,7 +28,7 @@ void Janusz(cAllocator &A)
 
         */
 
-        A.sortAgentsByAssignedCount();
+        A.sortAgents();
 
         /* Sort slot tasks into ascending order of number of agents capable of doing each task
 
@@ -81,6 +81,10 @@ void Janusz(cAllocator &A)
             // assign cheapest agent
 
             // std::cout << "assigning " << pbestAgent->name() << " to " << task.typeName() << "\n";
+
+            A.assign(
+                *pbestAgent,
+                slot            );
 
             // add agent name, task type name pair to slot solution
             slotSolution.push_back(

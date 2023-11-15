@@ -7,17 +7,30 @@
 #include "allocator.h"
 
 std::vector<std::string> cTask::vTaskType;
+std::vector<std::string> cAgent::vFamily;
 
 cAgent::cAgent(
     const std::string &name,
     const std::vector<int> &vt,
-    double cost)
+    double cost,
+    const std::string family)
     : myName(name),
       myAssignedCount(0)
 {
     for (int t : vt)
     {
         myTasks.push_back(std::make_pair(t, cost));
+    }
+    auto it = std::find(
+        vFamily.begin(), vFamily.end(), family);
+    if (it == vFamily.end())
+    {
+        vFamily.push_back(family);
+        myFamily = vFamily.size() - 1;
+    }
+    else
+    {
+        myFamily = it - vFamily.begin();
     }
 }
 
@@ -70,8 +83,8 @@ timepoint(int day)
 
     // convert timeinfo to 1 second after midnight of the morning of the assignment
     timeinfo->tm_year = day / 10000 - 1900;
-    timeinfo->tm_mon = (day - (timeinfo->tm_year+1900) * 10000) / 100;
-    timeinfo->tm_mday = (day - (timeinfo->tm_year+1900) * 10000 - timeinfo->tm_mon * 100);
+    timeinfo->tm_mon = (day - (timeinfo->tm_year + 1900) * 10000) / 100;
+    timeinfo->tm_mday = (day - (timeinfo->tm_year + 1900) * 10000 - timeinfo->tm_mon * 100);
     timeinfo->tm_hour = 0;
     timeinfo->tm_min = 0;
     timeinfo->tm_sec = 1;
@@ -224,7 +237,8 @@ void cAllocator::clearSolution()
 void cAllocator::addAgent(
     const std::string &name,
     const std::string &canDoTaskTypes,
-    double cost)
+    double cost,
+    const std::string& family)
 {
     int iAgent;
     if (isAgent(name, iAgent))
@@ -235,7 +249,8 @@ void cAllocator::addAgent(
     myAgent.emplace_back(
         name,
         taskTypeIndices(canDoTaskTypes),
-        cost);
+        cost,
+        family);
 }
 
 void cAllocator::addTaskType(
@@ -508,7 +523,14 @@ void cAllocator::hungarian()
     }
 }
 
-void cAllocator::sortAgentsByAssignedCount()
+void cAllocator::assign(
+    cAgent &agent,
+    cSlot &slot)
+{
+    slot.assign( agent.family() );
+}
+
+void cAllocator::sortAgents()
 {
     std::sort(
         myAgent.begin(), myAgent.end(),
@@ -546,33 +568,33 @@ std::vector<int> cAllocator::sortTasksByAgentCount(
 void cAllocator::example1()
 {
     clear();
-    addTaskType("teacher");
-    addTaskType("cleaner");
-    addTaskType("accountant");
-    addAgent(
-        "John",
-        {"teacher cleaner"},
-        3.0);
-    addAgent(
-        "Margaret",
-        {"accountant cleaner"},
-        4.0);
-    addAgent(
-        "Andrew",
-        {"accountant teacher"},
-        5.0);
-    addSlot(
-        "28/OCT/2023/8:30",
-        {"teacher teacher cleaner"});
-    addSlot(
-        "29/OCT/2023/10:00",
-        {"teacher accountant"});
-    addSlot(
-        "2/NOV/2023/8:30",
-        {"teacher teacher accountant"});
-    addSlot(
-        "3/NOV/2023/10:00",
-        {"teacher accountant"});
+    // addTaskType("teacher");
+    // addTaskType("cleaner");
+    // addTaskType("accountant");
+    // addAgent(
+    //     "John",
+    //     {"teacher cleaner"},
+    //     3.0);
+    // addAgent(
+    //     "Margaret",
+    //     {"accountant cleaner"},
+    //     4.0);
+    // addAgent(
+    //     "Andrew",
+    //     {"accountant teacher"},
+    //     5.0);
+    // addSlot(
+    //     "28/OCT/2023/8:30",
+    //     {"teacher teacher cleaner"});
+    // addSlot(
+    //     "29/OCT/2023/10:00",
+    //     {"teacher accountant"});
+    // addSlot(
+    //     "2/NOV/2023/8:30",
+    //     {"teacher teacher accountant"});
+    // addSlot(
+    //     "3/NOV/2023/10:00",
+    //     {"teacher accountant"});
 }
 
 void writefile(
@@ -587,7 +609,7 @@ void writefile(
     for (auto &a : allocator.getconstAgents())
         a.writefile(ofs);
 
-    for (auto &t : allocator.getSlots())
+    for (auto &t : allocator.getconstSlots())
         t.writefile(ofs, allocator);
 
     // mySolutionMaxflow.writeFile(

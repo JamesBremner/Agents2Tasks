@@ -18,16 +18,27 @@ class cAgent
         std::pair<timepoint_t, std::string>>
         myAssignedDays;
 
+    static std::vector<std::string> vFamily;    // family group names
+    int myFamily;                               // family group index
+
 public:
     /// @brief Constructor
     /// @param name
     /// @param vt       // Indices of task types agent can do
     /// @param cost     // Cost of assigning agent to any task
+    /// @param family   // Family group
 
     cAgent(
         const std::string &name,
         const std::vector<int> &vt,
-        double cost);
+        double cost,
+        const std::string family );
+    cAgent(
+        const std::string &name,
+        const std::vector<int> &vt,
+        double cost )
+        : cAgent( name, vt, cost, "none" )
+        {}
 
     std::string name() const
     {
@@ -72,6 +83,11 @@ public:
     int assignedCount() const
     {
         return myAssignedCount;
+    }
+
+    int family() const
+    {
+        return myFamily;
     }
 
     std::string text() const;

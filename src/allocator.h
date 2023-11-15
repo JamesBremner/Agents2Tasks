@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <set>
 #include <chrono>
 
 #include "../../PathFinder/src/GraphTheory.h"
@@ -19,7 +20,8 @@ class cAllocator;
 class cSlot
 {
     std::string myName;
-    std::vector<int> myTasks; // index of tasks in this slot
+    std::vector<int> myTasks;   // indices of tasks in this slot
+    std::set<int> myFamily;  // indices of family groups assigned to this slot
 
 public:
     cSlot(
@@ -29,6 +31,12 @@ public:
           myTasks(vt)
     {
     }
+
+    void assign( int iFamily )
+    {
+        myFamily.insert( iFamily );
+    }
+
     std::string name() const
     {
         return myName;
@@ -150,6 +158,12 @@ public:
         const char cid) const;
 };
 
+enum class eOptimizer
+{
+    cost,
+    family
+};
+
 /// @brief Assign agents to task in multiple independant slots
 
 class cAllocator
@@ -173,10 +187,12 @@ class cAllocator
     taskTypeIndices(
         const std::string &vTask);
 
-   
+    eOptimizer myOptimizer;
+
 public:
     cAllocator()
-        : mySlotCurrent(0)
+        : mySlotCurrent(0),
+          myOptimizer(eOptimizer::cost)
     {
     }
 
@@ -186,7 +202,8 @@ public:
     void addAgent(
         const std::string &name,
         const std::string &canDoTaskTypes,
-        double cost = 1);
+        double cost,
+        const std::string& family);
 
     void addTaskType(
         const std::string &stype);
@@ -201,11 +218,10 @@ public:
     /// @return true if OK
     ///
     /// if not OK throws runtime_error exception
-    
+
     bool isSlotSane();
 
     std::vector<int> findAgentsForTask(int task);
-
 
     void setSlotFirst()
     {
@@ -234,9 +250,9 @@ public:
             a.unAssign();
     }
 
-    void sortAgentsByAssignedCount();
+    void sortAgents();
     std::vector<int> sortTasksByAgentCount(
-    const cSlot& slot);
+        const cSlot &slot);
 
     void add(
         const slotsolution_t &slotsolution,
@@ -245,8 +261,8 @@ public:
     {
         mySolutionAgents2Task.add(
             slotsolution,
-             slotName,
-              cost);
+            slotName,
+            cost);
     }
 
     /// @brief Allocate agents to tasks using max flow algorithm
@@ -258,6 +274,14 @@ public:
 
     void hungarian();
 
+    /// @brief Assign agent to task
+    /// @param agent 
+    /// @param slot 
+
+    void assign(
+        cAgent& agent,
+        cSlot& slot );
+
     std::vector<cAgent> &getAgents()
     {
         return myAgent;
@@ -266,7 +290,11 @@ public:
     {
         return myAgent;
     }
-    const std::vector<cSlot> &getSlots() const
+    std::vector<cSlot> &getSlots()
+    {
+        return mySlot;
+    }
+    const std::vector<cSlot> &getconstSlots() const
     {
         return mySlot;
     }
@@ -331,10 +359,10 @@ void readstring(
 
 void input(
     cAllocator &allocator,
-    std::istream& ifs);
+    std::istream &ifs);
 
 /// @brief Assign agents to tasks with constraints by Janusz Dalecki
-/// @param allocator 
+/// @param allocator
 ///
 /// https://github.com/JamesBremner/Agents2Tasks
 
