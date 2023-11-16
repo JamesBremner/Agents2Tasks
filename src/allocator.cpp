@@ -102,35 +102,40 @@ void cAgent::assign(
 {
     fAssigned = true;
     myAssignedCount++;
-    myAssignedDays.push_back(
-        std::make_pair(timepoint(day), taskTypeName));
+    myLastAssignmentTime = timepoint(day);
 }
 
 bool cAgent::isAssignedRecently(
     int day,
     const std::string &taskname) const
 {
-    // https://github.com/JamesBremner/Agents2Tasks/issues/8
-    const int hours_blocked = 48;
+    /*
+    Assigning an agent should block another assignment of that agent
+    for two full days - the rest of the day assigned and all of the next day.
 
-    if (std::find_if(
-            myAssignedDays.begin(), myAssignedDays.end(),
-            [&, this](const std::pair<std::chrono::system_clock::time_point, std::string> prev_assign)
-            {
-                // check blocking period over
-                if (std::chrono::duration_cast<std::chrono::hours>(timepoint(day) - prev_assign.first).count() > hours_blocked)
-                    return false;
+    This is implemented by backdating the first assignent and the potential assignment being testes
+    to the previous midnight, so the exact time of day of the assignment is irrelevant.
 
-                // check task type is different
-                if (prev_assign.second != taskname)
-                    return false;
+    Example:
 
-                // the assignment is blocked by a previous one
-                return true;
-            }) != myAssignedDays.end())
-        return true;
+    0830 Mon -> 00000 Monday
+    1000 Tue -> 0000 Tuesday Delta: 24 hours BLOCKED
+    0830 Wed -> 0000 Wed Delta: 48 hours OK
 
-    return false;
+     https://github.com/JamesBremner/Agents2Tasks/issues/8
+     https://github.com/JamesBremner/Agents2Tasks/issues/23
+
+     */
+    const int full_days_blocked = 2;
+    const int hours_blocked = 24 * ( full_days_blocked - 1);
+
+    if (
+        std::chrono::duration_cast<std::chrono::hours>(
+            timepoint(day) - myLastAssignmentTime)
+            .count() > hours_blocked)
+        return false;
+
+    return true;
 }
 
 void cAgent::writefile(
