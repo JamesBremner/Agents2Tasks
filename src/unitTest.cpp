@@ -65,6 +65,7 @@ bool unitTest()
     allocator.setSlotFirst();
 
     // check blocking, not per task type
+    utname = "tid17";
     readstring(
         allocator,
         "a alice 1 G teacher cleaner\n"
@@ -79,117 +80,32 @@ bool unitTest()
     expected =
         "alice does cleaner\n\nCost 1\n";
     if (expected != result)
-        return false;
+         throw std::runtime_error(utname + " unit test failed");
     allocator.setSlotNext();
     result = allocator.agents2TasksText();
     expected =
         "No tasks assigned\n";
     if (expected != result)
-        return false;
+         throw std::runtime_error(utname + " unit test failed");
     allocator.setSlotNext();
     result = allocator.agents2TasksText();
     expected =
         "alice does teacher\n\nCost 1\n";
     if (expected != result)
-        return false;
+         throw std::runtime_error(utname + " unit test failed");
     allocator.setSlotFirst();
 
-    allocator.clear();
-    allocator.addTaskType("teacher");
-    allocator.addTaskType("cleaner");
-    allocator.addTaskType("accountant");
-    allocator.addAgent(
-        "John",
-        {"teacher cleaner"},
-        3.0,
-        "none");
-    allocator.addAgent(
-        "Margaret",
-        {"accountant cleaner"},
-        4.0,
-        "none");
-    allocator.addAgent(
-        "Andrew",
-        {"accountant teacher"},
-        5.0,
-        "none");
-    allocator.addSlot(
-        "202310280830",
-        {"teacher teacher cleaner"});
-
-    allocator.hungarian();
-
-    result = allocator.hungarianText();
-
-    expected =
-        "John does teacher\nMargaret does teacher\nAndrew does cleaner\n\nCost 12\n";
-
-    if (expected != result)
-        return false;
-
-    allocator.clear();
-    allocator.addTaskType("teacher");
-    allocator.addTaskType("cleaner");
-    allocator.addTaskType("accountant");
+    utname = "costOptimizing";
 
     // add most expensive agent first
     // to test that the Hungarian optimizes the total slot cost
 
-    allocator.addAgent(
-        "Andrew",
-        {"accountant teacher"},
-        5.0,
-        "none");
-
-    allocator.addAgent(
-        "John",
-        {"teacher cleaner"},
-        3.0,
-        "none");
-    allocator.addAgent(
-        "Margaret",
-        {"accountant cleaner"},
-        4.0,
-        "none");
-    allocator.addSlot(
-        "202311020830",
-        {"teacher accountant"});
-
-    allocator.hungarian();
-    result = allocator.hungarianText();
-
-    expected =
-        "John does teacher\nMargaret does accountant\n\nCost 7\n";
-    if (expected != result)
-        return false;
-
-    allocator.clear();
-    allocator.addTaskType("teacher");
-    allocator.addTaskType("cleaner");
-    allocator.addTaskType("accountant");
-
-    // add most expensive agent first
-    // to test that the Hungarian optimizes the total slot cost
-
-    allocator.addAgent(
-        "Andrew",
-        {"accountant teacher"},
-        5.0,
-        "none");
-
-    allocator.addAgent(
-        "John",
-        {"teacher cleaner"},
-        3.0,
-        "none");
-    allocator.addAgent(
-        "Margaret",
-        {"accountant cleaner"},
-        4.0,
-        "none");
-    allocator.addSlot(
-        "202311020830",
-        {"teacher accountant"});
+    readstring(
+        allocator,
+        "a Andrew 5 A accountant teacher\n"
+        "a John 3 A teacher cleaner\n"
+        "a Margaret 4 A accountant cleaner\n"
+        "t 202311020830 teacher accountant\n"    );
 
     Janusz(allocator);
     result = allocator.agents2TasksText();
@@ -197,31 +113,17 @@ bool unitTest()
     expected =
         "John does teacher\nMargaret does accountant\n\nCost 7\n";
     if (expected != result)
-        return false;
+         throw std::runtime_error(utname + " unit test failed");
 
-    allocator.clear();
-    allocator.addTaskType("teacher");
-
-    allocator.addAgent(
-        "Andrew",
-        {"teacher"},
-        1.0,
-        "none");
-    allocator.addAgent(
-        "John",
-        {"teacher cleaner"},
-        1.0,
-        "none");
-
-    allocator.addSlot(
-        "202311020830",
-        {"teacher"});
-    allocator.addSlot(
-        "202311030830",
-        {"teacher"});
-    allocator.addSlot(
-        "202311040830",
-        {"teacher"});
+    utname = "tid13";
+    readstring(
+        allocator,
+        "a Andrew 1 A teacher\n"
+        "a John 1 A teacher cleaner\n"
+        "t 202311020830 teacher\n"
+        "t 202311030830 teacher\n"
+        "t 202311040830 teacher\n"
+    );
 
     Janusz(allocator);
 
@@ -230,16 +132,16 @@ bool unitTest()
     expected =
         "Andrew does teacher\n\nCost 1\n";
     if (expected != result)
-        return false;
+        throw std::runtime_error(utname + " unit test failed");
     allocator.setSlotNext();
     result = allocator.agents2TasksText();
     expected =
         "John does teacher\n\nCost 1\n";
     if (expected != result)
-        return false;
+        throw std::runtime_error(utname + " unit test failed");
 
     // test https://github.com/JamesBremner/Agents2Tasks/issues/10
-
+    utname = "tid10";
     readstring(
         allocator,
         "a Andrew 1 teacher\n"
@@ -261,11 +163,6 @@ bool unitTest()
         "No tasks assigned\n";
     if (expected != result)
         return false;
-
-
-
-
-
 
     return true;
 }
