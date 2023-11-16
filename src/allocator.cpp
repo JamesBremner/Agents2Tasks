@@ -96,8 +96,25 @@ bool cAgent::isAssignedRecently(
     int day,
     const std::string &taskname) const
 {
-    // https://github.com/JamesBremner/Agents2Tasks/issues/8
-    const int hours_blocked = 48;
+    /*
+    Assigning an agent should block another assignment of that agent
+    for two full days - the rest of the day assigned and all of the next day.
+
+    This is implemented by backdating the first assignent and the potential assignment being testes
+    to the previous midnight, so the exact time of day of the assignment is irrelevant.
+
+    Example:
+
+    0830 Mon -> 00000 Monday
+    1000 Tue -> 0000 Tuesday Delta: 24 hours BLOCKED
+    0830 Wed -> 0000 Wed Delta: 48 hours OK
+
+     https://github.com/JamesBremner/Agents2Tasks/issues/8
+     https://github.com/JamesBremner/Agents2Tasks/issues/23
+
+     */
+    const int full_days_blocked = 2;
+    const int hours_blocked = 24 * ( full_days_blocked - 1);
 
     if (
         std::chrono::duration_cast<std::chrono::hours>(
