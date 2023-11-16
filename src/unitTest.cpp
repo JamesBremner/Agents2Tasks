@@ -4,6 +4,36 @@ bool unitTest()
 {
     cAllocator allocator;
 
+    // check blocking, not per task type
+    readstring(
+        allocator,
+        "a alice 1 teacher cleaner\n"
+        "t 202311010830 cleaner\n"
+        "t 202311020830 teacher\n"
+        "t 202311031000 teacher\n"    );
+
+    Janusz( allocator );
+
+    allocator.setSlotFirst();
+    auto result = allocator.agents2TasksText();
+    std::string expected =
+        "alice does cleaner\n\nCost 1\n";
+    if (expected != result)
+        return false;
+    allocator.setSlotNext();
+    result = allocator.agents2TasksText();
+    expected =
+        "No tasks assigned\n";
+    if (expected != result)
+        return false;
+    allocator.setSlotNext();
+    result = allocator.agents2TasksText();
+    expected =
+        "alice does teacher\n\nCost 1\n";
+    if (expected != result)
+        return false;
+    allocator.setSlotFirst();
+
     allocator.clear();
     allocator.addTaskType("teacher");
     allocator.addTaskType("cleaner");
@@ -26,9 +56,9 @@ bool unitTest()
 
     allocator.hungarian();
 
-    auto result = allocator.hungarianText();
+    result = allocator.hungarianText();
 
-    std::string expected =
+    expected =
         "John does teacher\nMargaret does teacher\nAndrew does cleaner\n\nCost 12\n";
 
     if (expected != result)
