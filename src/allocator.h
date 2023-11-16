@@ -20,8 +20,8 @@ class cAllocator;
 class cSlot
 {
     std::string myName;
-    std::vector<int> myTasks;   // indices of tasks in this slot
-    std::set<int> myFamily;  // indices of family groups assigned to this slot
+    std::vector<int> myTasks; // indices of tasks in this slot
+    std::set<int> myFamily;   // indices of family groups assigned to this slot
 
 public:
     cSlot(
@@ -32,9 +32,9 @@ public:
     {
     }
 
-    void assign( int iFamily )
+    void assign(int iFamily)
     {
-        myFamily.insert( iFamily );
+        myFamily.insert(iFamily);
     }
 
     std::string name() const
@@ -69,6 +69,10 @@ public:
     std::vector<int> getTasks() const
     {
         return myTasks;
+    }
+    bool hasFamily(int iFamily) const
+    {
+        return (myFamily.find(iFamily) != myFamily.end());
     }
 
     std::vector<int>::iterator begin()
@@ -203,7 +207,7 @@ public:
         const std::string &name,
         const std::string &canDoTaskTypes,
         double cost,
-        const std::string& family);
+        const std::string &family);
 
     void addTaskType(
         const std::string &stype);
@@ -250,7 +254,8 @@ public:
             a.unAssign();
     }
 
-    void sortAgents();
+    void sortAgents(const cSlot &slot);
+
     std::vector<int> sortTasksByAgentCount(
         const cSlot &slot);
 
@@ -275,12 +280,12 @@ public:
     void hungarian();
 
     /// @brief Assign agent to task
-    /// @param agent 
-    /// @param slot 
+    /// @param agent
+    /// @param slot
 
     void assign(
-        cAgent& agent,
-        cSlot& slot );
+        cAgent &agent,
+        cSlot &slot);
 
     std::vector<cAgent> &getAgents()
     {

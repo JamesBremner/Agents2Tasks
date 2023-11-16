@@ -73,7 +73,7 @@ void cGUI::menuCTOR()
                     wex::filebox fb(fm);
                     auto fname = fb.open();
                     fm.text("Agents2Tasks " + fname);
-                    readfile(allocator,fname);
+                    readfile(allocator, fname);
                     allocator.maxflow();
                     allocator.hungarian();
                     Janusz(allocator);
@@ -83,7 +83,7 @@ void cGUI::menuCTOR()
                 [&](const std::string &title)
                 {
                     wex::filebox fb(fm);
-                    writefile(allocator,fb.save());
+                    writefile(allocator, fb.save());
                 });
     file.append("Example1",
                 [&](const std::string &title)
@@ -93,21 +93,23 @@ void cGUI::menuCTOR()
                     // do the allocation
                     allocator.maxflow();
                     allocator.hungarian();
-                    Janusz( allocator );
+                    Janusz(allocator);
                 });
     file.append("Unit Test",
                 [&](const std::string &title)
                 {
-                    if (!unitTest())
+                    try
                     {
-                        wex::msgbox mb("Unit test failed");
-                        throw std::runtime_error("16 "
-                            "Unit test failed");
+                        if (!unitTest())
+                            throw std::runtime_error("16 Unit test failed");
                     }
-                    else
+                    catch (std::exception &e)
                     {
-                        wex::msgbox mb("Unit test passed");
+                        std::string msg = "16 " + std::string(e.what());
+                        wex::msgbox mb(msg);
+                        throw std::runtime_error(msg);
                     }
+                    wex::msgbox mb("Unit test passed");
                 });
     mbar.append("File", file);
 
@@ -195,7 +197,7 @@ void cGUI::plAssignCTOR()
     rbMaxflow.text("Max Flow");
     rbHungarian.move(200, 100, 120, 30);
     rbHungarian.text("Hungarian");
-    rbAgent2Tasks.move(350,100,120,30);
+    rbAgent2Tasks.move(350, 100, 120, 30);
     rbAgent2Tasks.text("Agent2Task");
     rbAgent2Tasks.check();
 

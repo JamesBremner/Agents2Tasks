@@ -28,7 +28,7 @@ void Janusz(cAllocator &A)
 
         */
 
-        A.sortAgents();
+
 
         /* Sort slot tasks into ascending order of number of agents capable of doing each task
 
@@ -45,6 +45,8 @@ void Janusz(cAllocator &A)
         for (int taskIndex : sortedTaskIndex)
         {
             cTask &task = A.task(taskIndex);
+            
+            A.sortAgents( slot );
 
             // find cheapest unassigned agent that can do the task
             double bestCost = INT_MAX;

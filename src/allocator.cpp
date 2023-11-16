@@ -127,7 +127,7 @@ bool cAgent::isAssignedRecently(
 
      */
     const int full_days_blocked = 2;
-    const int hours_blocked = 24 * ( full_days_blocked - 1);
+    const int hours_blocked = 24 * (full_days_blocked - 1);
 
     if (
         std::chrono::duration_cast<std::chrono::hours>(
@@ -141,7 +141,8 @@ bool cAgent::isAssignedRecently(
 void cAgent::writefile(
     std::ofstream &ofs) const
 {
-    ofs << "a " << myName << " " << myTasks[0].second << " ";
+    ofs << "a " << myName << " " << myTasks[0].second
+        << " " << vFamily[myFamily] << " ";
     for (auto &it : myTasks)
     {
         ofs << cTask::typeName(it.first) << " ";
@@ -243,7 +244,7 @@ void cAllocator::addAgent(
     const std::string &name,
     const std::string &canDoTaskTypes,
     double cost,
-    const std::string& family)
+    const std::string &family)
 {
     int iAgent;
     if (isAgent(name, iAgent))
@@ -532,16 +533,34 @@ void cAllocator::assign(
     cAgent &agent,
     cSlot &slot)
 {
-    slot.assign( agent.family() );
+    slot.assign(agent.family());
 }
 
-void cAllocator::sortAgents()
+void cAllocator::sortAgents(
+    const cSlot &slot)
 {
-    std::sort(
+
+    // prefer to assign agents that have the least previous workload
+    std::stable_sort(
         myAgent.begin(), myAgent.end(),
         [](const cAgent &a, const cAgent &b)
         {
             return (a.assignedCount() < b.assignedCount());
+        });
+
+    /* prefer to assign agents that have family members already assigned to the slot
+
+    This sort is done second because family grouping is the higher priority
+    https://github.com/JamesBremner/Agents2Tasks/issues/21#issuecomment-1813504598
+
+    The stable sort ensures that agents in the same group but with the least previous workload will be assigned.
+    */
+
+    std::stable_sort(
+        myAgent.begin(), myAgent.end(),
+        [&](const cAgent &a, const cAgent &b)
+        {
+            return slot.hasFamily(a.family());
         });
 }
 

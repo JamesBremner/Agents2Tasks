@@ -63,6 +63,10 @@ public:
 
     double cost() const;
 
+    void setPreviousTasks( int c )
+    {
+        myAssignedCount = c;
+    }
     void unAssign()
     {
         fAssigned = false;
