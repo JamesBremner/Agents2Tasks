@@ -70,6 +70,11 @@ public:
     {
         return myTasks;
     }
+
+    /// @brief true if specified family group has been assigned to a task in slot
+    /// @param iFamily 
+    /// @return 
+    
     bool hasFamily(int iFamily) const
     {
         return (myFamily.find(iFamily) != myFamily.end());
