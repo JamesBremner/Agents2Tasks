@@ -24,12 +24,12 @@ class cAgent
         https://github.com/JamesBremner/Agents2Tasks/issues/5#issuecomment-1799230242
     */
 
-    int myAssignedCount; 
+    int myAssignedCount;
 
-    timepoint_t myLastAssignmentTime;   //  00:00:01 on day of previous assignment 
+    timepoint_t myLastAssignmentTime; //  00:00:01 on day of previous assignment
 
-    static std::vector<std::string> vFamily;    // family group names
-    int myFamily;                               // family group index
+    static std::vector<std::string> vFamily; // family group names
+    int myFamily;                            // family group index
 
 public:
     /// @brief Constructor
@@ -42,13 +42,14 @@ public:
         const std::string &name,
         const std::vector<int> &vt,
         double cost,
-        const std::string family );
+        const std::string family);
     cAgent(
         const std::string &name,
         const std::vector<int> &vt,
-        double cost )
-        : cAgent( name, vt, cost, "none" )
-        {}
+        double cost)
+        : cAgent(name, vt, cost, "none")
+    {
+    }
 
     std::string name() const
     {
@@ -63,7 +64,7 @@ public:
 
     double cost() const;
 
-    void setPreviousTasks( int c )
+    void setPreviousTasks(int c)
     {
         myAssignedCount = c;
     }
@@ -108,4 +109,6 @@ public:
 
     void writefile(
         std::ofstream &ofs) const;
+
+    std::string logText() const;
 };

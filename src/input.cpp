@@ -58,4 +58,5 @@ void input(
         }
     }
     allocator.isSlotSane();
+    allocator.log( allocator.textProblem() );
 }

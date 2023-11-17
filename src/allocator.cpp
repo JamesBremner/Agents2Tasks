@@ -149,6 +149,16 @@ void cAgent::writefile(
     }
     ofs << "\n";
 }
+
+std::string cAgent::logText() const
+{
+    std::stringstream ss;
+    ss << myName << " assigned " << fAssigned
+       << " count " << myAssignedCount
+       << "\n";
+    return ss.str();
+}
+
 std::string cSlot::text(
     const cAllocator &allocator) const
 {
@@ -212,21 +222,28 @@ std::string cAssigns::text(
     return ss.str();
 }
 
-void cAssigns::writeFile(
-    std::ofstream &ofs,
-    const char cid) const
+std::string cAssigns::textFile(const char cid) const
 {
-    int slotID = 0;
+    std::stringstream ss;
+      int slotID = 0;
     for (auto &slot : myAssigns)
     {
         for (auto &ap : slot)
         {
-            ofs << cid
+            ss << cid
                 << " " << mySlotName[slotID]
                 << " " << ap.first << " to " << ap.second << "\n";
         }
         slotID++;
-    }
+    }  
+    return ss.str();
+}
+
+void cAssigns::writeFile(
+    std::ofstream &ofs,
+    const char cid) const
+{
+    ofs << textFile( cid );
 }
 
 void cAllocator::clear()
@@ -539,6 +556,8 @@ void cAllocator::assign(
 void cAllocator::sortAgents(
     const cSlot &slot)
 {
+    theLog("\n=> sortAgents\n");
+    agentsLog();
 
     // prefer to assign agents that have the least previous workload
     std::stable_sort(
@@ -562,6 +581,9 @@ void cAllocator::sortAgents(
         {
             return slot.hasFamily(a.family());
         });
+
+    theLog("\n<= sortAgents\n");
+    agentsLog();
 }
 
 std::vector<int> cAllocator::sortTasksByAgentCount(
@@ -619,6 +641,14 @@ void cAllocator::example1()
     // addSlot(
     //     "3/NOV/2023/10:00",
     //     {"teacher accountant"});
+}
+
+
+
+void cAllocator::agentsLog()
+{
+    for (auto &a : myAgent)
+        theLog(a.logText());
 }
 
 void writefile(

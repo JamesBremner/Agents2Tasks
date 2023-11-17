@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <vector>
 #include <set>
@@ -7,10 +8,30 @@
 
 #include "../../PathFinder/src/GraphTheory.h"
 
+
+
 typedef std::vector<std::pair<std::string, std::string>> slotsolution_t;
 typedef std::vector<slotsolution_t> solution_t;
 
 class cAllocator;
+
+class cLogger
+{
+    bool flog;
+    std::ofstream ofs;
+    public:
+
+    cLogger();
+    
+    void headline();
+
+    void operator()(const std::string& msg )
+    {
+        if( ! flog )
+            return;
+        ofs << msg;
+    }
+};
 
 #include "cAgent.h"
 
@@ -74,7 +95,7 @@ public:
     /// @brief true if specified family group has been assigned to a task in slot
     /// @param iFamily 
     /// @return 
-    
+
     bool hasFamily(int iFamily) const
     {
         return (myFamily.find(iFamily) != myFamily.end());
@@ -159,12 +180,23 @@ public:
         const std::string &slotName,
         double cost);
 
+    /// @brief text for GUI display
+    /// @param slotIndex 
+    /// @return 
     std::string text(
         int slotIndex) const;
 
+    /// @brief write to output file
+    /// @param ofs 
+    /// @param cid 
     void writeFile(
         std::ofstream &ofs,
         const char cid) const;
+
+    /// @brief text for file
+    /// @param cid 
+    /// @return 
+    std::string textFile(const char cid) const;
 };
 
 enum class eOptimizer
@@ -186,6 +218,8 @@ class cAllocator
     cAssigns mySolutionAgents2Task;
 
     int mySlotCurrent;
+
+    cLogger theLog;
 
     bool isAgent(
         const std::string &name,
@@ -355,6 +389,12 @@ public:
     std::string slotName() const
     {
         return mySlot[mySlotCurrent].name();
+    }
+
+    void agentsLog();
+    void log( const std::string& msg  )
+    {
+        theLog( msg );
     }
 };
 

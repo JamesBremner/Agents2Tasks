@@ -6,6 +6,8 @@ void Janusz(cAllocator &A)
 
     for (auto &slot : A.getSlots())
     {
+        A.log( "\n=========== slot " + slot.name() + "========\n\n" );
+
         slotsolution_t slotSolution;
         int agentsUnassignedCount = A.getAgents().size();
         int tasksUnassignedCount = slot.taskCount();
@@ -105,7 +107,7 @@ void Janusz(cAllocator &A)
             agentsUnassignedCount--;
 
             if (tasksUnassignedCount)
-                std::cout << "Slot " << slot.name() << " unassigned tasks\n";
+                A.log("Slot " + slot.name() + " unassigned tasks\n");
 
             // check for all agents assigned
             if (!agentsUnassignedCount)
