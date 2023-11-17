@@ -50,6 +50,7 @@ main(int argc, char *argv[])
     }
     catch (std::exception &e)
     {
+        A.log("Exception " + std::string(e.what()));
         errorHandler(
             e.what());
     }

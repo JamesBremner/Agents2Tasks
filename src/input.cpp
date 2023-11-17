@@ -6,6 +6,7 @@ void readfile(
     cAllocator &allocator,
     const std::string &fname)
 {
+    allocator.log("Input file " + fname);
     std::ifstream ifs(fname);
     if (!ifs.is_open())
         throw std::runtime_error("15 "
