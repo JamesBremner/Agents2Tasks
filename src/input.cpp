@@ -37,6 +37,7 @@ void input(
 
         switch (line[0])
         {
+
         case 'a':
             p = line.find(" ");
             p = line.find(" ", p + 1);
@@ -47,6 +48,10 @@ void input(
                 line.substr(p + 1),
                 atof(vtoken[2].c_str()),
                 vtoken[3]);
+            break;
+
+        case 'g':
+            allocator.addAgentGroup( vtoken );
             break;
 
         case 't':

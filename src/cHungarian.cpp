@@ -28,10 +28,10 @@ cHungarian::cHungarian(
         for (int task : slot)
         {
             // check if agent can be assigned to task
-            if (!agent.isAble(allocator.getTaskTypeID(task)))
+            if (!agent->isAble(allocator.getTaskTypeID(task)))
                 row.push_back(unablePenalty);
             else
-                row.push_back(agent.cost());
+                row.push_back(agent->cost());
         }
         myMxCost.push_back(row);
     }
@@ -145,7 +145,7 @@ std::pair<std::string, std::string> cHungarian::AssignReduce()
     {
         // assign last agent to first available task
         // ( assumes fixed cost for agent on any task)
-        retAgentTask.first = myAgent[myRowAgent[0]].name();
+        retAgentTask.first = myAgent[myRowAgent[0]]->name();
         retAgentTask.second = myTaskType[myColTask[0]];
         // std::cout << retAgentTask.first << " to "
         //           << retAgentTask.second << "\n";
@@ -163,7 +163,7 @@ std::pair<std::string, std::string> cHungarian::AssignReduce()
             int bestAgent = -1;
             for (int ai : myRowAgent)
             {
-                double cost = myAgent[ai].cost();
+                double cost = myAgent[ai]->cost();
                 if (cost < bestCost)
                 {
                     bestCost = cost;
@@ -171,7 +171,7 @@ std::pair<std::string, std::string> cHungarian::AssignReduce()
                 }
             }
 
-            retAgentTask.first = myAgent[bestAgent].name();
+            retAgentTask.first = myAgent[bestAgent]->name();
             retAgentTask.second = myTaskType[myColTask[0]];
             // std::cout << retAgentTask.first << " to "
             //           << retAgentTask.second << "\n";
@@ -186,7 +186,7 @@ std::pair<std::string, std::string> cHungarian::AssignReduce()
         if (myMxCost[row][0] < maxZero)
         {
             // assign min cost agent to task
-            retAgentTask.first = myAgent[myRowAgent[row]].name();
+            retAgentTask.first = myAgent[myRowAgent[row]]->name();
             retAgentTask.second = myTaskType[myColTask[0]];
             // std::cout << retAgentTask.first << " to "
             //           << retAgentTask.second << "\n";

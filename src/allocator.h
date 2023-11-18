@@ -119,7 +119,7 @@ public:
 
 class cHungarian
 {
-    const std::vector<cAgent> &myAgent;
+    const std::vector<cAgent*> &myAgent;
     const std::vector<std::string> &myTaskType;
 
     std::vector<std::vector<double>> myMxCost; // cost matrix
@@ -209,7 +209,7 @@ enum class eOptimizer
 
 class cAllocator
 {
-    std::vector<cAgent> myAgent; // agents
+    std::vector<cAgent*> myAgent; // agents
     std::vector<cTask> myTask;   // defined tasks
     std::vector<cSlot> mySlot;   // slots containg tasks
 
@@ -247,6 +247,9 @@ public:
         const std::string &canDoTaskTypes,
         double cost,
         const std::string &family);
+
+    void addAgentGroup(
+        const std::vector<std::string>& vtoken     );
 
     void addTaskType(
         const std::string &stype);
@@ -289,8 +292,8 @@ public:
 
     void unassignAgents()
     {
-        for (auto &a : myAgent)
-            a.unAssign();
+        for (auto *a : myAgent)
+            a->unAssign();
     }
 
     void sortAgents(const cSlot &slot);
@@ -326,11 +329,11 @@ public:
         cAgent &agent,
         cSlot &slot);
 
-    std::vector<cAgent> &getAgents()
+    std::vector<cAgent*> &getAgents()
     {
         return myAgent;
     }
-    const std::vector<cAgent> &getconstAgents() const
+    const std::vector<cAgent*> &getconstAgents() const
     {
         return myAgent;
     }

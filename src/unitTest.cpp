@@ -49,7 +49,7 @@ bool unitTest()
         "t 202311011000 cleaner cleaner\n");
 
     // give Alice a history of heavy workload
-    allocator.getAgents()[2].setPreviousTasks( 10 );
+    allocator.getAgents()[2]->setPreviousTasks( 10 );
 
     Janusz(allocator);
     result = allocator.agents2TasksText();

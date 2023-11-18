@@ -155,7 +155,7 @@ std::string cAgent::logText() const
     std::stringstream ss;
     ss << myName << " assigned " << fAssigned
        << " count " << myAssignedCount
-       << " family " << vFamily[ myFamily ]
+       << " family " << vFamily[myFamily]
        << "\n";
     return ss.str();
 }
@@ -226,17 +226,17 @@ std::string cAssigns::text(
 std::string cAssigns::textFile(const char cid) const
 {
     std::stringstream ss;
-      int slotID = 0;
+    int slotID = 0;
     for (auto &slot : myAssigns)
     {
         for (auto &ap : slot)
         {
             ss << cid
-                << " " << mySlotName[slotID]
-                << " " << ap.first << " to " << ap.second << "\n";
+               << " " << mySlotName[slotID]
+               << " " << ap.first << " to " << ap.second << "\n";
         }
         slotID++;
-    }  
+    }
     return ss.str();
 }
 
@@ -244,12 +244,15 @@ void cAssigns::writeFile(
     std::ofstream &ofs,
     const char cid) const
 {
-    ofs << textFile( cid );
+    ofs << textFile(cid);
 }
 
 void cAllocator::clear()
 {
+    for( cAgent* pa : myAgent )
+        delete pa; 
     myAgent.clear();
+
     myTask.clear();
     cTask::clear();
     mySlot.clear();
@@ -270,11 +273,23 @@ void cAllocator::addAgent(
                                  "Duplicate agent name" +
                                  name);
 
-    myAgent.emplace_back(
-        name,
-        taskTypeIndices(canDoTaskTypes),
-        cost,
-        family);
+    /* Construct new agent and sore pointer to it
+    
+    Agents persist until the console program exits
+
+    TODO care for GUI that can do recalcs
+    */
+    myAgent.push_back(
+        new cAgent(
+            name,
+            taskTypeIndices(canDoTaskTypes),
+            cost,
+            family));
+}
+
+void cAllocator::addAgentGroup(
+    const std::vector<std::string> &vtoken)
+{
 }
 
 void cAllocator::addTaskType(
@@ -359,9 +374,9 @@ bool cAllocator::isAgent(
 {
     auto it = std::find_if(
         myAgent.begin(), myAgent.end(),
-        [name](const cAgent &ag)
+        [name](const cAgent *ag)
         {
-            return (ag.name() == name);
+            return (ag->name() == name);
         });
     if (it == myAgent.end())
     {
@@ -426,9 +441,9 @@ std::string cAllocator::textProblem() const
     ss << cTask::typeText() << "\n\n";
 
     ss << "Agents\n==========\n";
-    for (auto &agent : myAgent)
+    for (auto *agent : myAgent)
     {
-        ss << agent.text() << "\n\n";
+        ss << agent->text() << "\n\n";
     }
 
     ss << "Time slots\n==========\n";
@@ -448,7 +463,7 @@ double cAllocator::slotCost(
     {
         int iAgent;
         isAgent(edge.first, iAgent);
-        cost += myAgent[iAgent].cost();
+        cost += myAgent[iAgent]->cost();
     }
     return cost;
 }
@@ -458,7 +473,7 @@ std::vector<int> cAllocator::findAgentsForTask(int task)
     std::vector<int> ret;
     for (int kag = 0; kag < myAgent.size(); kag++)
     {
-        if (myAgent[kag].isAble(task))
+        if (myAgent[kag]->isAble(task))
             ret.push_back(kag);
     }
     return ret;
@@ -483,14 +498,14 @@ void cAllocator::maxflow()
             // loop over agents
             for (int kag = 0; kag < myAgent.size(); kag++)
             {
-                if (myAgent[kag].isAble(myTask[task].taskType()))
+                if (myAgent[kag]->isAble(myTask[task].taskType()))
                 {
                     // add link from agent to task agent is able to do
                     g.add(
-                        myAgent[kag].name(),
+                        myAgent[kag]->name(),
                         "task" + std::to_string(task));
 
-                    std::cout << myAgent[kag].name() << " can do " << task << "\n";
+                    std::cout << myAgent[kag]->name() << " can do " << task << "\n";
                 }
             }
         }
@@ -563,9 +578,9 @@ void cAllocator::sortAgents(
     // prefer to assign agents that have the least previous workload
     std::stable_sort(
         myAgent.begin(), myAgent.end(),
-        [](const cAgent &a, const cAgent &b)
+        [](const cAgent *a, const cAgent *b)
         {
-            return (a.assignedCount() < b.assignedCount());
+            return (a->assignedCount() < b->assignedCount());
         });
 
     /* prefer to assign agents that have family members already assigned to the slot
@@ -578,9 +593,9 @@ void cAllocator::sortAgents(
 
     std::stable_sort(
         myAgent.begin(), myAgent.end(),
-        [&](const cAgent &a, const cAgent &b)
+        [&](const cAgent *a, const cAgent *b)
         {
-            return slot.hasFamily(a.family());
+            return slot.hasFamily(a->family());
         });
 
     theLog("\n<= sortAgents\n");
@@ -644,12 +659,10 @@ void cAllocator::example1()
     //     {"teacher accountant"});
 }
 
-
-
 void cAllocator::agentsLog()
 {
-    for (auto &a : myAgent)
-        theLog(a.logText());
+    for (auto *a : myAgent)
+        theLog(a->logText());
 }
 
 void writefile(
@@ -662,7 +675,7 @@ void writefile(
                                  "Cannot open output file");
 
     for (auto &a : allocator.getconstAgents())
-        a.writefile(ofs);
+        a->writefile(ofs);
 
     for (auto &t : allocator.getconstSlots())
         t.writefile(ofs, allocator);

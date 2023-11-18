@@ -112,3 +112,19 @@ public:
 
     std::string logText() const;
 };
+
+class cAgentGroup : public cAgent
+{
+    std::vector<int> myAgent;   // IDs of agents in group
+    int myTaskID;               // ID of task capability
+
+    public:
+    void add( int agentID)
+    {
+        myAgent.push_back( agentID );
+    }
+    void setTask( int taskID )
+    {
+        myTaskID = taskID;
+    }
+};

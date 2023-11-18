@@ -28,10 +28,10 @@ void cLogger::headline()
     long unsigned int bufCharCount = INFO_BUFFER_SIZE;
 
     // Get and display the name of the computer.
-    GetComputerName(computer, &bufCharCount);
+    GetComputerNameA(computer, &bufCharCount);
 
     bufCharCount = INFO_BUFFER_SIZE;
-    GetUserName( user, &bufCharCount );
+    GetUserNameA( user, &bufCharCount );
 
     ofs
         << "Agents2Tasks by " << user

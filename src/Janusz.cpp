@@ -56,30 +56,30 @@ void Janusz(cAllocator &A)
             // find cheapest unassigned agent that can do the task
             double bestCost = INT_MAX;
             cAgent *pbestAgent = 0;
-            for (auto &agent : A.getAgents())
+            for (auto *agent : A.getAgents())
             {
                 // std::cout << "try " << agent.name() << " for " << task.typeName() << "\n";
 
                 // already assigned in this slot
-                if (agent.isAssigned())
+                if (agent->isAssigned())
                     continue;
 
                 // can't do the task
-                if (!agent.isAble(task.taskType()))
+                if (!agent->isAble(task.taskType()))
                     continue;
 
                 // assigned to task type recently
-                if (agent.isAssignedRecently(
+                if (agent->isAssignedRecently(
                         slot.day(),
                         task.typeName()))
                     continue;
 
                 // is cheapest so far?
-                double cost = agent.cost();
+                double cost = agent->cost();
                 if (cost < bestCost)
                 {
                     bestCost = cost;
-                    pbestAgent = &agent;
+                    pbestAgent = agent;
                 }
             }
             if (!pbestAgent)
