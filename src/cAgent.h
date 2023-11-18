@@ -77,7 +77,7 @@ public:
     /// @param day integer representing day of slot
     /// @param taskTypeName task type name
 
-    void assign(
+    void assignTask(
         int day,
         const std::string &taskTypeName);
 

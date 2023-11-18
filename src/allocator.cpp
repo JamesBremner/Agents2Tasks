@@ -96,7 +96,7 @@ timepoint(int day)
     return std::chrono::system_clock::from_time_t(tt);
 }
 
-void cAgent::assign(
+void cAgent::assignTask(
     int day,
     const std::string &taskTypeName)
 {
@@ -155,6 +155,7 @@ std::string cAgent::logText() const
     std::stringstream ss;
     ss << myName << " assigned " << fAssigned
        << " count " << myAssignedCount
+       << " family " << vFamily[ myFamily ]
        << "\n";
     return ss.str();
 }

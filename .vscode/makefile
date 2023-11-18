@@ -28,6 +28,7 @@ OBJ_a2t = \
 	$(ODIR)/Janusz.o \
 	$(ODIR)/unitTest.o \
 	$(ODIR)/input.o \
+	$(ODIR)/cLogger.o \
 	$(ODIR)/cGraph.o \
 	$(ODIR)/GraphTheory.o 
 

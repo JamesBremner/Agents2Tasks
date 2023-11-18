@@ -6,7 +6,7 @@ void Janusz(cAllocator &A)
 
     for (auto &slot : A.getSlots())
     {
-        A.log( "\n=========== slot " + slot.name() + "========\n\n" );
+        A.log("\n=========== slot " + slot.name() + "========\n\n");
 
         slotsolution_t slotSolution;
         int agentsUnassignedCount = A.getAgents().size();
@@ -14,23 +14,6 @@ void Janusz(cAllocator &A)
 
         // unassign all agents
         A.unassignAgents();
-
-        /* Sort agents in ascending order of previous assignments
-
-          So that if there are multiple agents of equal cost available to do a task,
-          the task will be assigned to the agent with the fewest assignments in the previous timeslots.
-
-          So the uneven distribution of work to agents when there are more agents than work
-          and the agents have the same cost per assignment
-          will decrease as a percentage of total assignments
-          as the number of timeslots increases
-          with a limit of +/- 1 assignments per agent.
-
-          https://github.com/JamesBremner/Agents2Tasks/issues/5#issuecomment-1801948876
-
-        */
-
-
 
         /* Sort slot tasks into ascending order of number of agents capable of doing each task
 
@@ -41,14 +24,34 @@ void Janusz(cAllocator &A)
 
         */
 
-        auto sortedTaskIndex = A.sortTasksByAgentCount( slot );
+        auto sortedTaskIndex = A.sortTasksByAgentCount(slot);
 
         // loop over slot tasks
         for (int taskIndex : sortedTaskIndex)
         {
             cTask &task = A.task(taskIndex);
-            
-            A.sortAgents( slot );
+
+            /* Sort agents in ascending order of previous assignments
+
+              So that if there are multiple agents of equal cost available to do a task,
+              the task will be assigned to the agent with the fewest assignments in the previous timeslots.
+
+              So the uneven distribution of work to agents when there are more agents than work
+              and the agents have the same cost per assignment
+              will decrease as a percentage of total assignments
+              as the number of timeslots increases
+              with a limit of +/- 1 assignments per agent.
+
+              https://github.com/JamesBremner/Agents2Tasks/issues/5#issuecomment-1801948876
+
+              Additionally that agents are sorted by family so that families can be kept together
+              in a timeslot where feasible
+
+              https://github.com/JamesBremner/Agents2Tasks/issues/21
+
+            */
+
+            A.sortAgents(slot);
 
             // find cheapest unassigned agent that can do the task
             double bestCost = INT_MAX;
@@ -88,7 +91,7 @@ void Janusz(cAllocator &A)
 
             A.assign(
                 *pbestAgent,
-                slot            );
+                slot);
 
             // add agent name, task type name pair to slot solution
             slotSolution.push_back(
@@ -101,7 +104,7 @@ void Janusz(cAllocator &A)
             tasksUnassignedCount--;
 
             // mark agent as assigned
-            pbestAgent->assign(
+            pbestAgent->assignTask(
                 slot.day(),
                 task.typeName());
             agentsUnassignedCount--;
@@ -120,5 +123,5 @@ void Janusz(cAllocator &A)
             slot.name(),
             A.slotCost(slotSolution));
 
-    }   // end of slot loop
+    } // end of slot loop
 }
