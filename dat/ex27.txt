@@ -1,0 +1,5 @@
+a Alice 1 A Cleaner
+a Bob 1 B Cleaner
+a Carol 1 C Cleaner Acolyte
+g Cleaner Alice Bob Carol
+t 202311181000 Cleaner

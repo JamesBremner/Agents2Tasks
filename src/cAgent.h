@@ -4,6 +4,8 @@ typedef std::chrono::system_clock::time_point timepoint_t;
 
 class cAgent
 {
+    protected:
+
     std::string myName;
 
     /// @brief tasks agent ready to do ( task type id, cost )
@@ -107,8 +109,9 @@ public:
 
     std::string text() const;
 
-    void writefile(
-        std::ofstream &ofs) const;
+    virtual void writefile(
+        std::ofstream &ofs,
+             const cAllocator& A) const;
 
     std::string logText() const;
 };
@@ -116,15 +119,20 @@ public:
 class cAgentGroup : public cAgent
 {
     std::vector<int> myAgent;   // IDs of agents in group
-    int myTaskID;               // ID of task capability
 
     public:
+
+    cAgentGroup(
+        const cAllocator& A,
+        const std::vector<std::string>& vtoken,
+        int taskID );
+
     void add( int agentID)
     {
         myAgent.push_back( agentID );
     }
-    void setTask( int taskID )
-    {
-        myTaskID = taskID;
-    }
+
+    virtual void writefile(
+        std::ofstream &ofs,
+             const cAllocator& A) const;
 };

@@ -8,8 +8,6 @@
 
 #include "../../PathFinder/src/GraphTheory.h"
 
-
-
 typedef std::vector<std::pair<std::string, std::string>> slotsolution_t;
 typedef std::vector<slotsolution_t> solution_t;
 
@@ -19,15 +17,15 @@ class cLogger
 {
     bool flog;
     std::ofstream ofs;
-    public:
 
+public:
     cLogger();
-    
+
     void headline();
 
-    void operator()(const std::string& msg )
+    void operator()(const std::string &msg)
     {
-        if( ! flog )
+        if (!flog)
             return;
         ofs << msg;
     }
@@ -93,8 +91,8 @@ public:
     }
 
     /// @brief true if specified family group has been assigned to a task in slot
-    /// @param iFamily 
-    /// @return 
+    /// @param iFamily
+    /// @return
 
     bool hasFamily(int iFamily) const
     {
@@ -119,7 +117,7 @@ public:
 
 class cHungarian
 {
-    const std::vector<cAgent*> &myAgent;
+    const std::vector<cAgent *> &myAgent;
     const std::vector<std::string> &myTaskType;
 
     std::vector<std::vector<double>> myMxCost; // cost matrix
@@ -181,21 +179,21 @@ public:
         double cost);
 
     /// @brief text for GUI display
-    /// @param slotIndex 
-    /// @return 
+    /// @param slotIndex
+    /// @return
     std::string text(
         int slotIndex) const;
 
     /// @brief write to output file
-    /// @param ofs 
-    /// @param cid 
+    /// @param ofs
+    /// @param cid
     void writeFile(
         std::ofstream &ofs,
         const char cid) const;
 
     /// @brief text for file
-    /// @param cid 
-    /// @return 
+    /// @param cid
+    /// @return
     std::string textFile(const char cid) const;
 };
 
@@ -209,9 +207,9 @@ enum class eOptimizer
 
 class cAllocator
 {
-    std::vector<cAgent*> myAgent; // agents
-    std::vector<cTask> myTask;   // defined tasks
-    std::vector<cSlot> mySlot;   // slots containg tasks
+    std::vector<cAgent *> myAgent; // agents
+    std::vector<cTask> myTask;     // defined tasks
+    std::vector<cSlot> mySlot;     // slots containg tasks
 
     cAssigns mySolutionMaxflow;
     cAssigns mySolutionHungarian;
@@ -221,9 +219,6 @@ class cAllocator
 
     cLogger theLog;
 
-    bool isAgent(
-        const std::string &name,
-        int &iAgent) const;
     bool isSlot(const std::string &name);
 
     std::vector<int>
@@ -249,7 +244,7 @@ public:
         const std::string &family);
 
     void addAgentGroup(
-        const std::vector<std::string>& vtoken     );
+        const std::vector<std::string> &vtoken);
 
     void addTaskType(
         const std::string &stype);
@@ -268,6 +263,15 @@ public:
     bool isSlotSane();
 
     std::vector<int> findAgentsForTask(int task);
+
+    /// @brief check for agent by name
+    /// @param name 
+    /// @param[out] iAgent found agent index 
+    /// @return true if agent found
+    
+    bool isAgent(
+        const std::string &name,
+        int &iAgent) const;
 
     void setSlotFirst()
     {
@@ -329,11 +333,11 @@ public:
         cAgent &agent,
         cSlot &slot);
 
-    std::vector<cAgent*> &getAgents()
+    std::vector<cAgent *> &getAgents()
     {
         return myAgent;
     }
-    const std::vector<cAgent*> &getconstAgents() const
+    const std::vector<cAgent *> &getconstAgents() const
     {
         return myAgent;
     }
@@ -395,9 +399,9 @@ public:
     }
 
     void agentsLog();
-    void log( const std::string& msg  )
+    void log(const std::string &msg)
     {
-        theLog( msg );
+        theLog(msg);
     }
 };
 

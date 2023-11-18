@@ -34,6 +34,22 @@ cAgent::cAgent(
     }
 }
 
+cAgentGroup::cAgentGroup(
+    const cAllocator &A,
+    const std::vector<std::string> &vtoken,
+    int taskID)
+    : cAgent(
+          vtoken[1] + "_group",
+          {taskID}, 0, "none")
+{
+    for (int k = 2; k < vtoken.size(); k++)
+    {
+        int iAgent;
+        A.isAgent(vtoken[k], iAgent);
+        add(iAgent);
+    }
+}
+
 std::string cAgent::text() const
 {
     std::stringstream ss;
@@ -139,7 +155,8 @@ bool cAgent::isAssignedRecently(
 }
 
 void cAgent::writefile(
-    std::ofstream &ofs) const
+    std::ofstream &ofs,
+    const cAllocator &A ) const
 {
     ofs << "a " << myName << " " << myTasks[0].second
         << " " << vFamily[myFamily] << " ";
@@ -147,6 +164,19 @@ void cAgent::writefile(
     {
         ofs << cTask::typeName(it.first) << " ";
     }
+    ofs << "\n";
+}
+void cAgentGroup::writefile(
+    std::ofstream &ofs,
+    const cAllocator &A) const
+{
+    const auto vA = A.getconstAgents();
+    ofs << "g " << cTask::typeName(myTasks[0].first);
+    for (int aid : myAgent)
+    {
+        ofs << " " << vA[aid]->name();
+    }
+
     ofs << "\n";
 }
 
@@ -249,8 +279,8 @@ void cAssigns::writeFile(
 
 void cAllocator::clear()
 {
-    for( cAgent* pa : myAgent )
-        delete pa; 
+    for (cAgent *pa : myAgent)
+        delete pa;
     myAgent.clear();
 
     myTask.clear();
@@ -274,7 +304,7 @@ void cAllocator::addAgent(
                                  name);
 
     /* Construct new agent and sore pointer to it
-    
+
     Agents persist until the console program exits
 
     TODO care for GUI that can do recalcs
@@ -290,6 +320,11 @@ void cAllocator::addAgent(
 void cAllocator::addAgentGroup(
     const std::vector<std::string> &vtoken)
 {
+    myAgent.push_back(
+        new cAgentGroup(
+            *this,
+            vtoken,
+            taskTypeIndices(vtoken[1])[0]));
 }
 
 void cAllocator::addTaskType(
@@ -335,6 +370,9 @@ void cAllocator::addSlot(
 
 bool cAllocator::isSlotSane()
 {
+    if (!mySlot.size())
+        throw std::runtime_error("22 No timeslots specified");
+
     /* Convert timeslot names to 64 bit integers so that their order can be checked
 
     While pointers to integers, or to anything else, are 64 bits long, the integers themselves are 32 bits long on 64 bit compilers.
@@ -675,7 +713,7 @@ void writefile(
                                  "Cannot open output file");
 
     for (auto &a : allocator.getconstAgents())
-        a->writefile(ofs);
+        a->writefile(ofs, allocator);
 
     for (auto &t : allocator.getconstSlots())
         t.writefile(ofs, allocator);
