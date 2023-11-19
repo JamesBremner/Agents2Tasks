@@ -184,6 +184,25 @@ void cAllocator::addSlot(
         vTaskIndex);
 }
 
+bool cAllocator::isAgentSane()
+{
+    std::set<std::string> groupMembers;
+    for( auto* agent : myAgent )
+    {
+        if( agent->name().find("_group") == -1 ) {
+            // ignore single agents
+            continue;
+        }
+        for( auto& member : ((cAgentGroup*)agent)->getMembers() )
+        {
+            // check if agent specified in a previous group
+            if( ! groupMembers.insert( member ).second )
+                throw std::runtime_error("23 Dulplicate group member " + member );
+        }
+    }
+    return true;
+}
+
 bool cAllocator::isSlotSane()
 {
     if (!mySlot.size())
@@ -495,38 +514,6 @@ std::vector<int> cAllocator::sortTasksByAgentCount(
         sortedTaskIndex.push_back(pair.first);
 
     return sortedTaskIndex;
-}
-
-void cAllocator::example1()
-{
-    clear();
-    // addTaskType("teacher");
-    // addTaskType("cleaner");
-    // addTaskType("accountant");
-    // addAgent(
-    //     "John",
-    //     {"teacher cleaner"},
-    //     3.0);
-    // addAgent(
-    //     "Margaret",
-    //     {"accountant cleaner"},
-    //     4.0);
-    // addAgent(
-    //     "Andrew",
-    //     {"accountant teacher"},
-    //     5.0);
-    // addSlot(
-    //     "28/OCT/2023/8:30",
-    //     {"teacher teacher cleaner"});
-    // addSlot(
-    //     "29/OCT/2023/10:00",
-    //     {"teacher accountant"});
-    // addSlot(
-    //     "2/NOV/2023/8:30",
-    //     {"teacher teacher accountant"});
-    // addSlot(
-    //     "3/NOV/2023/10:00",
-    //     {"teacher accountant"});
 }
 
 void cAllocator::agentsLog()

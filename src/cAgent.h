@@ -166,4 +166,10 @@ class cAgentGroup : public cAgent
     virtual void writefile(
         std::ofstream &ofs,
              const cAllocator& A) const;
+
+    std::vector<std::string>& getMembers()
+    {
+        return myAgent;
+    }
+    
 };

@@ -244,6 +244,8 @@ public:
 
     void example1();
 
+    bool isAgentSane();
+
     /// @brief Check sanity of timeslot names and order
     /// @return true if OK
     ///

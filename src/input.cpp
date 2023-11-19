@@ -63,6 +63,8 @@ void input(
             break;
         }
     }
+
+    allocator.isAgentSane();
     allocator.isSlotSane();
     allocator.log( allocator.textProblem() );
 }
