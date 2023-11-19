@@ -4,7 +4,17 @@ typedef std::chrono::system_clock::time_point timepoint_t;
 
 class cAgent
 {
+    public:
+
+    enum class eAssign {
+        none,
+        agent,
+        group,
+    };
+
     protected:
+
+    cAllocator& allocator;
 
     std::string myName;
 
@@ -16,7 +26,7 @@ class cAgent
     Prevent assigning an agent two tasks in one timeslot
     */
 
-    bool fAssigned;
+    eAssign myAssign;
 
     /* number of task assignments in all timeslots so far
 
@@ -34,6 +44,7 @@ class cAgent
     int myFamily;                            // family group index
 
 public:
+
     /// @brief Constructor
     /// @param name
     /// @param vt       // Indices of task types agent can do
@@ -41,15 +52,17 @@ public:
     /// @param family   // Family group
 
     cAgent(
+        cAllocator& A,
         const std::string &name,
         const std::vector<int> &vt,
         double cost,
         const std::string family);
     cAgent(
+        cAllocator& A,
         const std::string &name,
         const std::vector<int> &vt,
         double cost)
-        : cAgent(name, vt, cost, "none")
+        : cAgent(A,name, vt, cost, "none")
     {
     }
 
@@ -72,20 +85,21 @@ public:
     }
     void unAssign()
     {
-        fAssigned = false;
+        myAssign = eAssign::none;
     }
 
     /// @brief Assign agent to task
     /// @param day integer representing day of slot
     /// @param taskTypeName task type name
 
-    void assignTask(
+    virtual void assignTask(
         int day,
-        const std::string &taskTypeName);
+        const std::string &taskTypeName,
+        slotsolution_t& slotsolution );
 
     bool isAssigned() const
     {
-        return fAssigned;
+        return myAssign != eAssign::none;
     }
 
     /// @brief true if agent assigned recently to task of same type
@@ -123,7 +137,7 @@ class cAgentGroup : public cAgent
     public:
 
     cAgentGroup(
-        const cAllocator& A,
+        cAllocator& A,
         const std::vector<std::string>& vtoken,
         int taskID );
 
@@ -131,6 +145,11 @@ class cAgentGroup : public cAgent
     {
         myAgent.push_back( agentID );
     }
+
+    virtual void assignTask(
+        int day,
+        const std::string &taskTypeName,
+        slotsolution_t& slotsolution);
 
     virtual void writefile(
         std::ofstream &ofs,

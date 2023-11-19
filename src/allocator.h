@@ -8,10 +8,10 @@
 
 #include "../../PathFinder/src/GraphTheory.h"
 
-typedef std::vector<std::pair<std::string, std::string>> slotsolution_t;
-typedef std::vector<slotsolution_t> solution_t;
+
 
 class cAllocator;
+class cAgentGroup;
 
 class cLogger
 {
@@ -31,9 +31,7 @@ public:
     }
 };
 
-#include "cAgent.h"
 
-#include "cTask.h"
 
 /// @brief A timeslot with several task that need agents to be assigned
 class cSlot
@@ -113,54 +111,29 @@ public:
         const cAllocator &allocator) const;
 };
 
-/// @brief Assign agents to slot, minimizing cost, using Hungarian algorithm
 
-class cHungarian
+
+class cAgent2Task
 {
-    const std::vector<cAgent *> &myAgent;
-    const std::vector<std::string> &myTaskType;
+    public:
+    std::string myAgent;
+    std::string myTask;
+    cAgentGroup * myGroup;
 
-    std::vector<std::vector<double>> myMxCost; // cost matrix
-    std::vector<int> myRowAgent;               // agent index in each row
-    std::vector<int> myColTask;                // task type index in each column
-
-    double maxZero;
-
-    void rowSubtract();      // subtract min row value from ech column
-    void colSubtract();      // subtract min col value from each row
-    bool isSolvable();       // check for a single zero in each row and column
-    bool isFinished() const; // check for all asignments completed
-
-    /// @brief Assign agent to a task, remove agent and task from cost matrix
-    /// @return string pair, agent name and task type
-
-    std::pair<std::string, std::string> AssignReduce();
-
-    int unAssignedAgentCount() const
-    {
-        return myMxCost.size();
-    }
-    int unAssignedTaskCount() const
-    {
-        if (!unAssignedAgentCount())
-            return 0;
-        return myMxCost[0].size();
-    }
-
-public:
-    /// @brief Constructor
-    /// @param allocator containing problem specification
-    /// @param slot      slot to assign
-
-    cHungarian(
-        cAllocator &allocator,
-        cSlot &slot);
-
-    /// @brief Assign agents to all tasks
-    /// @return agent name,task type name pairs for all assignments in timeslot
-
-    slotsolution_t assignAll();
+    cAgent2Task(
+        const std::string& agent,
+        const std::string& task    )
+        : myAgent( agent ),
+        myTask( task )
+        {}
 };
+
+typedef std::vector<cAgent2Task> slotsolution_t;
+typedef std::vector<slotsolution_t> solution_t;
+
+#include "cAgent.h"
+
+#include "cTask.h"
 
 /// @brief Task assignment for all timeslots and one algorithm
 
@@ -326,12 +299,17 @@ public:
     void hungarian();
 
     /// @brief Assign agent to task
-    /// @param agent
-    /// @param slot
+    /// @param agent pointer
+    /// @param task 
+    /// @param slot 
+    /// @param slotsolution 
+    /// @return true if assignment completed
 
-    void assign(
-        cAgent &agent,
-        cSlot &slot);
+    bool assign(
+        cAgent * agent,
+        cTask & task,
+        cSlot &slot,
+        slotsolution_t& slotsolution );
 
     std::vector<cAgent *> &getAgents()
     {
@@ -404,6 +382,56 @@ public:
         theLog(msg);
     }
 };
+
+/// @brief Assign agents to slot, minimizing cost, using Hungarian algorithm
+
+class cHungarian
+{
+    const std::vector<cAgent *> &myAgent;
+    const std::vector<std::string> &myTaskType;
+
+    std::vector<std::vector<double>> myMxCost; // cost matrix
+    std::vector<int> myRowAgent;               // agent index in each row
+    std::vector<int> myColTask;                // task type index in each column
+
+    double maxZero;
+
+    void rowSubtract();      // subtract min row value from ech column
+    void colSubtract();      // subtract min col value from each row
+    bool isSolvable();       // check for a single zero in each row and column
+    bool isFinished() const; // check for all asignments completed
+
+    /// @brief Assign agent to a task, remove agent and task from cost matrix
+    /// @return string pair, agent name and task type
+
+    std::pair<std::string, std::string> AssignReduce();
+
+    int unAssignedAgentCount() const
+    {
+        return myMxCost.size();
+    }
+    int unAssignedTaskCount() const
+    {
+        if (!unAssignedAgentCount())
+            return 0;
+        return myMxCost[0].size();
+    }
+
+public:
+    /// @brief Constructor
+    /// @param allocator containing problem specification
+    /// @param slot      slot to assign
+
+    cHungarian(
+        cAllocator &allocator,
+        cSlot &slot);
+
+    /// @brief Assign agents to all tasks
+    /// @return agent name,task type name pairs for all assignments in timeslot
+
+    slotsolution_t assignAll();
+};
+
 
 // Declare free functions
 

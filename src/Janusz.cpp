@@ -82,39 +82,26 @@ void Janusz(cAllocator &A)
                     pbestAgent = agent;
                 }
             }
-            if (!pbestAgent)
-                continue;
 
-            // assign cheapest agent
+            // assign cheapest agen
 
-            // std::cout << "assigning " << pbestAgent->name() << " to " << task.typeName() << "\n";
+            if (A.assign(
+                    pbestAgent,
+                    task,
+                    slot,
+                    slotSolution))
+            {
 
-            A.assign(
-                *pbestAgent,
-                slot);
+                tasksUnassignedCount--;
+                agentsUnassignedCount--;
 
-            // add agent name, task type name pair to slot solution
-            slotSolution.push_back(
-                std::make_pair(
-                    pbestAgent->name(),
-                    task.typeName()));
+                if (tasksUnassignedCount)
+                    A.log("Slot " + slot.name() + " unassigned tasks\n");
 
-            // mark task as assigned
-            task.assign();
-            tasksUnassignedCount--;
-
-            // mark agent as assigned
-            pbestAgent->assignTask(
-                slot.day(),
-                task.typeName());
-            agentsUnassignedCount--;
-
-            if (tasksUnassignedCount)
-                A.log("Slot " + slot.name() + " unassigned tasks\n");
-
-            // check for all agents assigned
-            if (!agentsUnassignedCount)
-                break;
+                // check for all agents assigned
+                if (!agentsUnassignedCount)
+                    break;
+            }
 
         } // end of task loop
 

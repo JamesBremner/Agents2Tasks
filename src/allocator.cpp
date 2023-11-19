@@ -10,11 +10,13 @@ std::vector<std::string> cTask::vTaskType;
 std::vector<std::string> cAgent::vFamily;
 
 cAgent::cAgent(
+    cAllocator &A,
     const std::string &name,
     const std::vector<int> &vt,
     double cost,
     const std::string family)
-    : myName(name),
+    : allocator(A),
+      myName(name),
       myAssignedCount(0)
 {
     for (int t : vt)
@@ -35,10 +37,11 @@ cAgent::cAgent(
 }
 
 cAgentGroup::cAgentGroup(
-    const cAllocator &A,
+    cAllocator &A,
     const std::vector<std::string> &vtoken,
     int taskID)
     : cAgent(
+          A,
           vtoken[1] + "_group",
           {taskID}, 0, "none")
 {
@@ -114,11 +117,31 @@ timepoint(int day)
 
 void cAgent::assignTask(
     int day,
-    const std::string &taskTypeName)
+    const std::string &taskTypeName,
+    slotsolution_t &slotsolution)
 {
-    fAssigned = true;
+    myAssign = eAssign::agent;
     myAssignedCount++;
     myLastAssignmentTime = timepoint(day);
+    slotsolution.emplace_back(
+        myName,
+        taskTypeName);
+}
+
+void cAgentGroup::assignTask(
+    int day,
+    const std::string &taskTypeName,
+    slotsolution_t &slotsolution)
+{
+    cAgent::assignTask(day, taskTypeName, slotsolution);
+    myAssign = eAssign::group;
+    for (int memberID : myAgent)
+    {
+        slotsolution.emplace_back(
+            allocator.getAgents()[memberID]->name(),
+            taskTypeName);
+        // allocator.getAgents()[memberID]->assignTask(day, taskTypeName);
+    }
 }
 
 bool cAgent::isAssignedRecently(
@@ -156,7 +179,7 @@ bool cAgent::isAssignedRecently(
 
 void cAgent::writefile(
     std::ofstream &ofs,
-    const cAllocator &A ) const
+    const cAllocator &A) const
 {
     ofs << "a " << myName << " " << myTasks[0].second
         << " " << vFamily[myFamily] << " ";
@@ -183,7 +206,7 @@ void cAgentGroup::writefile(
 std::string cAgent::logText() const
 {
     std::stringstream ss;
-    ss << myName << " assigned " << fAssigned
+    ss << myName << " assigned " << isAssigned()
        << " count " << myAssignedCount
        << " family " << vFamily[myFamily]
        << "\n";
@@ -238,14 +261,10 @@ std::string cAssigns::text(
         return "No tasks assigned\n";
 
     double cost = 0;
-    for (auto &edge : myAssigns[slotIndex])
+    for (const cAgent2Task &a2t : myAssigns[slotIndex])
     {
-        // int iAgent;
-        // isAgent(edge.first, iAgent);
-        // cost += myAgents[iAgent].cost();
-
-        ss << edge.first
-           << " does " << edge.second
+        ss << a2t.myAgent
+           << " does " << a2t.myTask
            << "\n";
     }
     ss << "\nCost " << mySlotCost[slotIndex] << "\n";
@@ -259,11 +278,12 @@ std::string cAssigns::textFile(const char cid) const
     int slotID = 0;
     for (auto &slot : myAssigns)
     {
-        for (auto &ap : slot)
+        for (const cAgent2Task &a2t : slot)
         {
             ss << cid
                << " " << mySlotName[slotID]
-               << " " << ap.first << " to " << ap.second << "\n";
+               << " " << a2t.myAgent
+               << " to " << a2t.myTask << "\n";
         }
         slotID++;
     }
@@ -311,6 +331,7 @@ void cAllocator::addAgent(
     */
     myAgent.push_back(
         new cAgent(
+            *this,
             name,
             taskTypeIndices(canDoTaskTypes),
             cost,
@@ -497,10 +518,10 @@ double cAllocator::slotCost(
     slotsolution_t &solution) const
 {
     double cost = 0;
-    for (auto &edge : solution)
+    for (cAgent2Task &a2t : solution)
     {
         int iAgent;
-        isAgent(edge.first, iAgent);
+        isAgent(a2t.myAgent, iAgent);
         cost += myAgent[iAgent]->cost();
     }
     return cost;
@@ -568,8 +589,8 @@ void cAllocator::maxflow()
         {
             auto stask = getTaskTypeName(
                 atoi(sg.userName(e.second).substr(4).c_str()));
-            slotsolution.push_back(std::make_pair(
-                sg.userName(e.first), stask));
+            slotsolution.emplace_back(
+                sg.userName(e.first), stask);
         }
 
         // store the assignments for this slot
@@ -601,10 +622,24 @@ void cAllocator::hungarian()
 }
 
 void cAllocator::assign(
-    cAgent &agent,
-    cSlot &slot)
+    cAgent *pagent,
+    cTask &task,
+    cSlot &slot,
+    slotsolution_t &slotsolution)
 {
-    slot.assign(agent.family());
+    if (!pagent)
+        return;
+
+    // std::cout << "assigning " << pbestAgent->name() << " to " << task.typeName() << "\n";
+
+    slot.assign(pagent->family());
+
+    task.assign();
+
+    pagent->assignTask(
+        slot.day(),
+        task.typeName(),
+        slotsolution);
 }
 
 void cAllocator::sortAgents(
