@@ -36,6 +36,7 @@ OBJ_a2t = \
 OBJ_console = \
 	$(ODIR)/console.o \
 	$(ODIR)/allocator.o \
+	$(ODIR)/cAgent.o \
 	$(ODIR)/cHungarian.o \
 	$(ODIR)/Janusz.o \
 	$(ODIR)/unitTest.o \
