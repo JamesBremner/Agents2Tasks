@@ -21,6 +21,8 @@ class cLogger
 public:
     cLogger();
 
+    void enable( bool f = true );
+
     void headline();
 
     void operator()(const std::string &msg)
@@ -209,6 +211,11 @@ public:
 
     void clear();
     void clearSolution();
+
+    void logEnable( bool f = true )
+    {
+        theLog.enable( f );
+    }
 
     void addAgent(
         const std::string &name,

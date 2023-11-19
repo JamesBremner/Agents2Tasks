@@ -5,14 +5,20 @@
 
 #define LOGGING true
 
-    cLogger::cLogger()
+cLogger::cLogger()
     : flog(LOGGING)
-    {
-        if( ! flog )
-            return;
-        ofs.open("a2tLog.txt");
-        headline();
-    }
+{
+    if (!flog)
+        return;
+    ofs.open("a2tLog.txt");
+    headline();
+}
+
+void cLogger::enable(bool f)
+{
+    if (LOGGING)
+        flog = f;
+}
 
 void cLogger::headline()
 {
@@ -31,12 +37,11 @@ void cLogger::headline()
     GetComputerNameA(computer, &bufCharCount);
 
     bufCharCount = INFO_BUFFER_SIZE;
-    GetUserNameA( user, &bufCharCount );
+    GetUserNameA(user, &bufCharCount);
 
     ofs
         << "Agents2Tasks by " << user
         << " on " << computer
         << " at " << std::ctime(&time)
         << "\n";
-
 }

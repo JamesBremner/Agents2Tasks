@@ -6,6 +6,8 @@ bool unitTest()
 
     std::string utname, result, expected;
 
+    allocator.logEnable( false );
+
     utname = "tid21-1";
     readstring(
         allocator,
@@ -164,5 +166,6 @@ bool unitTest()
     if (expected != result)
         return false;
 
+    allocator.logEnable();
     return true;
 }
