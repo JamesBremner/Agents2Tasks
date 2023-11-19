@@ -107,7 +107,7 @@ public:
     /// @param taskname
     /// @return
 
-    bool isAssignedRecently(
+    virtual bool isAssignedRecently(
         int day,
         const std::string &taskname) const;
 
@@ -153,6 +153,10 @@ class cAgentGroup : public cAgent
     {
         myAgent.push_back( agentName );
     }
+
+     virtual bool isAssignedRecently(
+        int day,
+        const std::string &taskname) const;
 
     virtual void assignTask(
         int day,

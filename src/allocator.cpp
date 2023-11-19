@@ -129,14 +129,20 @@ void cAgentGroup::assignTask(
     const std::string &taskTypeName,
     slotsolution_t &slotsolution)
 {
+    // assign the agent group
     cAgent::assignTask(day, taskTypeName, slotsolution);
     myAssign = eAssign::group;
-    for (auto& member : myAgent)
+
+    // assign the member agents
+    for (auto &member : myAgent)
     {
-        slotsolution.emplace_back(
-            member,
+        int ia;
+        allocator.isAgent(member, ia);
+        allocator.getAgents()[ia]->assignTask(
+            day,
             taskTypeName,
-            this );
+            slotsolution);
+        slotsolution.back().myGroup = this;
     }
 }
 
@@ -173,6 +179,24 @@ bool cAgent::isAssignedRecently(
     return true;
 }
 
+bool cAgentGroup::isAssignedRecently(
+    int day,
+    const std::string &taskname) const
+{
+    if (cAgent::isAssignedRecently(day, taskname))
+        return true;
+
+    // check for blocked group members
+    for (auto &agentName : myAgent)
+    {
+        int iAgent;
+        if (allocator.isAgent(agentName, iAgent))
+            if (allocator.getconstAgents()[iAgent]->isAssignedRecently(day, taskname))
+                return true;
+    }
+    return false;
+}
+
 void cAgent::writefile(
     std::ofstream &ofs,
     const cAllocator &A) const
@@ -191,7 +215,7 @@ void cAgentGroup::writefile(
 {
     const auto vA = A.getconstAgents();
     ofs << "g " << cTask::typeName(myTasks[0].first);
-    for (auto& member : myAgent)
+    for (auto &member : myAgent)
     {
         ofs << " " << member;
     }
@@ -279,7 +303,7 @@ std::string cAssigns::textFile(const char cid) const
             ss << cid
                << " " << mySlotName[slotID]
                << " " << a2t.myAgent;
-            if( a2t.myGroup )
+            if (a2t.myGroup)
                 ss << " in group " << a2t.myGroup->name();
             ss << " to " << a2t.myTask << "\n";
         }
