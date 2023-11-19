@@ -126,7 +126,16 @@ class cAgent2Task
         const std::string& agent,
         const std::string& task    )
         : myAgent( agent ),
-        myTask( task )
+        myTask( task ),
+        myGroup(0)
+        {}
+    cAgent2Task(
+        const std::string& agent,
+        const std::string& task,
+        cAgentGroup * group )
+        : myAgent( agent ),
+        myTask( task ),
+        myGroup( group )
         {}
 };
 

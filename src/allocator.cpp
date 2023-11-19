@@ -42,15 +42,11 @@ cAgentGroup::cAgentGroup(
     int taskID)
     : cAgent(
           A,
-          vtoken[1] + "_group",
+          vtoken[2] + "_group",
           {taskID}, 0, "none")
 {
     for (int k = 2; k < vtoken.size(); k++)
-    {
-        int iAgent;
-        A.isAgent(vtoken[k], iAgent);
-        add(iAgent);
-    }
+        add(vtoken[k]);
 }
 
 std::string cAgent::text() const
@@ -135,12 +131,12 @@ void cAgentGroup::assignTask(
 {
     cAgent::assignTask(day, taskTypeName, slotsolution);
     myAssign = eAssign::group;
-    for (int memberID : myAgent)
+    for (auto& member : myAgent)
     {
         slotsolution.emplace_back(
-            allocator.getAgents()[memberID]->name(),
-            taskTypeName);
-        // allocator.getAgents()[memberID]->assignTask(day, taskTypeName);
+            member,
+            taskTypeName,
+            this );
     }
 }
 
@@ -195,9 +191,9 @@ void cAgentGroup::writefile(
 {
     const auto vA = A.getconstAgents();
     ofs << "g " << cTask::typeName(myTasks[0].first);
-    for (int aid : myAgent)
+    for (auto& member : myAgent)
     {
-        ofs << " " << vA[aid]->name();
+        ofs << " " << member;
     }
 
     ofs << "\n";
@@ -282,8 +278,10 @@ std::string cAssigns::textFile(const char cid) const
         {
             ss << cid
                << " " << mySlotName[slotID]
-               << " " << a2t.myAgent
-               << " to " << a2t.myTask << "\n";
+               << " " << a2t.myAgent;
+            if( a2t.myGroup )
+                ss << " in group " << a2t.myGroup->name();
+            ss << " to " << a2t.myTask << "\n";
         }
         slotID++;
     }
@@ -323,11 +321,8 @@ void cAllocator::addAgent(
                                  "Duplicate agent name" +
                                  name);
 
-    /* Construct new agent and sore pointer to it
+    /* Construct new agent and store pointer to it
 
-    Agents persist until the console program exits
-
-    TODO care for GUI that can do recalcs
     */
     myAgent.push_back(
         new cAgent(
@@ -621,14 +616,14 @@ void cAllocator::hungarian()
     }
 }
 
-void cAllocator::assign(
+bool cAllocator::assign(
     cAgent *pagent,
     cTask &task,
     cSlot &slot,
     slotsolution_t &slotsolution)
 {
     if (!pagent)
-        return;
+        return false;
 
     // std::cout << "assigning " << pbestAgent->name() << " to " << task.typeName() << "\n";
 
@@ -640,6 +635,8 @@ void cAllocator::assign(
         slot.day(),
         task.typeName(),
         slotsolution);
+
+    return true;
 }
 
 void cAllocator::sortAgents(

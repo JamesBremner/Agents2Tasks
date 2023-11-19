@@ -132,7 +132,15 @@ public:
 
 class cAgentGroup : public cAgent
 {
-    std::vector<int> myAgent;   // IDs of agents in group
+    /* Names of agents who are members of the group
+    
+    Names are stored, rather than indices
+    because agent sorting moves the agents around to different indices
+
+    TODO change agent IDs to be independant of location in the allocator::myAgent vector
+    */
+
+    std::vector<std::string> myAgent;   // IDs of agents in group
 
     public:
 
@@ -141,9 +149,9 @@ class cAgentGroup : public cAgent
         const std::vector<std::string>& vtoken,
         int taskID );
 
-    void add( int agentID)
+    void add( const std::string& agentName)
     {
-        myAgent.push_back( agentID );
+        myAgent.push_back( agentName );
     }
 
     virtual void assignTask(
