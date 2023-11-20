@@ -186,11 +186,14 @@ void cAllocator::addSlot(
 
 bool cAllocator::isAgentSane()
 {
+    std::set<std::string> agentNames;
     std::set<std::string> groupMembers;
     for( auto* agent : myAgent )
     {
         if( agent->name().find("_group") == -1 ) {
-            // ignore single agents
+            // a single agent
+            if( ! agentNames.insert( agent->name() ).second )
+                throw std::runtime_error("24 Dulplicate agent name " + agent->name() );
             continue;
         }
         for( auto& member : ((cAgentGroup*)agent)->getMembers() )
@@ -198,6 +201,10 @@ bool cAllocator::isAgentSane()
             // check if agent specified in a previous group
             if( ! groupMembers.insert( member ).second )
                 throw std::runtime_error("23 Dulplicate group member " + member );
+
+            // check if agent exists
+            if( agentNames.find(member) == agentNames.end() )
+                throw std::runtime_error("25 Unspecified group member " + member );
         }
     }
     return true;

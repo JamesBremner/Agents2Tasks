@@ -45,19 +45,24 @@ cAgent::cAgent(
       myName(name),
       myAssignedCount(0)
 {
+    // store the task type indices that agent capable of being assigned
     for (int t : vt)
     {
         myTasks.push_back(std::make_pair(t, cost));
     }
+
+
     auto it = std::find(
         vFamily.begin(), vFamily.end(), family);
     if (it == vFamily.end())
     {
+        // new family
         vFamily.push_back(family);
         myFamily = vFamily.size() - 1;
     }
     else
     {
+        // member of an existing family
         myFamily = it - vFamily.begin();
     }
 }
@@ -71,6 +76,7 @@ cAgentGroup::cAgentGroup(
           vtoken[2] + "_group",
           {taskID}, 0, "none")
 {
+    // store names of member agents
     for (int k = 2; k < vtoken.size(); k++)
         add(vtoken[k]);
 }
