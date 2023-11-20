@@ -132,15 +132,8 @@ public:
 
 class cAgentGroup : public cAgent
 {
-    /* Names of agents who are members of the group
-    
-    Names are stored, rather than indices
-    because agent sorting moves the agents around to different indices
 
-    TODO change agent IDs to be independant of location in the allocator::myAgent vector
-    */
-
-    std::vector<std::string> myAgent;   // IDs of agents in group
+    std::vector<cAgent*> myAgent;   // agents in group
 
     public:
 
@@ -149,9 +142,9 @@ class cAgentGroup : public cAgent
         const std::vector<std::string>& vtoken,
         int taskID );
 
-    void add( const std::string& agentName)
+    void add( cAgent* pa)
     {
-        myAgent.push_back( agentName );
+        myAgent.push_back( pa );
     }
 
      virtual bool isAssignedRecently(
@@ -167,7 +160,7 @@ class cAgentGroup : public cAgent
         std::ofstream &ofs,
              const cAllocator& A) const;
 
-    std::vector<std::string>& getMembers()
+    std::vector<cAgent*>& getMembers()
     {
         return myAgent;
     }

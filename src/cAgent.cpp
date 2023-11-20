@@ -75,9 +75,14 @@ cAgentGroup::cAgentGroup(
           vtoken[2] + "_group",
           {taskID}, 0, "none")
 {
-    // store names of member agents
+    // store member agents
     for (int k = 2; k < vtoken.size(); k++)
-        add(vtoken[k]);
+    {
+        auto *pa = allocator.findAgent(vtoken[k]);
+        if (!pa)
+            throw std::runtime_error("25 Unspecified group member " + vtoken[k]);
+        add(pa);
+    }
 }
 
 std::string cAgent::text() const
@@ -135,15 +140,11 @@ void cAgentGroup::assignTask(
     // assign the member agents
     for (auto &member : myAgent)
     {
-        auto *pa = allocator.findAgent(member);
-        if (pa)
-        {
-            pa->assignTask(
-                day,
-                taskTypeName,
-                slotsolution);
-            slotsolution.back().myGroup = this;
-        }
+        member->assignTask(
+            day,
+            taskTypeName,
+            slotsolution);
+        slotsolution.back().myGroup = this;
     }
 }
 
@@ -188,11 +189,9 @@ bool cAgentGroup::isAssignedRecently(
         return true;
 
     // check for blocked group members
-    for (auto &agentName : myAgent)
+    for (auto * member : myAgent)
     {
-        auto *pa = allocator.findAgent(agentName);
-        if (pa)
-            if (pa->isAssignedRecently(day, taskname))
+        if (member->isAssignedRecently(day, taskname))
                 return true;
     }
     return false;
