@@ -4,14 +4,6 @@ typedef std::chrono::system_clock::time_point timepoint_t;
 
 class cAgent
 {
-    public:
-
-    enum class eAssign {
-        none,
-        agent,
-        group,
-    };
-
     protected:
 
     cAllocator& allocator;
@@ -26,7 +18,7 @@ class cAgent
     Prevent assigning an agent two tasks in one timeslot
     */
 
-    eAssign myAssign;
+    bool myAssign;
 
     /* number of task assignments in all timeslots so far
 
@@ -85,7 +77,7 @@ public:
     }
     void unAssign()
     {
-        myAssign = eAssign::none;
+        myAssign = false;
     }
 
     /// @brief Assign agent to task
@@ -99,7 +91,7 @@ public:
 
     bool isAssigned() const
     {
-        return myAssign != eAssign::none;
+        return myAssign;
     }
 
     /// @brief true if agent assigned recently to task of same type

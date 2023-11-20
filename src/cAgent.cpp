@@ -120,7 +120,7 @@ void cAgent::assignTask(
     const std::string &taskTypeName,
     slotsolution_t &slotsolution)
 {
-    myAssign = eAssign::agent;
+    myAssign = true;
     myAssignedCount++;
     myLastAssignmentTime = timepoint(day);
     slotsolution.emplace_back(
@@ -135,7 +135,7 @@ void cAgentGroup::assignTask(
 {
     // assign the agent group
     cAgent::assignTask(day, taskTypeName, slotsolution);
-    myAssign = eAssign::group;
+    myAssign = true;
 
     // assign the member agents
     for (auto &member : myAgent)
