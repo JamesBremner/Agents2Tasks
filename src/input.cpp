@@ -32,7 +32,8 @@ void input(
         std::stringstream sst(line);
         std::string a;
         while (getline(sst, a, ' '))
-            vtoken.push_back(a);
+            if( a.length() )
+                vtoken.push_back(a);
         int p;
 
         switch (line[0])
