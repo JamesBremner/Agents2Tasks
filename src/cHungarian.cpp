@@ -42,11 +42,11 @@ slotsolution_t cHungarian::assignAll()
 {
     slotsolution_t ret;
 
-    // loop until no more agents or no more task to be assigned
-    while (!isFinished()) {
-        auto p = AssignReduce();
-        ret.emplace_back(p.first,p.second);
-    }
+    // // loop until no more agents or no more task to be assigned
+    // while (!isFinished()) {
+    //     auto p = AssignReduce();
+    //     ret.emplace_back(p.first,p.second);
+    // }
 
     return ret;
 }

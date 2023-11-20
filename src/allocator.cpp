@@ -8,7 +8,6 @@
 
 std::vector<std::string> cTask::vTaskType;
 
-
 std::string cSlot::text(
     const cAllocator &allocator) const
 {
@@ -59,7 +58,7 @@ std::string cAssigns::text(
     double cost = 0;
     for (const cAgent2Task &a2t : myAssigns[slotIndex])
     {
-        ss << a2t.myAgent
+        ss << a2t.myAgent->name()
            << " does " << a2t.myTask
            << "\n";
     }
@@ -78,7 +77,7 @@ std::string cAssigns::textFile(const char cid) const
         {
             ss << cid
                << " " << mySlotName[slotID]
-               << " " << a2t.myAgent;
+               << " " << a2t.myAgent->name();
             if (a2t.myGroup)
                 ss << " in group " << a2t.myGroup->name();
             ss << " to " << a2t.myTask << "\n";
@@ -115,8 +114,7 @@ void cAllocator::addAgent(
     double cost,
     const std::string &family)
 {
-    int iAgent;
-    if (isAgent(name, iAgent))
+    if (findAgent(name))
         throw std::runtime_error("12 "
                                  "Duplicate agent name" +
                                  name);
@@ -188,23 +186,24 @@ bool cAllocator::isAgentSane()
 {
     std::set<std::string> agentNames;
     std::set<std::string> groupMembers;
-    for( auto* agent : myAgent )
+    for (auto *agent : myAgent)
     {
-        if( agent->name().find("_group") == -1 ) {
+        if (agent->name().find("_group") == -1)
+        {
             // a single agent
-            if( ! agentNames.insert( agent->name() ).second )
-                throw std::runtime_error("24 Dulplicate agent name " + agent->name() );
+            if (!agentNames.insert(agent->name()).second)
+                throw std::runtime_error("24 Dulplicate agent name " + agent->name());
             continue;
         }
-        for( auto& member : ((cAgentGroup*)agent)->getMembers() )
+        for (auto &member : ((cAgentGroup *)agent)->getMembers())
         {
             // check if agent specified in a previous group
-            if( ! groupMembers.insert( member ).second )
-                throw std::runtime_error("23 Dulplicate group member " + member );
+            if (!groupMembers.insert(member).second)
+                throw std::runtime_error("23 Dulplicate group member " + member);
 
             // check if agent exists
-            if( agentNames.find(member) == agentNames.end() )
-                throw std::runtime_error("25 Unspecified group member " + member );
+            if (agentNames.find(member) == agentNames.end())
+                throw std::runtime_error("25 Unspecified group member " + member);
         }
     }
     return true;
@@ -248,24 +247,20 @@ bool cAllocator::isSlotSane()
     return true;
 }
 
-bool cAllocator::isAgent(
-    const std::string &name,
-    int &iAgent) const
+cAgent *cAllocator::findAgent(
+    const std::string &name)
 {
     auto it = std::find_if(
         myAgent.begin(), myAgent.end(),
-        [name](const cAgent *ag)
+        [&name](const cAgent *ag)
         {
             return (ag->name() == name);
         });
     if (it == myAgent.end())
-    {
-        iAgent = -1;
-        return false;
-    }
-    iAgent = it - myAgent.begin();
-    return true;
+        return 0;
+    return *it;
 }
+
 bool cAllocator::isSlot(const std::string &name)
 {
     return (std::find_if(
@@ -340,11 +335,8 @@ double cAllocator::slotCost(
 {
     double cost = 0;
     for (cAgent2Task &a2t : solution)
-    {
-        int iAgent;
-        isAgent(a2t.myAgent, iAgent);
-        cost += myAgent[iAgent]->cost();
-    }
+        cost += a2t.myAgent->cost();
+
     return cost;
 }
 
@@ -361,65 +353,65 @@ std::vector<int> cAllocator::findAgentsForTask(int task)
 
 void cAllocator::maxflow()
 {
-    mySolutionMaxflow.clear();
+    // mySolutionMaxflow.clear();
 
-    raven::graph::cGraph g;
+    // raven::graph::cGraph g;
 
-    // loop over time slots
-    for (auto &slot : mySlot)
-    {
-        // setup fresh graph for timeslot
-        g.clear();
-        g.directed();
+    // // loop over time slots
+    // for (auto &slot : mySlot)
+    // {
+    //     // setup fresh graph for timeslot
+    //     g.clear();
+    //     g.directed();
 
-        // loop over the tasks in timeslot
-        for (int task : slot)
-        {
-            // loop over agents
-            for (int kag = 0; kag < myAgent.size(); kag++)
-            {
-                if (myAgent[kag]->isAble(myTask[task].taskType()))
-                {
-                    // add link from agent to task agent is able to do
-                    g.add(
-                        myAgent[kag]->name(),
-                        "task" + std::to_string(task));
+    //     // loop over the tasks in timeslot
+    //     for (int task : slot)
+    //     {
+    //         // loop over agents
+    //         for (int kag = 0; kag < myAgent.size(); kag++)
+    //         {
+    //             if (myAgent[kag]->isAble(myTask[task].taskType()))
+    //             {
+    //                 // add link from agent to task agent is able to do
+    //                 g.add(
+    //                     myAgent[kag]->name(),
+    //                     "task" + std::to_string(task));
 
-                    std::cout << myAgent[kag]->name() << " can do " << task << "\n";
-                }
-            }
-        }
+    //                 std::cout << myAgent[kag]->name() << " can do " << task << "\n";
+    //             }
+    //         }
+    //     }
 
-        // apply pathfinder maximum flow allocation algorithm to the timeslot
-        raven::graph::cGraph sg;
-        try
-        {
-            raven::graph::sGraphData gd;
-            gd.g = g;
-            sg = alloc(gd);
-        }
-        catch (std::exception &e)
-        {
-            throw std::runtime_error("19 max flow error in PathFinder library");
-        }
+    //     // apply pathfinder maximum flow allocation algorithm to the timeslot
+    //     raven::graph::cGraph sg;
+    //     try
+    //     {
+    //         raven::graph::sGraphData gd;
+    //         gd.g = g;
+    //         sg = alloc(gd);
+    //     }
+    //     catch (std::exception &e)
+    //     {
+    //         throw std::runtime_error("19 max flow error in PathFinder library");
+    //     }
 
-        slotsolution_t slotsolution;
+    //     slotsolution_t slotsolution;
 
-        // loop over assignments
-        for (auto &e : sg.edgeList())
-        {
-            auto stask = getTaskTypeName(
-                atoi(sg.userName(e.second).substr(4).c_str()));
-            slotsolution.emplace_back(
-                sg.userName(e.first), stask);
-        }
+    //     // loop over assignments
+    //     for (auto &e : sg.edgeList())
+    //     {
+    //         auto stask = getTaskTypeName(
+    //             atoi(sg.userName(e.second).substr(4).c_str()));
+    //         slotsolution.emplace_back(
+    //             sg.userName(e.first), stask);
+    //     }
 
-        // store the assignments for this slot
-        mySolutionMaxflow.add(
-            slotsolution,
-            slot.name(),
-            slotCost(slotsolution));
-    }
+    //     // store the assignments for this slot
+    //     mySolutionMaxflow.add(
+    //         slotsolution,
+    //         slot.name(),
+    //         slotCost(slotsolution));
+    // }
 }
 
 void cAllocator::hungarian()

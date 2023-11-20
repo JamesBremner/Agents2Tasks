@@ -11,6 +11,7 @@
 
 
 class cAllocator;
+class cAgent;
 class cAgentGroup;
 
 class cLogger
@@ -118,19 +119,19 @@ public:
 class cAgent2Task
 {
     public:
-    std::string myAgent;
+    cAgent * myAgent;
     std::string myTask;
     cAgentGroup * myGroup;
 
     cAgent2Task(
-        const std::string& agent,
+        cAgent * agent,
         const std::string& task    )
         : myAgent( agent ),
         myTask( task ),
         myGroup(0)
         {}
     cAgent2Task(
-        const std::string& agent,
+        cAgent * agent,
         const std::string& task,
         cAgentGroup * group )
         : myAgent( agent ),
@@ -255,14 +256,10 @@ public:
 
     std::vector<int> findAgentsForTask(int task);
 
-    /// @brief check for agent by name
+    /// @brief Check for agent by name
     /// @param name 
-    /// @param[out] iAgent found agent index 
-    /// @return true if agent found
-    
-    bool isAgent(
-        const std::string &name,
-        int &iAgent) const;
+    /// @return pointer to agent, null if missing
+    cAgent * findAgent( const std::string &name );
 
     void setSlotFirst()
     {

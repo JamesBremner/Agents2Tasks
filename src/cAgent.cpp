@@ -51,7 +51,6 @@ cAgent::cAgent(
         myTasks.push_back(std::make_pair(t, cost));
     }
 
-
     auto it = std::find(
         vFamily.begin(), vFamily.end(), family);
     if (it == vFamily.end())
@@ -111,8 +110,6 @@ double cAgent::cost() const
     return myTasks[0].second;
 }
 
-
-
 void cAgent::assignTask(
     int day,
     const std::string &taskTypeName,
@@ -122,7 +119,7 @@ void cAgent::assignTask(
     myAssignedCount++;
     myLastAssignmentTime = timepoint(day);
     slotsolution.emplace_back(
-        myName,
+        this,
         taskTypeName);
 }
 
@@ -138,13 +135,15 @@ void cAgentGroup::assignTask(
     // assign the member agents
     for (auto &member : myAgent)
     {
-        int ia;
-        allocator.isAgent(member, ia);
-        allocator.getAgents()[ia]->assignTask(
-            day,
-            taskTypeName,
-            slotsolution);
-        slotsolution.back().myGroup = this;
+        auto *pa = allocator.findAgent(member);
+        if (pa)
+        {
+            pa->assignTask(
+                day,
+                taskTypeName,
+                slotsolution);
+            slotsolution.back().myGroup = this;
+        }
     }
 }
 
@@ -191,9 +190,9 @@ bool cAgentGroup::isAssignedRecently(
     // check for blocked group members
     for (auto &agentName : myAgent)
     {
-        int iAgent;
-        if (allocator.isAgent(agentName, iAgent))
-            if (allocator.getconstAgents()[iAgent]->isAssignedRecently(day, taskname))
+        auto *pa = allocator.findAgent(agentName);
+        if (pa)
+            if (pa->isAssignedRecently(day, taskname))
                 return true;
     }
     return false;
