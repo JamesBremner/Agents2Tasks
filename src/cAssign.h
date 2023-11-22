@@ -9,22 +9,22 @@ class cAssign
     cSlot *mySlot;
     cAgent *myAgent;
     cTask *myTask;
+    cAgentGroup * myGroup;
 
 public:
 
+    // construct assignment of single agent
     cAssign(cSlot *ps, cAgent *pa, cTask *pt);
+
+    // construct assignment of group agent member
+    cAssign(cSlot *ps, cAgent *pa, cTask *pt, cAgentGroup* pg );
+
 
     cSlot* slot() const{
         return mySlot;
     }
 
-    std::string text() const
-    {
-        std::stringstream ss;
-
-        ss << myAgent->name() << " to " << myTask->name();
-        return ss.str();
-    }
+    std::string text() const;
 
     static void clear()
     {
@@ -51,4 +51,4 @@ public:
 
 };
 
-void assign();
+void Agents2Tasks();

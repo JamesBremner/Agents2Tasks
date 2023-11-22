@@ -23,14 +23,14 @@ public:
 
     cAgent(const std::vector<std::string> &vtoken);
 
-    void assign(int day);
+    virtual void assign(int day);
 
     void unAssign()
     {
         myAssigned = false;
     }
 
-    bool isAssignedRecently(
+    virtual bool isAssignedRecently(
         int day) const;
 
     void setPreviousTasks(int c)
@@ -63,6 +63,12 @@ public:
         return myAssignedCount;
     }
 
+    virtual std::vector<cAgent*> getMembers() const
+    {
+        std::vector<cAgent*>  ret;
+        return ret;
+    }
+
     std::string text() const;
 
     static void clear()
@@ -79,6 +85,8 @@ public:
 
     static void unassignAll();
 
+    static cAgent* find( const std::string& name );
+
     static void sortAssignedCount();
 
     static void sortFamily(const cSlot *slot);
@@ -90,4 +98,24 @@ public:
     }
 
     static std::string specText();
+};
+
+class cAgentGroup : public cAgent
+{
+    std::vector<cAgent *> myMember;
+
+public:
+    cAgentGroup(const std::vector<std::string> &vtoken);
+
+    virtual void assign( int day );
+
+    virtual bool isAssignedRecently( int day ) const;
+
+    virtual std::vector<cAgent*> getMembers() const
+    {
+        return myMember;
+    }
+
+    static void add(const std::vector<std::string> &vtoken);
+
 };

@@ -9,10 +9,17 @@ std::vector<cAssign *> cAssign::theAssigns;
 cAssign::cAssign(cSlot *ps, cAgent *pa, cTask *pt)
     : myAgent(pa),
       myTask(pt),
-      mySlot(ps)
+      mySlot(ps),
+      myGroup(0)
 {
     pa->assign(ps->day());
     ps->assign(pa->family());
+}
+
+cAssign::cAssign(cSlot *ps, cAgent *pa, cTask *pt, cAgentGroup *pg)
+    : cAssign(ps, pa, pt)
+{
+    myGroup = pg;
 }
 
 std::string cAssign::text(cSlot *pSlot)
@@ -38,9 +45,27 @@ void cAssign::add(cSlot *ps, cAgent *pa, cTask *pt)
 {
     theAssigns.push_back(
         new cAssign(ps, pa, pt));
+    if (pa->name().find("_group") != -1)
+    {
+        // assign group agent  members
+        for (cAgent *pm : pa->getMembers())
+            theAssigns.push_back(
+                new cAssign(ps, pm, pt, (cAgentGroup *)pa));
+    }
 }
 
-void assign()
+std::string cAssign::text() const
+{
+    std::stringstream ss;
+
+    ss << myAgent->name();
+    if (myGroup)
+        ss << " in " << myGroup->name();
+    ss << " to " << myTask->name();
+    return ss.str();
+}
+
+void Agents2Tasks()
 {
     cAssign::clear();
 
@@ -72,7 +97,7 @@ void assign()
                 if (pa->isAssigned())
                     continue;
 
-                if( pa->isAssignedRecently( slot->day() ))
+                if (pa->isAssignedRecently(slot->day()))
                     continue;
 
                 if (!pBestAgent)

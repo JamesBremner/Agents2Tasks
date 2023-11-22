@@ -30,7 +30,7 @@ void input(
             break;
 
         case 'g':
-            // allocator.addAgentGroup( vtoken );
+            cAgentGroup::add(vtoken);
             break;
 
         case 't':

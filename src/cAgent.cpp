@@ -42,6 +42,35 @@ cAgent::cAgent(const std::vector<std::string> &vtoken)
     }
 }
 
+cAgentGroup::cAgentGroup(
+    const std::vector<std::string> &vtoken )
+    : cAgent( vtoken )
+{
+    myName = vtoken[2] + "_group";
+
+    // store member agents
+    for (int k = 2; k < vtoken.size(); k++)
+    {
+        auto *pa = cAgent::find(vtoken[k]);
+        if (!pa)
+            throw std::runtime_error("25 Unspecified group member " + vtoken[k]);
+        myMember.push_back( pa );
+    }
+}
+
+cAgent* cAgent::find( const std::string& name )
+{
+    auto it = std::find_if(
+        theAgents.begin(), theAgents.end(),
+        [&]( cAgent* pa )
+        {
+            return pa->name() == name;
+        });
+    if( it == theAgents.end() )
+        return 0;
+    return *it;
+}
+
 std::string cAgent::text() const
 {
     std::stringstream ss;
@@ -62,16 +91,19 @@ std::string cAgent::text() const
 
 void cAgent::add(const std::vector<std::string> &vtoken)
 {
-    if (std::find_if(
-            theAgents.begin(), theAgents.end(),
-            [&](cAgent *pa)
-            {
-                return pa->name() == vtoken[1];
-            }) != theAgents.end())
+    if( find( vtoken[1] ))
         throw std::runtime_error("12	Duplicate agent name");
 
     theAgents.push_back(
         new cAgent(vtoken));
+}
+
+void cAgentGroup::add(const std::vector<std::string> &vtoken)
+{
+    if( find( vtoken[1] + "_group" ))
+        throw std::runtime_error("12	Duplicate agent name");
+    theAgents.push_back(
+        new cAgentGroup(vtoken));
 }
 
 /// @brief start of blocked time
@@ -114,6 +146,20 @@ void cAgent::assign(int day )
     myLastAssignmentTime = timepoint(day);
 }
 
+
+void cAgentGroup::assign( int day )
+{
+    // assign the agent group
+    cAgent::assign(day);
+
+    // assign the member agents
+    for (auto &member : myMember)
+    {
+        member->assign( day );
+    }
+}
+
+
 bool cAgent::isAssignedRecently(
     int day ) const
 {
@@ -144,6 +190,20 @@ bool cAgent::isAssignedRecently(
         return false;
 
     return true;
+}
+
+bool cAgentGroup::isAssignedRecently( int day ) const 
+{
+    if (cAgent::isAssignedRecently(day))
+        return true;
+
+    // check for blocked group members
+    for (auto * member : myMember)
+    {
+        if (member->isAssignedRecently(day))
+                return true;
+    }
+    return false;
 }
 
 

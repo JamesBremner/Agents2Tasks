@@ -25,7 +25,7 @@ bool unitTest()
     if (expected != result)
         throw std::runtime_error(utname + " unit test failed");
 
-    assign();
+    Agents2Tasks();
 
     result = cAssign::text(cSlot::getAll()[0]);
     expected =
@@ -43,7 +43,7 @@ bool unitTest()
         "t 202311011000 cleaner cleaner\n"
         "t 202311011200 cleaner\n");
 
-    assign();
+    Agents2Tasks();
 
     // Alice gets job in 2nd timeslot because she has the least workload
     result = cAssign::text(cSlot::getAll()[1]);
@@ -65,7 +65,7 @@ bool unitTest()
     // give Alice a history of heavy workload
     cAgent::getAll()[2]->setPreviousTasks(10);
 
-    assign();
+    Agents2Tasks();
     result = cAssign::text(cSlot::getAll()[0]);
 
     // Carol and Alice gets the task because
@@ -86,7 +86,7 @@ bool unitTest()
         "t 202311020830 teacher cleaner\n"
         "t 202311030830 teacher cleaner\n");
 
-    assign();
+    Agents2Tasks();
 
     result = cAssign::text(cSlot::getAll()[0]);
     expected =
@@ -104,6 +104,27 @@ bool unitTest()
     result = cAssign::text(cSlot::getAll()[2]);
     expected =
         "Alice to teacher\n";
+    if (expected != result)
+        throw std::runtime_error(utname + " unit test failed");
+
+    ///////////////////////////////////////
+
+    utname = "Group Agent";
+    readstring(
+        "a Alice 1 A Cleaner\n"
+        "a Bob 1 B Cleaner\n"
+        "a Carol 1 C Cleaner Acolyte\n"
+        "g Cleaner Alice Bob Carol\n"
+        "t 202311181000 Cleaner\n");
+
+    Agents2Tasks();
+
+    result = cAssign::text(cSlot::getAll()[0]);
+    expected =
+        "Alice_group to Cleaner\n"
+        "Alice in Alice_group to Cleaner\n"
+        "Bob in Alice_group to Cleaner\n"
+        "Carol in Alice_group to Cleaner\n";
     if (expected != result)
         throw std::runtime_error(utname + " unit test failed");
 
