@@ -1,59 +1,40 @@
-/// @brief A task, unique to its timeslot, of a certain type
+#include <string>
+#include <vector>
+
 class cTask
 {
-    int myTaskType;
-    int myIndex;
-    bool fAssigned;
-    static std::vector<std::string> vTaskType; // task type names
+    static std::vector< cTask* > theTasks;
 
-public:
+    std::string myName;
 
-    cTask(int iType, int i)
-        : myTaskType(iType),
-          myIndex(i),
-          fAssigned(false)
+    public:
+
+    cTask(  const std::string& name )
+    : myName( name )
+    {}
+
+    std::string name() const
     {
+        return myName;
     }
+
     static void clear()
     {
-        vTaskType.clear();
+        for( auto* pt : theTasks )
+            delete pt;
+        theTasks.clear();
     }
 
-    void assign()
+    static cTask* add( const std::string& name );
+
+    static std::vector< cTask* >
+    getAll()
     {
-        fAssigned = true;
-    }
-    static void addTaskType(
-        const std::string &stype);
-
-    /// @brief get task type idex from name
-    /// @param name 
-    /// @return 
-    ///
-    /// if the name is absent, add it
-
-    static int findType(const std::string &name);
-
-    int taskType() const
-    {
-        return myTaskType;
+        return theTasks;
     }
 
-    std::string typeName() const
-    {
-        return vTaskType[ myTaskType ];
-    }
+    static cTask* find( const std::string& name );
 
-    static std::string typeName( int i )
-    {
-        return vTaskType[i];
-    }
 
-    static const std::vector<std::string>&
-    getTypeNames()
-    {
-        return vTaskType;
-    }
-
-    static std::string typeText();
 };
+

@@ -1,17 +1,62 @@
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <wex.h>
-#include "cGUI.h"
-
-#include "allocator.h"
+#include "assigner.h"
+#include "cTask.h"
+#include "cAgent.h"
+#include "cAssign.h"
+#include "cSlot.h"
 
 
-main()
+void errorHandler(
+    const std::string &msg)
 {
-    cGUI theGUI;
+    int status = atoi(msg.c_str());
+    if (!status)
+        status = 2;
+    std::cout << msg << "\n"
+              << "status " << status << "\n";
+    exit(status);
+}
+
+main(int argc, char *argv[])
+{
+    if (argc != 3)
+        errorHandler(
+            "3 "
+            "Usage: Agents2Tasks (input file path) ( output file path )");
+
+
+    // run unit tests
+
+    try
+    {
+        if (!unitTest())
+            throw std::runtime_error("16 Unit test failed");
+    }
+    catch (std::exception &e)
+    {
+        std::string msg = "16 " + std::string(e.what());
+        //A.log(msg);
+        throw std::runtime_error(msg);
+    }
+    //A.log("Unit tests passed\n\n");
+
+    // run calculation
+
+    try
+    {
+        
+
+        // readfile(A, argv[1]);
+        // Janusz(A);
+        // writefile(A, argv[2]);
+        // A.log("\n============ Assignments ===========\n\n");
+        // A.log(A.getSolutionAgents2Task().textFile('A'));
+    }
+    catch (std::exception &e)
+    {
+       // A.log("Exception " + std::string(e.what()));
+        errorHandler(
+            e.what());
+    }
+
     return 0;
 }
