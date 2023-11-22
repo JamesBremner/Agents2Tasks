@@ -25,6 +25,13 @@ cAssign::getSlotAssigns(cSlot *slot)
     return ret;
 }
 
+    void cAssign::add(cSlot *ps, cAgent *pa, cTask *pt)
+    {
+        theAssigns.push_back(
+            new cAssign(ps, pa, pt));
+        ps->assign( pa->family() );
+    }
+
 void assign()
 {
     cAssign::clear();
@@ -34,11 +41,20 @@ void assign()
     {
         cAgent::unassignAll();
 
-        cAgent::sortAssignedCount();
-
         // loop over tasks required by slot
         for (cTask *pt : slot->getTasks())
         {
+
+            /* sort agents
+            by workload first then by family
+            so family gets priority
+            */
+            cAgent::sortAssignedCount();
+            cAgent::sortFamily(slot);
+
+            // std::cout << "\n";
+            // for( cAgent* a : cAgent::getAll() )
+            //     std::cout << a->text();
 
             cAgent *pBestAgent = 0;
 

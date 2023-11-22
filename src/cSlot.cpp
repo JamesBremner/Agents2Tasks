@@ -13,6 +13,11 @@ cSlot::cSlot(const std::vector<std::string> &vtoken)
         myTasks.push_back(cTask::find(vtoken[k]));
 }
 
+bool cSlot::hasFamily( int family ) const
+{
+    return (myFamily.find(family) != myFamily.end());
+}
+
 std::string cSlot::text() const
 {
     std::stringstream ss;

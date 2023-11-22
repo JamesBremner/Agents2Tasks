@@ -27,6 +27,11 @@ public:
 
     void assign( bool f = true );
 
+    void setPreviousTasks( int c )
+    {
+        myAssignedCount = c;
+    }
+
     std::string name() const
     {
         return myName;
@@ -35,6 +40,10 @@ public:
     double cost( cTask* task ) const
     {
         return myTasks[0].second;
+    }
+
+    int family() const{
+        return myFamily;
     }
 
     bool isAssigned() const
@@ -64,6 +73,8 @@ public:
     static void unassignAll();
 
     static void sortAssignedCount();
+
+    static void sortFamily(const cSlot* slot);
 
     static std::vector<cAgent *>
     getAll()

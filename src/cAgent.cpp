@@ -91,6 +91,16 @@ void cAgent::sortAssignedCount()
         }    );
 }
 
+void cAgent::sortFamily( const cSlot* slot )
+{
+    std::stable_sort(
+        theAgents.begin(), theAgents.end(),
+        [&]( cAgent* a, cAgent* b )
+        {
+            return slot->hasFamily(a->family());
+        });    
+}
+
 void cAgent::unassignAll()
 {
     for (cAgent *pa : theAgents)

@@ -10,6 +10,9 @@ protected:
 
     std::vector<cTask *> myTasks;
 
+    std::set<int> myFamily;   // indices of family groups assigned to this slot
+
+
 public:
     cSlot(const std::vector<std::string> &vtoken);
 
@@ -23,6 +26,13 @@ public:
     std::vector<cTask *>& getTasks()
     {
         return myTasks;
+    }
+
+    bool hasFamily( int family ) const;
+
+    void assign(int iFamily)
+    {
+        myFamily.insert(iFamily);
     }
 
     static void clear()
