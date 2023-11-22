@@ -30,6 +30,17 @@ public:
 
     bool hasFamily( int family ) const;
 
+    /// @brief get integer representation for day containing timeslot
+    /// @return integer day
+    ///
+    /// Assumes slot name format YYYYMMDDHHMM
+    /// returns int( YYYYMMDD )
+
+    int day() const
+    {
+        return atoi(myName.substr(0, 8).c_str());
+    }
+
     void assign(int iFamily)
     {
         myFamily.insert(iFamily);

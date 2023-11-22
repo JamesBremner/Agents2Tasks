@@ -1,33 +1,39 @@
-#include <string>
-#include <vector>
 
 class cAgent
 {
 protected:
-
     static std::vector<cAgent *> theAgents;
 
     std::string myName;
 
-    std::vector<std::pair<cTask*, double>> myTasks;
+    std::vector<std::pair<cTask *, double>> myTasks;
 
     static std::vector<std::string> vFamily; // family group names
     int myFamily;                            // family group index
 
     bool myAssigned;
 
+    timepoint_t myLastAssignmentTime; //  00:00:01 on day of previous assignment
+
     int myAssignedCount;
 
 public:
-
     /// CTOR
     /// @param vtoken tokenized specification line
 
     cAgent(const std::vector<std::string> &vtoken);
 
-    void assign( bool f = true );
+    void assign(int day);
 
-    void setPreviousTasks( int c )
+    void unAssign()
+    {
+        myAssigned = false;
+    }
+
+    bool isAssignedRecently(
+        int day) const;
+
+    void setPreviousTasks(int c)
     {
         myAssignedCount = c;
     }
@@ -37,12 +43,13 @@ public:
         return myName;
     }
 
-    double cost( cTask* task ) const
+    double cost(cTask *task) const
     {
         return myTasks[0].second;
     }
 
-    int family() const{
+    int family() const
+    {
         return myFamily;
     }
 
@@ -74,7 +81,7 @@ public:
 
     static void sortAssignedCount();
 
-    static void sortFamily(const cSlot* slot);
+    static void sortFamily(const cSlot *slot);
 
     static std::vector<cAgent *>
     getAll()

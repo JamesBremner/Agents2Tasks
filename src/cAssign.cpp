@@ -6,6 +6,15 @@
 
 std::vector<cAssign *> cAssign::theAssigns;
 
+cAssign::cAssign(cSlot *ps, cAgent *pa, cTask *pt)
+    : myAgent(pa),
+      myTask(pt),
+      mySlot(ps)
+{
+    pa->assign(ps->day());
+    ps->assign(pa->family());
+}
+
 std::string cAssign::text(cSlot *pSlot)
 {
     std::string ret;
@@ -25,12 +34,11 @@ cAssign::getSlotAssigns(cSlot *slot)
     return ret;
 }
 
-    void cAssign::add(cSlot *ps, cAgent *pa, cTask *pt)
-    {
-        theAssigns.push_back(
-            new cAssign(ps, pa, pt));
-        ps->assign( pa->family() );
-    }
+void cAssign::add(cSlot *ps, cAgent *pa, cTask *pt)
+{
+    theAssigns.push_back(
+        new cAssign(ps, pa, pt));
+}
 
 void assign()
 {
@@ -64,6 +72,9 @@ void assign()
                 if (pa->isAssigned())
                     continue;
 
+                if( pa->isAssignedRecently( slot->day() ))
+                    continue;
+
                 if (!pBestAgent)
                 {
                     pBestAgent = pa;
@@ -74,7 +85,8 @@ void assign()
             }
 
             // assign best agent to task
-            cAssign::add(slot, pBestAgent, pt);
+            if (pBestAgent)
+                cAssign::add(slot, pBestAgent, pt);
         }
     }
 }

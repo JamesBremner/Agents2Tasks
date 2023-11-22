@@ -5,6 +5,9 @@
 #include <vector>
 #include <set>
 #include <algorithm>
+#include <chrono>
+
+typedef std::chrono::system_clock::time_point timepoint_t;
 
 class cSlot;
 

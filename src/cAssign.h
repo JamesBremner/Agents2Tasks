@@ -11,13 +11,8 @@ class cAssign
     cTask *myTask;
 
 public:
-    cAssign(cSlot *ps, cAgent *pa, cTask *pt)
-        : myAgent(pa),
-          myTask(pt),
-          mySlot(ps)
-    {
-        pa->assign();
-    }
+
+    cAssign(cSlot *ps, cAgent *pa, cTask *pt);
 
     cSlot* slot() const{
         return mySlot;
@@ -42,7 +37,7 @@ public:
     /// @param ps slot
     /// @param pa agent
     /// @param pt task
-    
+
     static void add(cSlot *ps, cAgent *pa, cTask *pt);
 
     static std::string text(cSlot *pSlot);

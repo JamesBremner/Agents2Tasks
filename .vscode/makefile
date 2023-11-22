@@ -3,7 +3,6 @@ VPATH = ./src
 
 	# compiler include search paths
 INCS = -I./include \
-	-I../windex/include \
 	-I../raven-set \
 
 
@@ -38,7 +37,7 @@ OBJ_includes = \
 
 ### COMPILE
 
-$(ODIR)/%.o: %.cpp  
+$(ODIR)/%.o: %.cpp  $(OBJ_includes)
 	g++ $<  \
 	-c -o $@  $(INCS) $(CCflags)
 

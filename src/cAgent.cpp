@@ -74,12 +74,78 @@ void cAgent::add(const std::vector<std::string> &vtoken)
         new cAgent(vtoken));
 }
 
-void cAgent::assign(bool f)
+/// @brief start of blocked time
+/// @param day integer rep of timeslot day e.g. 20231110
+/// @return set time to 1 second after midnight of the morning of the assignment
+///
+/// we need to block re-assignment to the same task type for two complete days
+
+timepoint_t
+timepoint(int day)
 {
-    myAssigned = f;
-    if (f)
-        myAssignedCount++;
+    // setup timeinfo with current time
+    // https://cplusplus.com/reference/ctime/mktime/
+
+    std::tm *timeinfo;
+    time_t rawtime;
+    time(&rawtime);
+    timeinfo = localtime(&rawtime);
+
+    // convert timeinfo to 1 second after midnight of the morning of the assignment
+    timeinfo->tm_year = day / 10000 - 1900;
+    timeinfo->tm_mon = (day - (timeinfo->tm_year + 1900) * 10000) / 100;
+    timeinfo->tm_mday = (day - (timeinfo->tm_year + 1900) * 10000 - timeinfo->tm_mon * 100);
+    timeinfo->tm_hour = 0;
+    timeinfo->tm_min = 0;
+    timeinfo->tm_sec = 1;
+
+    // convert timeinfo to std::chrono timepoint
+    std::time_t tt = std::mktime(timeinfo);
+    if (tt == -1)
+        throw std::runtime_error("20 Cannot parse timeslot timestamp");
+    return std::chrono::system_clock::from_time_t(tt);
 }
+
+
+void cAgent::assign(int day )
+{
+    myAssigned = true;
+    myAssignedCount++;
+    myLastAssignmentTime = timepoint(day);
+}
+
+bool cAgent::isAssignedRecently(
+    int day ) const
+{
+    /*
+    Assigning an agent should block another assignment of that agent
+    for two full days - the rest of the day assigned and all of the next day.
+
+    This is implemented by backdating the first assignent and the potential assignment being testes
+    to the previous midnight, so the exact time of day of the assignment is irrelevant.
+
+    Example:
+
+    0830 Mon -> 00000 Monday
+    1000 Tue -> 0000 Tuesday Delta: 24 hours BLOCKED
+    0830 Wed -> 0000 Wed Delta: 48 hours OK
+
+     https://github.com/JamesBremner/Agents2Tasks/issues/8
+     https://github.com/JamesBremner/Agents2Tasks/issues/23
+
+     */
+    const int full_days_blocked = 2;
+    const int hours_blocked = 24 * (full_days_blocked - 1);
+
+    if (
+        std::chrono::duration_cast<std::chrono::hours>(
+            timepoint(day) - myLastAssignmentTime)
+            .count() > hours_blocked)
+        return false;
+
+    return true;
+}
+
 
 void cAgent::sortAssignedCount()
 {
@@ -104,7 +170,7 @@ void cAgent::sortFamily( const cSlot* slot )
 void cAgent::unassignAll()
 {
     for (cAgent *pa : theAgents)
-        pa->assign(false);
+        pa->unAssign();
 }
 
 std::string cAgent::specText()
