@@ -27,8 +27,8 @@ public:
 
     static void clear()
     {
-        for (auto *pa : theSlots)
-            delete pa;
+        for (auto *ps : theSlots)
+            delete ps;
         theSlots.clear();
     }
 

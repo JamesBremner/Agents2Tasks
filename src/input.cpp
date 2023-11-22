@@ -9,6 +9,7 @@ void input(
 {
     cTask::clear();
     cAgent::clear();
+    cSlot::clear();
     cAssign::clear();
 
     std::string line;

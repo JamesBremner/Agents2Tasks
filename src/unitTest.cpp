@@ -33,7 +33,7 @@ bool unitTest()
     if (expected != result)
         throw std::runtime_error(utname + " unit test failed");
 
-    utname = "1";
+    utname = "even workload";
     readstring(
         "a Carol 1 A cleaner\n"
         "a Bob 1 B cleaner\n"
@@ -44,6 +44,10 @@ bool unitTest()
     assign();
 
     result = cAssign::text(cSlot::getAll()[1]);
+    expected =
+        "Alice to cleaner\n";
+    if (expected != result)
+        throw std::runtime_error(utname + " unit test failed");
 
     return true;
 }

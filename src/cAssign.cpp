@@ -15,6 +15,16 @@ std::string cAssign::text(cSlot *pSlot)
     return ret;
 }
 
+std::vector<cAssign *>
+cAssign::getSlotAssigns(cSlot *slot)
+{
+    std::vector<cAssign *> ret;
+    for (auto *a : theAssigns)
+        if (a->mySlot == slot)
+            ret.push_back(a);
+    return ret;
+}
+
 void assign()
 {
     cAssign::clear();
@@ -27,7 +37,7 @@ void assign()
         cAgent::sortAssignedCount();
 
         // loop over tasks required by slot
-        for (cTask *pt : slot->getTasks() )
+        for (cTask *pt : slot->getTasks())
         {
 
             cAgent *pBestAgent = 0;
@@ -35,7 +45,7 @@ void assign()
             // loop over agents
             for (cAgent *pa : cAgent::getAll())
             {
-                if( pa->isAssigned() )
+                if (pa->isAssigned())
                     continue;
 
                 if (!pBestAgent)

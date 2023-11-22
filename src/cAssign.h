@@ -46,11 +46,13 @@ public:
 
     static std::string text(cSlot *pSlot);
 
+    /// @brief get assignments in a timeslot
+    /// @param slot 
+    /// @return 
+    
     static std::vector<cAssign *>
-    getAll()
-    {
-        return theAssigns;
-    }
+    getSlotAssigns( cSlot* slot );
+
 };
 
 void assign();
