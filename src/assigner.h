@@ -21,3 +21,5 @@ bool unitTest();
 
 std::string specText();
 
+void writefile( const std::string& fname );
+

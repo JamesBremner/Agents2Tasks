@@ -67,3 +67,11 @@ std::string specText()
     ret += cSlot::specText();
     return ret;
 }
+
+void writefile( const std::string& fname )
+{
+    std::ofstream ofs( fname );
+    if( ! ofs.is_open() )
+            throw std::runtime_error("14 Cannot open output file");
+    ofs << specText();
+}

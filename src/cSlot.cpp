@@ -9,8 +9,13 @@ std::vector<cSlot *> cSlot::theSlots;
 cSlot::cSlot(const std::vector<std::string> &vtoken)
     : myName(vtoken[1])
 {
-    for (int k = 2; k < vtoken.size(); k++)
-        myTasks.push_back(cTask::find(vtoken[k]));
+    for (int k = 2; k < vtoken.size(); k++) {
+        cTask* pt = cTask::find(vtoken[k]);
+        if( !pt ) {
+            pt = cTask::add(vtoken[k]);
+        }
+        myTasks.push_back(pt);
+    }
 }
 
 bool cSlot::hasFamily( int family ) const

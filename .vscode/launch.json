@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/bin/Agents2Tasks.exe",
-              "args": ["../dat/ex25.txt", "../dat/ex25r-3.txt"],
+              "args": ["../dat/ex27j.txt", "../dat/ex27jr.txt"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/bin",
             "environment": [],

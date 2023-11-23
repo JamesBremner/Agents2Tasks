@@ -69,7 +69,7 @@ public:
     {
         std::string ret;
         for (cSlot *ps : theSlots)
-            ret += ps->text();
+            ret += ps->text() + "\n";
         return ret;
     }
 };

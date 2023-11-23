@@ -17,7 +17,12 @@ protected:
 
     int myAssignedCount;
 
+    void parseTasks( int first, const std::vector<std::string> &vtoken );
+
 public:
+
+    cAgent() {}
+
     /// CTOR
     /// @param vtoken tokenized specification line
 
@@ -45,6 +50,8 @@ public:
 
     double cost(cTask *task) const
     {
+        if( ! myTasks.size() )
+            return 0;
         return myTasks[0].second;
     }
 
@@ -69,7 +76,12 @@ public:
         return ret;
     }
 
-    std::string text() const;
+    bool isGroup()
+    {
+        return ( myName.find("_group") != -1 );
+    }
+
+    virtual std::string text() const;
 
     static void clear()
     {
@@ -98,6 +110,8 @@ public:
     }
 
     static std::string specText();
+
+
 };
 
 class cAgentGroup : public cAgent
@@ -115,6 +129,8 @@ public:
     {
         return myMember;
     }
+
+    virtual std::string text() const;
 
     static void add(const std::vector<std::string> &vtoken);
 

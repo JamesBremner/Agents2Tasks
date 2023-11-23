@@ -27,9 +27,35 @@ cAgent::cAgent(const std::vector<std::string> &vtoken)
         myFamily = it - vFamily.begin();
     }
 
-    // parse tasks
+    parseTasks( 4, vtoken );
 
-    for (int k = 4; k < vtoken.size(); k++)
+}
+
+cAgentGroup::cAgentGroup(
+    const std::vector<std::string> &vtoken)
+{
+    myName = vtoken[2] + "_group";
+    myAssigned = false;
+    myFamily = -1;
+
+    parseTasks( 2, vtoken );
+
+    // store member agents
+    for (int k = 2; k < vtoken.size(); k++)
+    {
+        auto *pa = cAgent::find(vtoken[k]);
+        if (!pa)
+            throw std::runtime_error("25 Unspecified group member " + vtoken[k]);
+        myMember.push_back(pa);
+    }
+}
+
+void cAgent::parseTasks(int first, const std::vector<std::string> &vtoken)
+{
+    if( vtoken.size() < first+1 )
+        throw std::runtime_error("26 Agent has no tasks");
+
+    for (int k = first; k < vtoken.size(); k++)
     {
         cTask *pt = cTask::find(vtoken[k]);
         if (!pt)
@@ -42,31 +68,15 @@ cAgent::cAgent(const std::vector<std::string> &vtoken)
     }
 }
 
-cAgentGroup::cAgentGroup(
-    const std::vector<std::string> &vtoken )
-    : cAgent( vtoken )
-{
-    myName = vtoken[2] + "_group";
-
-    // store member agents
-    for (int k = 2; k < vtoken.size(); k++)
-    {
-        auto *pa = cAgent::find(vtoken[k]);
-        if (!pa)
-            throw std::runtime_error("25 Unspecified group member " + vtoken[k]);
-        myMember.push_back( pa );
-    }
-}
-
-cAgent* cAgent::find( const std::string& name )
+cAgent *cAgent::find(const std::string &name)
 {
     auto it = std::find_if(
         theAgents.begin(), theAgents.end(),
-        [&]( cAgent* pa )
+        [&](cAgent *pa)
         {
             return pa->name() == name;
         });
-    if( it == theAgents.end() )
+    if (it == theAgents.end())
         return 0;
     return *it;
 }
@@ -89,9 +99,25 @@ std::string cAgent::text() const
     return ss.str();
 }
 
+std::string cAgentGroup::text() const
+{
+    std::stringstream ss;
+
+    ss
+        << "g " << myName;
+
+    for (auto &tp : myTasks)
+    {
+        ss << " " << tp.first->name();
+    }
+    ss << "\n";
+
+    return ss.str();
+}
+
 void cAgent::add(const std::vector<std::string> &vtoken)
 {
-    if( find( vtoken[1] ))
+    if (find(vtoken[1]))
         throw std::runtime_error("12	Duplicate agent name");
 
     theAgents.push_back(
@@ -100,7 +126,7 @@ void cAgent::add(const std::vector<std::string> &vtoken)
 
 void cAgentGroup::add(const std::vector<std::string> &vtoken)
 {
-    if( find( vtoken[1] + "_group" ))
+    if (find(vtoken[1] + "_group"))
         throw std::runtime_error("12	Duplicate agent name");
     theAgents.push_back(
         new cAgentGroup(vtoken));
@@ -138,16 +164,14 @@ timepoint(int day)
     return std::chrono::system_clock::from_time_t(tt);
 }
 
-
-void cAgent::assign(int day )
+void cAgent::assign(int day)
 {
     myAssigned = true;
     myAssignedCount++;
     myLastAssignmentTime = timepoint(day);
 }
 
-
-void cAgentGroup::assign( int day )
+void cAgentGroup::assign(int day)
 {
     // assign the agent group
     cAgent::assign(day);
@@ -155,13 +179,12 @@ void cAgentGroup::assign( int day )
     // assign the member agents
     for (auto &member : myMember)
     {
-        member->assign( day );
+        member->assign(day);
     }
 }
 
-
 bool cAgent::isAssignedRecently(
-    int day ) const
+    int day) const
 {
     /*
     Assigning an agent should block another assignment of that agent
@@ -192,39 +215,38 @@ bool cAgent::isAssignedRecently(
     return true;
 }
 
-bool cAgentGroup::isAssignedRecently( int day ) const 
+bool cAgentGroup::isAssignedRecently(int day) const
 {
     if (cAgent::isAssignedRecently(day))
         return true;
 
     // check for blocked group members
-    for (auto * member : myMember)
+    for (auto *member : myMember)
     {
         if (member->isAssignedRecently(day))
-                return true;
+            return true;
     }
     return false;
 }
-
 
 void cAgent::sortAssignedCount()
 {
     std::stable_sort(
         theAgents.begin(), theAgents.end(),
-        []( cAgent* a, cAgent* b )
+        [](cAgent *a, cAgent *b)
         {
             return a->assignedCount() < b->assignedCount();
-        }    );
+        });
 }
 
-void cAgent::sortFamily( const cSlot* slot )
+void cAgent::sortFamily(const cSlot *slot)
 {
     std::stable_sort(
         theAgents.begin(), theAgents.end(),
-        [&]( cAgent* a, cAgent* b )
+        [&](cAgent *a, cAgent *b)
         {
             return slot->hasFamily(a->family());
-        });    
+        });
 }
 
 void cAgent::unassignAll()
@@ -236,7 +258,11 @@ void cAgent::unassignAll()
 std::string cAgent::specText()
 {
     std::string ret;
-    for (cAgent *pa : theAgents)
-        ret += pa->text();
+    for (auto *pa : theAgents) {
+        if( pa->isGroup() )
+            ret += ((cAgentGroup*)pa)->text();
+        else
+            ret += pa->text();
+    }
     return ret;
 }

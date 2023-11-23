@@ -21,7 +21,7 @@ bool unitTest()
         "a Carol 1 A cleaner\n"
         "a Bob 1 B cleaner\n"
         "a Alice 1 C cleaner\n"
-        "t 202311011000 cleaner cleaner";
+        "t 202311011000 cleaner cleaner\n";
     if (expected != result)
         throw std::runtime_error(utname + " unit test failed");
 

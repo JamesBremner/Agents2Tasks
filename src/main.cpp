@@ -37,17 +37,17 @@ main(int argc, char *argv[])
         //A.log(msg);
         throw std::runtime_error(msg);
     }
-    //A.log("Unit tests passed\n\n");
+    std::cout << "Unit tests passed\n\n";
 
     // run calculation
 
     try
     {
         
+         readfile(argv[1]);
+         Agents2Tasks();
+         writefile( argv[2]);
 
-        // readfile(A, argv[1]);
-        // Janusz(A);
-        // writefile(A, argv[2]);
         // A.log("\n============ Assignments ===========\n\n");
         // A.log(A.getSolutionAgents2Task().textFile('A'));
     }
