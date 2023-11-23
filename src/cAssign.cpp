@@ -41,11 +41,12 @@ void cAssign::add(cSlot *ps, cAgent *pa, cTask *pt)
     }
 }
 
-std::string cAssign::text() const
+std::string cAssign::text(const std::string& slotName ) const
 {
     std::stringstream ss;
 
-    ss << myAgent->name();
+    ss << "A " << slotName 
+        <<" "<< myAgent->name();
     if (myGroup)
         ss << " in " << myGroup->name();
     ss << " to " << myTask->name();
@@ -57,7 +58,7 @@ std::string cAssign::text(cSlot *pSlot)
     std::string ret;
     for (auto *pAssign : theAssigns)
         if (pAssign->slot() == pSlot)
-            ret += pAssign->text() + "\n";
+            ret += pAssign->text( pSlot->name() ) + "\n";
     return ret;
 }
 

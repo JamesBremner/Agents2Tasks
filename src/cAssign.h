@@ -26,7 +26,7 @@ public:
     /// @brief Get display text for this assignment
     /// @return 
 
-    std::string text() const;
+    std::string text(const std::string& slotName) const;
 
     static void clear()
     {

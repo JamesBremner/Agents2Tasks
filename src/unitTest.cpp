@@ -27,8 +27,8 @@ bool unitTest()
 
     result = cAssign::text(cSlot::getAll()[0]);
     expected =
-        "Carol to cleaner\n"
-        "Bob to cleaner\n";
+        "A 202311011000 Carol to cleaner\n"
+        "A 202311011000 Bob to cleaner\n";
     if (expected != result)
     {
         std::cout << result;
@@ -50,7 +50,7 @@ bool unitTest()
     // Alice gets job in 2nd timeslot because she has the least workload
     result = cAssign::text(cSlot::getAll()[1]);
     expected =
-        "Alice to cleaner\n";
+        "A 202311011200 Alice to cleaner\n";
     if (expected != result)
         throw std::runtime_error(utname + " unit test failed");
 
@@ -75,7 +75,7 @@ bool unitTest()
     // the family group gets priority over workload
     // https://github.com/JamesBremner/Agents2Tasks/issues/21#issuecomment-1813504598
 
-    expected = "Carol to cleaner\nAlice to cleaner\n";
+    expected = "A 202311011000 Carol to cleaner\nA 202311011000 Alice to cleaner\n";
     if (expected != result)
         throw std::runtime_error(utname + " unit test failed");
 
@@ -92,7 +92,7 @@ bool unitTest()
 
     result = cAssign::text(cSlot::getAll()[0]);
     expected =
-        "Alice to teacher\n";
+        "A 202311010830 Alice to teacher\n";
     if (expected != result)
         throw std::runtime_error(utname + " unit test failed");
 
@@ -105,7 +105,7 @@ bool unitTest()
     // block expired
     result = cAssign::text(cSlot::getAll()[2]);
     expected =
-        "Alice to teacher\n";
+        "A 202311030830 Alice to teacher\n";
     if (expected != result)
         throw std::runtime_error(utname + " unit test failed");
 
@@ -122,11 +122,8 @@ bool unitTest()
     Agents2Tasks();
 
     result = cAssign::text(cSlot::getAll()[0]);
-    expected =
-        "Alice_group to Cleaner\n"
-        "Alice in Alice_group to Cleaner\n"
-        "Bob in Alice_group to Cleaner\n"
-        "Carol in Alice_group to Cleaner\n";
+    expected = "A 202311181000 Alice_group to Cleaner\nA 202311181000 Alice in Alice_group to Cleaner\nA 202311181000 Bob in Alice_group to Cleaner\nA 202311181000 Carol in Alice_group to Cleaner\n";
+
     if (expected != result)
         throw std::runtime_error(utname + " unit test failed");
 
