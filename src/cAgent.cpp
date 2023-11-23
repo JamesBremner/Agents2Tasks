@@ -279,3 +279,26 @@ void cAgent::saveInputOrder()
 {
     theAgentsInputOrder = theAgents;
 }
+
+bool cAgent::isSane()
+{
+    std::set<std::string> agents;
+    std::set<std::string> groupMembers;
+    for (auto *agent : theAgents)
+    {
+        if (agent->name().find("_group") == -1)
+        {
+            // a single agent
+            if (!agents.insert(agent->name()).second)
+                throw std::runtime_error("24 Dulplicate agent name " + agent->name());
+            continue;
+        }
+        for (auto *member : ((cAgentGroup *)agent)->getMembers())
+        {
+            // check if agent specified in a previous group
+            if (!groupMembers.insert(member->name()).second)
+                throw std::runtime_error("23 Dulplicate group member " + member->name());
+        }
+    }
+    return true;
+}

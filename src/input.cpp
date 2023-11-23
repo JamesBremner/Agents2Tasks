@@ -41,9 +41,9 @@ void input(
 
     cAgent::saveInputOrder();
 
-    // allocator.isAgentSane();
-    // allocator.isSlotSane();
-    // allocator.log( allocator.textProblem() );
+    cAgent::isSane();
+    cSlot::isSane();
+
 }
 
 void readfile(

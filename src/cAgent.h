@@ -93,6 +93,8 @@ public:
 
     static void add(const std::vector<std::string> &vtoken);
 
+    static bool isSane();
+
     static void unassignAll();
 
     static cAgent* find( const std::string& name );

@@ -59,6 +59,8 @@ public:
             new cSlot(vtoken));
     }
 
+    static bool isSane();
+
     static std::vector<cSlot *>
     getAll()
     {
