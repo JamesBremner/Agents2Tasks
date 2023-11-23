@@ -1,58 +1,32 @@
 # Agents2Tasks
 
-Allocate agents to tasks in multiple timeslots.
+Allocate agents to tasks in multiple timeslots containing multiple tasks.
 
+# Usage
 
-## Problem specifcations
+`>Agents2Tasks (specification filepath ) ( output filepath )`
 
-![image](https://github.com/JamesBremner/Agents2Tasks/assets/2046227/49ba7a04-b0e0-4beb-a685-1eeeceac079c)
+[File format documentation](https://github.com/JamesBremner/Agents2Tasks/wiki/File-format)
 
+# Constraints
 
-
-## Assignment
-
-![image](https://github.com/JamesBremner/Agents2Tasks/assets/2046227/24e90f9c-a438-43c5-8ad3-895d028bd2a5)
-
-Display shows assignments of agents to tasks one timeslot at a time.  
-
-Buttons allow user to navigate between timeslots.  
-
-Radiobuttons allow user to switch between results from the optional algorithms: Maxflow, Hungarian or A2T.
-
-## File Menu
-
-![image](https://github.com/JamesBremner/Agents2Tasks/assets/2046227/80208e92-4b69-4b3b-8f7d-99bda8cde22e)
-
-`File | Open`  Load problem specifcation from a file
-
-`File | Save`  Save problem specifications to a file
-
-`File | Example1` Run example problem 1
-
-`File | Unit Test` Run unit test.
-
-The [file format](https://github.com/JamesBremner/Agents2Tasks/wiki/File-format) documentation
-
-## Edit Menu
-
-![image](https://github.com/JamesBremner/Agents2Tasks/assets/2046227/a757bd30-3c70-440c-8ff4-deff422cbac3)
-
-`Edit | Clear` Clear problem specifications, ready to enter new specs from GUI.
-
-`Edit | Add task type`  Use GUI to add a task type.
-
-`Edit |  Add Agent` Add an agent with assignment cost and task types the agent can be assigned to, using the GUI.
-
-`Edit | Timeslot` Add a timeslot, along with the task types required, using the GUI.
+- Assigning an agent blocks the agent from being assigned again in the same timeslot, or in later timeslots for a period of time
+- The cheapest agent is assigned first
+- Agents with smaller assignment counts to previous timeslots will be assigned first
+- Assigning an agent to a timeslot causes other agents in the same family to be assigned to the same timeslot if possible and everything else being equal
+- Agents can be assigned to groups that are assigned all together or not at all.
 
 
 # Algorithm
 
-Maximum flow ( [Edmonds–Karp](https://en.wikipedia.org/wiki/Edmonds%E2%80%93Karp_algorithm) ) maximises the number of tasks that are allocated in each timeslot.
-
-The [Hungarian algorithm]( https://en.wikipedia.org/wiki/Hungarian_algorithm) is used to minimize the cost in each timeslot using the classic Hungarian cost matrix.
-
-The Agent2Task algorithm uses a straightforward assignment of the cheapest agent to each task in turn.  If there are more agents than tasks it will distribute the tasks between agents so that over multiple timeslots the workload of each agent is approximately even.  Agents are not assigned to tasks with the same name on the same or previous days
+- Loop over timeslots
+   - Loop over tasks in timeslot
+       - Loop over tasks
+            - Set picked agent to null
+            - Loop over agents in preferred order of assignment
+                 - IF agent can be assigned, is cheaper and has lower previous workload than picked
+                     - Set picked agent to current
+           - Assign picked agent to task
 
 
 
