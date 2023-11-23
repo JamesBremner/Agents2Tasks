@@ -3,6 +3,7 @@ class cAgent
 {
 protected:
     static std::vector<cAgent *> theAgents;
+    static std::vector<cAgent *> theAgentsInputOrder;
 
     std::string myName;
 
@@ -83,12 +84,9 @@ public:
 
     virtual std::string text() const;
 
-    static void clear()
-    {
-        for (auto *pa : theAgents)
-            delete pa;
-        theAgents.clear();
-    }
+    static void clear();
+
+    static void saveInputOrder();
 
     /// @brief Add an agent
     /// @param vtoken tokenized specification line

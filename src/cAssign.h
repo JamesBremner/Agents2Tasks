@@ -24,6 +24,9 @@ public:
         return mySlot;
     }
 
+    /// @brief Get display text for this assignment
+    /// @return 
+
     std::string text() const;
 
     static void clear()
@@ -40,6 +43,10 @@ public:
 
     static void add(cSlot *ps, cAgent *pa, cTask *pt);
 
+    /// @brief Get display text for the assignments in a slot
+    /// @param pSlot 
+    /// @return 
+    
     static std::string text(cSlot *pSlot);
 
     /// @brief get assignments in a timeslot

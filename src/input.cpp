@@ -39,6 +39,8 @@ void input(
         }
     }
 
+    cAgent::saveInputOrder();
+
     // allocator.isAgentSane();
     // allocator.isSlotSane();
     // allocator.log( allocator.textProblem() );
@@ -74,4 +76,8 @@ void writefile( const std::string& fname )
     if( ! ofs.is_open() )
             throw std::runtime_error("14 Cannot open output file");
     ofs << specText();
+    for( cSlot* ps : cSlot::getAll() )
+    {
+        ofs << cAssign::text( ps );
+    }
 }

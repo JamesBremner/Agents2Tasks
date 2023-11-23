@@ -5,6 +5,7 @@
 #include "cSlot.h"
 
 std::vector<cAgent *> cAgent::theAgents;
+std::vector<cAgent *> cAgent::theAgentsInputOrder;
 std::vector<std::string> cAgent::vFamily;
 
 cAgent::cAgent(const std::vector<std::string> &vtoken)
@@ -27,8 +28,7 @@ cAgent::cAgent(const std::vector<std::string> &vtoken)
         myFamily = it - vFamily.begin();
     }
 
-    parseTasks( 4, vtoken );
-
+    parseTasks(4, vtoken);
 }
 
 cAgentGroup::cAgentGroup(
@@ -38,7 +38,7 @@ cAgentGroup::cAgentGroup(
     myAssigned = false;
     myFamily = -1;
 
-    parseTasks( 2, vtoken );
+    parseTasks(2, vtoken);
 
     // store member agents
     for (int k = 2; k < vtoken.size(); k++)
@@ -52,7 +52,7 @@ cAgentGroup::cAgentGroup(
 
 void cAgent::parseTasks(int first, const std::vector<std::string> &vtoken)
 {
-    if( vtoken.size() < first+1 )
+    if (vtoken.size() < first + 1)
         throw std::runtime_error("26 Agent has no tasks");
 
     for (int k = first; k < vtoken.size(); k++)
@@ -258,11 +258,24 @@ void cAgent::unassignAll()
 std::string cAgent::specText()
 {
     std::string ret;
-    for (auto *pa : theAgents) {
-        if( pa->isGroup() )
-            ret += ((cAgentGroup*)pa)->text();
+    for (auto *pa : theAgentsInputOrder)
+    {
+        if (pa->isGroup())
+            ret += ((cAgentGroup *)pa)->text();
         else
             ret += pa->text();
     }
     return ret;
+}
+
+void cAgent::clear()
+{
+    for (auto *pa : theAgents)
+        delete pa;
+    theAgents.clear();
+}
+
+void cAgent::saveInputOrder()
+{
+    theAgentsInputOrder = theAgents;
 }

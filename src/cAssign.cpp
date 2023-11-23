@@ -22,14 +22,7 @@ cAssign::cAssign(cSlot *ps, cAgent *pa, cTask *pt, cAgentGroup *pg)
     myGroup = pg;
 }
 
-std::string cAssign::text(cSlot *pSlot)
-{
-    std::string ret;
-    for (auto *pAssign : theAssigns)
-        if (pAssign->slot() == pSlot)
-            ret += pAssign->text() + "\n";
-    return ret;
-}
+
 
 std::vector<cAssign *>
 cAssign::getSlotAssigns(cSlot *slot)
@@ -63,6 +56,15 @@ std::string cAssign::text() const
         ss << " in " << myGroup->name();
     ss << " to " << myTask->name();
     return ss.str();
+}
+
+std::string cAssign::text(cSlot *pSlot)
+{
+    std::string ret;
+    for (auto *pAssign : theAssigns)
+        if (pAssign->slot() == pSlot)
+            ret += pAssign->text() + "\n";
+    return ret;
 }
 
 void Agents2Tasks()
