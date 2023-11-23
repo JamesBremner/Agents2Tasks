@@ -22,8 +22,6 @@ cAssign::cAssign(cSlot *ps, cAgent *pa, cTask *pt, cAgentGroup *pg)
     myGroup = pg;
 }
 
-
-
 std::vector<cAssign *>
 cAssign::getSlotAssigns(cSlot *slot)
 {
@@ -84,12 +82,17 @@ void Agents2Tasks()
             by workload first then by family
             so family gets priority
             */
+
+            // std::cout << "before sort\n";
+            // for (cAgent *pa : cAgent::getAll())
+            //     std::cout << pa->name() << "\n";
+
             cAgent::sortAssignedCount();
             cAgent::sortFamily(slot);
 
-            // std::cout << "\n";
-            // for( cAgent* a : cAgent::getAll() )
-            //     std::cout << a->text();
+            // std::cout << "after sort\n";
+            // for (cAgent *pa : cAgent::getAll())
+            //     std::cout << pa->name() << "\n";
 
             cAgent *pBestAgent = 0;
 

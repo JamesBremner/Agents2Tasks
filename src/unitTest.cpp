@@ -25,13 +25,19 @@ bool unitTest()
     if (expected != result)
         throw std::runtime_error(utname + " unit test failed");
 
+    utname = "2";
+
     Agents2Tasks();
 
     result = cAssign::text(cSlot::getAll()[0]);
     expected =
-        "Carol to cleaner\nBob to cleaner\n";
+        "Carol to cleaner\n"
+        "Bob to cleaner\n";
     if (expected != result)
+    {
+        std::cout << result;
         throw std::runtime_error(utname + " unit test failed");
+    }
 
     /////////////////////////////////
 

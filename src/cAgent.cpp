@@ -10,7 +10,8 @@ std::vector<std::string> cAgent::vFamily;
 
 cAgent::cAgent(const std::vector<std::string> &vtoken)
     : myName(vtoken[1]),
-      myAssigned(false)
+      myAssigned(false),
+      myAssignedCount( 0 )
 {
     // parse family
 
@@ -231,6 +232,7 @@ bool cAgentGroup::isAssignedRecently(int day) const
 
 void cAgent::sortAssignedCount()
 {
+
     std::stable_sort(
         theAgents.begin(), theAgents.end(),
         [](cAgent *a, cAgent *b)
@@ -245,7 +247,9 @@ void cAgent::sortFamily(const cSlot *slot)
         theAgents.begin(), theAgents.end(),
         [&](cAgent *a, cAgent *b)
         {
-            return slot->hasFamily(a->family());
+            bool af = slot->hasFamily(a->family());
+            bool bf = slot->hasFamily(b->family());
+            return ( af && ( ! bf ));
         });
 }
 
