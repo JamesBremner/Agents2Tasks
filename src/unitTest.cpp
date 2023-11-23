@@ -1,8 +1,4 @@
-#include "assigner.h"
-#include "cTask.h"
-#include "cAgent.h"
-#include "cAssign.h"
-#include "cSlot.h"
+#include "Agents2Tasks.h"
 
 bool unitTest()
 {

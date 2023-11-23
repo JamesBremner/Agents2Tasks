@@ -1,5 +1,4 @@
-#include <string>
-#include <vector>
+#pragma once
 
 class cAssign
 {
@@ -46,7 +45,7 @@ public:
     /// @brief Get display text for the assignments in a slot
     /// @param pSlot 
     /// @return 
-    
+
     static std::string text(cSlot *pSlot);
 
     /// @brief get assignments in a timeslot

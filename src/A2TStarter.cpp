@@ -22,7 +22,7 @@ public:
             {
                 std::string error;
                 if (wex::free::startProcess(
-                        "Agents2TasksConsole.exe ../dat/ex10.txt console.txt",
+                        "Agents2Tasks.exe ../dat/ex10.txt console.txt",
                         error))
                 {
                     wex::msgbox("ERROR starting A2T " + error);

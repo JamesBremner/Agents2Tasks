@@ -1,4 +1,3 @@
-#include "assigner.h"
 
 class cSlot
 {
