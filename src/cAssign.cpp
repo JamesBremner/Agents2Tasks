@@ -72,7 +72,7 @@ void Agents2Tasks()
         cAgent::unassignAll();
 
         // loop over tasks required by slot
-        for (cTask *pt : slot->getTasks())
+        for (cTask *ptask : slot->getTasks())
         {
 
             /* sort agents
@@ -81,20 +81,20 @@ void Agents2Tasks()
             */
 
             // std::cout << "before sort\n";
-            // for (cAgent *pa : cAgent::getAll())
+            // for (cAgent *pa : cAgent::get())
             //     std::cout << pa->name() << "\n";
 
             cAgent::sortAssignedCount();
             cAgent::sortFamily(slot);
 
             // std::cout << "after sort\n";
-            // for (cAgent *pa : cAgent::getAll())
+            // for (cAgent *pa : cAgent::get())
             //     std::cout << pa->name() << "\n";
 
             cAgent *pBestAgent = 0;
 
-            // loop over agents
-            for (cAgent *pa : cAgent::getAll())
+            // loop over agents that can do the task
+            for (cAgent *pa : cAgent::getForTask( ptask ))
             {
                 if (pa->isAssigned())
                     continue;
@@ -107,13 +107,15 @@ void Agents2Tasks()
                     pBestAgent = pa;
                     continue;
                 }
-                if (pa->cost(pt) < pBestAgent->cost(pt))
+
+                // check for cheaper
+                if (pa->cost(ptask) < pBestAgent->cost(ptask))
                     pBestAgent = pa;
             }
 
             // assign best agent to task
             if (pBestAgent)
-                cAssign::add(slot, pBestAgent, pt);
+                cAssign::add(slot, pBestAgent, ptask);
         }
     }
 }

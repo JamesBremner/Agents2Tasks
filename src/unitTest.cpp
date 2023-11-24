@@ -67,7 +67,7 @@ bool unitTest()
         "t 202311011000 cleaner cleaner\n");
 
     // give Alice a history of heavy workload
-    cAgent::getAll()[2]->setPreviousTasks(10);
+    cAgent::get()[2]->setPreviousTasks(10);
 
     Agents2Tasks();
     result = cAssign::text(cSlot::getAll()[0]);

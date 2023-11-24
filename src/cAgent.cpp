@@ -188,6 +188,14 @@ void cAgentGroup::assign(int day)
     }
 }
 
+bool cAgent::cando(cTask *task) const
+{
+    for (auto &pt : myTasks)
+        if (pt.first == task)
+            return true;
+    return false;
+}
+
 bool cAgent::isAssignedRecently(
     int day) const
 {
@@ -261,6 +269,16 @@ void cAgent::unassignAll()
 {
     for (cAgent *pa : theAgents)
         pa->unAssign();
+}
+
+std::vector<cAgent *>
+cAgent::getForTask(cTask *task)
+{
+    std::vector<cAgent *> ret;
+    for (cAgent *pa : theAgents)
+        if (pa->cando(task))
+            ret.push_back(pa);
+    return ret;
 }
 
 std::string cAgent::specTextAll()

@@ -63,6 +63,8 @@ public:
         return myFamily;
     }
 
+    bool cando( cTask* task ) const;
+
     bool isAssigned() const
     {
         return myAssigned;
@@ -110,11 +112,18 @@ public:
 
     static void sortFamily(const cSlot *slot);
 
+    /// get all the agents in sorted order
+
     static std::vector<cAgent *>
-    getAll()
+    get()
     {
         return theAgents;
     }
+
+    /// get agents that can do task
+
+    static std::vector<cAgent *>
+    getForTask( cTask* task );
 
     static std::string specTextAll();
 
