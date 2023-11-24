@@ -1,0 +1,23 @@
+a mwalsh 1 mwalsh MAS
+a asmith 1 asmith none
+a rejkid1 1 rejkid Acolyte
+a jblack 1 jblack EMHC Reader1 Acolyte
+a ismith 1 ismith Acolyte
+a iblack 1 iblack none
+a jsmith 1 jsmith EMHC Reader2
+a ablack 1 ablack none
+a jwhite 1 jwhite EMHC Reader1
+a iwhite 1 iwhite none
+a awhite 1 awhite none
+g Cleaner asmith rejkid1 ismith
+g Cleaner iblack ablack iwhite awhite
+t 202312051000 Cleaner
+t 202312121000 Cleaner
+
+
+
+
+
+
+
+

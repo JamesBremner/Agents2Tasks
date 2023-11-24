@@ -33,6 +33,7 @@ cAgentGroup::cAgentGroup(
 {
     myName = vtoken[2] + "_group";
     myAssigned = false;
+    myAssignedCount = 0;
     myFamily = -1;
 
     cTask *task = cTask::find(vtoken[1]);

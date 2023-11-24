@@ -4,6 +4,31 @@ bool unitTest()
 {
     std::string utname, result, expected;
 
+    utname = "tid34";
+    readstring(
+        "a Carol 1 A cleaner\n"
+        "a Bob 1 B cleaner\n"
+        "a Alice 1 C cleaner\n"
+        "a Carol2 1 A cleaner\n"
+        "a Bob2 1 B cleaner\n"
+        "a Alice2 1 C cleaner\n"
+        "g cleaner Alice Bob Carol\n"
+        "g cleaner Alice2 Bob2 Carol2\n"
+        "t 202311011000 cleaner\n"
+        "t 202312081000 cleaner\n");
+
+    Agents2Tasks();
+
+    result = cAssign::text(cSlot::getAll()[0]);
+    if (result.find("Alice_group") == -1)
+        throw std::runtime_error(utname + " unit test failed");
+
+    result = cAssign::text(cSlot::getAll()[1]);
+    if (result.find("Alice2_group") == -1)
+        throw std::runtime_error(utname + " unit test failed");
+
+    //////////////////////////////////////////////
+
     utname = "1";
     readstring(
         "a Carol 1 A cleaner\n"
