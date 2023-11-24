@@ -62,7 +62,7 @@ void readstring(
 std::string specText()
 {
     std::string ret;
-    ret += cAgent::specText();
+    ret += cAgent::specTextAll();
     ret += cSlot::specText();
     return ret;
 }

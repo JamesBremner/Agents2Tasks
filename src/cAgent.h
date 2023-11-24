@@ -85,6 +85,11 @@ public:
     }
 
     virtual std::string text() const;
+    virtual std::string specText() const
+    {
+        return text();
+    }
+
 
     static void clear();
 
@@ -111,7 +116,7 @@ public:
         return theAgents;
     }
 
-    static std::string specText();
+    static std::string specTextAll();
 
 
 };
@@ -133,6 +138,8 @@ public:
     }
 
     virtual std::string text() const;
+
+    virtual std::string specText() const;
 
     static void add(const std::vector<std::string> &vtoken);
 

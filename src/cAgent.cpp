@@ -7,7 +7,7 @@ std::vector<std::string> cAgent::vFamily;
 cAgent::cAgent(const std::vector<std::string> &vtoken)
     : myName(vtoken[1]),
       myAssigned(false),
-      myAssignedCount( 0 )
+      myAssignedCount(0)
 {
     // parse family
 
@@ -35,7 +35,11 @@ cAgentGroup::cAgentGroup(
     myAssigned = false;
     myFamily = -1;
 
-    parseTasks(2, vtoken);
+    cTask *task = cTask::find(vtoken[1]);
+    if (!task)
+        task = cTask::add(vtoken[1]);
+    myTasks.push_back(
+        std::make_pair(task, 0));
 
     // store member agents
     for (int k = 2; k < vtoken.size(); k++)
@@ -98,15 +102,19 @@ std::string cAgent::text() const
 
 std::string cAgentGroup::text() const
 {
+    return "cAgentGroup::text() NYI\n";
+}
+
+std::string cAgentGroup::specText() const
+{
     std::stringstream ss;
 
     ss
-        << "g " << myName;
+        << "g " << myTasks[0].first->name();
 
-    for (auto &tp : myTasks)
-    {
-        ss << " " << tp.first->name();
-    }
+    for (auto &member : myMember)
+        ss << " " << member->name();
+
     ss << "\n";
 
     return ss.str();
@@ -245,7 +253,7 @@ void cAgent::sortFamily(const cSlot *slot)
         {
             bool af = slot->hasFamily(a->family());
             bool bf = slot->hasFamily(b->family());
-            return ( af && ( ! bf ));
+            return (af && (!bf));
         });
 }
 
@@ -255,16 +263,12 @@ void cAgent::unassignAll()
         pa->unAssign();
 }
 
-std::string cAgent::specText()
+std::string cAgent::specTextAll()
 {
     std::string ret;
     for (auto *pa : theAgentsInputOrder)
-    {
-        if (pa->isGroup())
-            ret += ((cAgentGroup *)pa)->text();
-        else
-            ret += pa->text();
-    }
+        ret += pa->specText();
+
     return ret;
 }
 
