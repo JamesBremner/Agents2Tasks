@@ -5,18 +5,11 @@ class cAgent
 {
 protected:
 
-    /* The agents in sorted order */
-    static std::vector<cAgent *> theAgents;
-
-    /* The agents in input order */
-    static std::vector<cAgent *> theAgentsInputOrder;
-
     std::string myName;
 
     /* The tasks that this agent can be assigned to */
     std::vector<std::pair<cTask *, double>> myTasks;
 
-    static std::vector<std::string> vFamily; // family names
     int myFamily;                            // family index
 
     /* True if agent has been assigned to current timeslot */
@@ -123,10 +116,8 @@ public:
     /// get all the agents in sorted order
 
     static std::vector<cAgent *>
-    get()
-    {
-        return theAgents;
-    }
+    get();
+
 
     /// get agents that can do task
 

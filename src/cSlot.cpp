@@ -1,6 +1,30 @@
 #include "Agents2Tasks.h"
 
-std::vector<cSlot *> cSlot::theSlots;
+
+    void cSlot::clear()
+    {
+        for (auto *ps : theDataStore.theSlots)
+            delete ps;
+        theDataStore.theSlots.clear();
+    }
+    
+        void cSlot::add(std::vector<std::string> &vtoken)
+    {
+        theDataStore.theSlots.push_back(
+            new cSlot(vtoken));
+    }
+         std::vector<cSlot *>
+    cSlot::get()
+    {
+        return theDataStore.theSlots;
+    }
+        std::string cSlot::specText()
+    {
+        std::string ret;
+        for (cSlot *ps : theDataStore.theSlots)
+            ret += ps->text() + "\n";
+        return ret;
+    }
 
 cSlot::cSlot(const std::vector<std::string> &vtoken)
     : myName(vtoken[1])
@@ -36,7 +60,7 @@ std::string cSlot::text() const
 bool cSlot::isSane()
 {
 
-    if (!theSlots.size())
+    if (!theDataStore.theSlots.size())
         throw std::runtime_error("22 No timeslots specified");
 
     /* Convert timeslot names to 64 bit integers so that their order can be checked
@@ -49,7 +73,7 @@ bool cSlot::isSane()
     */
     long long prev = -1;
 
-    for (auto *slot : theSlots)
+    for (auto *slot : theDataStore.theSlots)
     {
         long long t = atoll(slot->name().c_str());
         if (!t)

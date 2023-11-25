@@ -1,3 +1,6 @@
+
+// standard libraries
+
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -9,9 +12,41 @@
 
 typedef std::chrono::system_clock::time_point timepoint_t;
 
+// Application classes
+
 class cSlot;
+#include "cTask.h"
+#include "cAgent.h"
+#include "cAssign.h"
+#include "cSlot.h"
+
+// Application data store
+
+struct sDataStore
+{
+    std::vector<cTask *> theTasks;
+    std::vector<cSlot *> theSlots;
+
+    /* The agents in sorted order */
+    std::vector<cAgent *> theAgents;
+
+    /* The agents in input order */
+    std::vector<cAgent *> theAgentsInputOrder;
+
+    std::vector<std::string> vFamily; // family names
+
+    /* The assignments */
+    std::vector<cAssign *> theAssigns;
+};
+
+extern sDataStore theDataStore;
+
+// free functions
 
 void readfile(
+    const std::string &fname);
+
+void writefile(
     const std::string &fname);
 
 void readstring(
@@ -20,11 +55,3 @@ void readstring(
 bool unitTest();
 
 std::string specText();
-
-void writefile( const std::string& fname );
-
-#include "cTask.h"
-#include "cAgent.h"
-#include "cAssign.h"
-#include "cSlot.h"
-

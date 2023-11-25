@@ -73,7 +73,7 @@ void writefile( const std::string& fname )
     if( ! ofs.is_open() )
             throw std::runtime_error("14 Cannot open output file");
     ofs << specText();
-    for( cSlot* ps : cSlot::getAll() )
+    for( cSlot* ps : cSlot::get() )
     {
         ofs << cAssign::text( ps );
     }

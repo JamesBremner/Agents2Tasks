@@ -2,7 +2,6 @@
 
 class cTask
 {
-    static std::vector< cTask* > theTasks;
 
     std::string myName;
 
@@ -17,23 +16,14 @@ class cTask
         return myName;
     }
 
-    static void clear()
-    {
-        for( auto* pt : theTasks )
-            delete pt;
-        theTasks.clear();
-    }
+    static void clear();
 
     static cTask* add( const std::string& name );
 
     static std::vector< cTask* >
-    getAll()
-    {
-        return theTasks;
-    }
+    get();
 
     static cTask* find( const std::string& name );
-
 
 };
 

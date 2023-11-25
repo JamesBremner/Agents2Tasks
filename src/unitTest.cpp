@@ -19,11 +19,11 @@ bool unitTest()
 
     Agents2Tasks();
 
-    result = cAssign::text(cSlot::getAll()[0]);
+    result = cAssign::text(cSlot::get()[0]);
     if (result.find("Alice_group") == -1)
         throw std::runtime_error(utname + " unit test failed");
 
-    result = cAssign::text(cSlot::getAll()[1]);
+    result = cAssign::text(cSlot::get()[1]);
     if (result.find("Alice2_group") == -1)
         throw std::runtime_error(utname + " unit test failed");
 
@@ -52,7 +52,7 @@ bool unitTest()
 
     Agents2Tasks();
 
-    result = cAssign::text(cSlot::getAll()[0]);
+    result = cAssign::text(cSlot::get()[0]);
     expected =
         "A 202311011000 Carol to cleaner\n"
         "A 202311011000 Bob to cleaner\n";
@@ -75,7 +75,7 @@ bool unitTest()
     Agents2Tasks();
 
     // Alice gets job in 2nd timeslot because she has the least workload
-    result = cAssign::text(cSlot::getAll()[1]);
+    result = cAssign::text(cSlot::get()[1]);
     expected =
         "A 202311011200 Alice to cleaner\n";
     if (expected != result)
@@ -99,7 +99,7 @@ bool unitTest()
     Agents2Tasks();
 
     // Carol gets job in 4th timeslot because the workload has 'rolled around'
-    result = cAssign::text(cSlot::getAll()[3]);
+    result = cAssign::text(cSlot::get()[3]);
     if (result.find("Carol") == -1 )
         throw std::runtime_error(utname + " unit test failed");
 
@@ -117,7 +117,7 @@ bool unitTest()
     cAgent::get()[2]->setPreviousTasks(10);
 
     Agents2Tasks();
-    result = cAssign::text(cSlot::getAll()[0]);
+    result = cAssign::text(cSlot::get()[0]);
 
     // Carol and Alice gets the task because
     // although Alice has a greater previous workload than Bob
@@ -139,20 +139,20 @@ bool unitTest()
 
     Agents2Tasks();
 
-    result = cAssign::text(cSlot::getAll()[0]);
+    result = cAssign::text(cSlot::get()[0]);
     expected =
         "A 202311010830 Alice to teacher\n";
     if (expected != result)
         throw std::runtime_error(utname + " unit test failed");
 
     // blocked from all tasks
-    result = cAssign::text(cSlot::getAll()[1]);
+    result = cAssign::text(cSlot::get()[1]);
     expected = "";
     if (expected != result)
         throw std::runtime_error(utname + " unit test failed");
 
     // block expired
-    result = cAssign::text(cSlot::getAll()[2]);
+    result = cAssign::text(cSlot::get()[2]);
     expected =
         "A 202311030830 Alice to teacher\n";
     if (expected != result)
@@ -170,7 +170,7 @@ bool unitTest()
 
     Agents2Tasks();
 
-    result = cAssign::text(cSlot::getAll()[0]);
+    result = cAssign::text(cSlot::get()[0]);
     expected = "A 202311181000 Alice_group to Cleaner\nA 202311181000 Alice in Alice_group to Cleaner\nA 202311181000 Bob in Alice_group to Cleaner\nA 202311181000 Carol in Alice_group to Cleaner\n";
 
     if (expected != result)

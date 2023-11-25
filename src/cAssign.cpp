@@ -1,7 +1,5 @@
 #include "Agents2Tasks.h"
 
-std::vector<cAssign *> cAssign::theAssigns;
-
 cAssign::cAssign(cSlot *ps, cAgent *pa, cTask *pt)
     : myAgent(pa),
       myTask(pt),
@@ -18,11 +16,18 @@ cAssign::cAssign(cSlot *ps, cAgent *pa, cTask *pt, cAgentGroup *pg)
     myGroup = pg;
 }
 
+void cAssign::clear()
+{
+    for (auto *pa : theDataStore.theAssigns)
+        delete pa;
+    theDataStore.theAssigns.clear();
+}
+
 std::vector<cAssign *>
 cAssign::getSlotAssigns(cSlot *slot)
 {
     std::vector<cAssign *> ret;
-    for (auto *a : theAssigns)
+    for (auto *a : theDataStore.theAssigns)
         if (a->mySlot == slot)
             ret.push_back(a);
     return ret;
@@ -30,26 +35,26 @@ cAssign::getSlotAssigns(cSlot *slot)
 
 void cAssign::add(cSlot *ps, cAgent *pa, cTask *pt)
 {
-    if( ! ( ps && pa && pt ))
+    if (!(ps && pa && pt))
         return;
 
-    theAssigns.push_back(
+    theDataStore.theAssigns.push_back(
         new cAssign(ps, pa, pt));
     if (pa->name().find("_group") != -1)
     {
         // assign group agent  members
         for (cAgent *pm : pa->getMembers())
-            theAssigns.push_back(
+            theDataStore.theAssigns.push_back(
                 new cAssign(ps, pm, pt, (cAgentGroup *)pa));
     }
 }
 
-std::string cAssign::text(const std::string& slotName ) const
+std::string cAssign::text(const std::string &slotName) const
 {
     std::stringstream ss;
 
-    ss << "A " << slotName 
-        <<" "<< myAgent->name();
+    ss << "A " << slotName
+       << " " << myAgent->name();
     if (myGroup)
         ss << " in " << myGroup->name();
     ss << " to " << myTask->name();
@@ -59,9 +64,9 @@ std::string cAssign::text(const std::string& slotName ) const
 std::string cAssign::text(cSlot *pSlot)
 {
     std::string ret;
-    for (auto *pAssign : theAssigns)
+    for (auto *pAssign : theDataStore.theAssigns)
         if (pAssign->slot() == pSlot)
-            ret += pAssign->text( pSlot->name() ) + "\n";
+            ret += pAssign->text(pSlot->name()) + "\n";
     return ret;
 }
 
@@ -70,7 +75,7 @@ void Agents2Tasks()
     cAssign::clear();
 
     // loop over slots
-    for (cSlot *slot : cSlot::getAll())
+    for (cSlot *slot : cSlot::get())
     {
         // remove any assignments from a previous timeslot
 
@@ -104,7 +109,7 @@ void Agents2Tasks()
             cAgent *pBestAgent = 0;
 
             // loop over agents that can do the task
-            for (cAgent *pa : cAgent::getForTask( ptask ))
+            for (cAgent *pa : cAgent::getForTask(ptask))
             {
                 if (pa->isAssigned())
                     continue;

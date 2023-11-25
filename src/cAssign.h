@@ -3,8 +3,6 @@
 class cAssign
 {
 
-    static std::vector<cAssign *> theAssigns;
-
     cSlot *mySlot;
     cAgent *myAgent;
     cTask *myTask;
@@ -28,12 +26,7 @@ public:
 
     std::string text(const std::string& slotName) const;
 
-    static void clear()
-    {
-        for (auto *pa : theAssigns)
-            delete pa;
-        theAssigns.clear();
-    }
+    static void clear();
 
     /// @brief Assign agent to task in slot
     /// @param ps slot

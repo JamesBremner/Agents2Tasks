@@ -1,6 +1,6 @@
 #include "Agents2Tasks.h"
 
-
+sDataStore theDataStore;
 
 void errorHandler(
     const std::string &msg)

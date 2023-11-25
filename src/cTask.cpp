@@ -1,17 +1,28 @@
 #include "Agents2Tasks.h"
 
 
-std::vector< cTask* > cTask::theTasks;
+ void cTask::clear()
+    {
+        for( auto* pt : theDataStore.theTasks )
+            delete pt;
+        theDataStore.theTasks.clear();
+    }
+
+        static std::vector< cTask* >
+    get()
+    {
+        return theDataStore.theTasks;
+    }
 
 cTask *cTask::find(const std::string &name)
 {
     auto it = std::find_if(
-        theTasks.begin(), theTasks.end(),
+        theDataStore.theTasks.begin(), theDataStore.theTasks.end(),
         [&](cTask *pt)
         {
             return (pt->name() == name);
         });
-    if (it == theTasks.end())
+    if (it == theDataStore.theTasks.end())
         return 0;
     return *it;
 }
@@ -20,7 +31,7 @@ cTask *cTask::add(const std::string &name)
 {
     if (find(name))
         throw std::runtime_error("25 Duplicate task name");
-    theTasks.push_back(
+    theDataStore.theTasks.push_back(
         new cTask(name));
-    return theTasks.back();
+    return theDataStore.theTasks.back();
 }

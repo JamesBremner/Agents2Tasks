@@ -1,8 +1,5 @@
 #include "Agents2Tasks.h"
 
-std::vector<cAgent *> cAgent::theAgents;
-std::vector<cAgent *> cAgent::theAgentsInputOrder;
-std::vector<std::string> cAgent::vFamily;
 
 cAgent::cAgent(const std::vector<std::string> &vtoken)
     : myName(vtoken[1]),
@@ -12,17 +9,17 @@ cAgent::cAgent(const std::vector<std::string> &vtoken)
     // parse family
 
     auto it = std::find(
-        vFamily.begin(), vFamily.end(), vtoken[3]);
-    if (it == vFamily.end())
+       theDataStore.vFamily.begin(),  theDataStore.vFamily.end(), vtoken[3]);
+    if (it ==  theDataStore.vFamily.end())
     {
         // new family
-        vFamily.push_back(vtoken[3]);
-        myFamily = vFamily.size() - 1;
+         theDataStore.vFamily.push_back(vtoken[3]);
+        myFamily =  theDataStore.vFamily.size() - 1;
     }
     else
     {
         // member of an existing family
-        myFamily = it - vFamily.begin();
+        myFamily = it -  theDataStore.vFamily.begin();
     }
 
     parseTasks(4, vtoken);
@@ -52,6 +49,12 @@ cAgentGroup::cAgentGroup(
     }
 }
 
+    std::vector<cAgent *>
+    cAgent::get()
+    {
+        return theDataStore.theAgents;
+    }
+
 void cAgent::parseTasks(int first, const std::vector<std::string> &vtoken)
 {
     if (vtoken.size() < first + 1)
@@ -73,12 +76,12 @@ void cAgent::parseTasks(int first, const std::vector<std::string> &vtoken)
 cAgent *cAgent::find(const std::string &name)
 {
     auto it = std::find_if(
-        theAgents.begin(), theAgents.end(),
+        theDataStore.theAgents.begin(), theDataStore.theAgents.end(),
         [&](cAgent *pa)
         {
             return pa->name() == name;
         });
-    if (it == theAgents.end())
+    if (it == theDataStore.theAgents.end())
         return 0;
     return *it;
 }
@@ -90,7 +93,7 @@ std::string cAgent::text() const
     ss
         << "a " << myName
         << " " << myTasks[0].second
-        << " " << vFamily[myFamily];
+        << " " <<  theDataStore.vFamily[myFamily];
 
     for (auto &tp : myTasks)
     {
@@ -126,7 +129,7 @@ void cAgent::add(const std::vector<std::string> &vtoken)
     if (find(vtoken[1]))
         throw std::runtime_error("12	Duplicate agent name");
 
-    theAgents.push_back(
+    theDataStore.theAgents.push_back(
         new cAgent(vtoken));
 }
 
@@ -134,7 +137,7 @@ void cAgentGroup::add(const std::vector<std::string> &vtoken)
 {
     if (find(vtoken[1] + "_group"))
         throw std::runtime_error("12	Duplicate agent name");
-    theAgents.push_back(
+    theDataStore.theAgents.push_back(
         new cAgentGroup(vtoken));
 }
 
@@ -245,9 +248,8 @@ bool cAgentGroup::isAssignedRecently(int day) const
 
 void cAgent::sortAssignedCount()
 {
-
     std::stable_sort(
-        theAgents.begin(), theAgents.end(),
+        theDataStore.theAgents.begin(), theDataStore.theAgents.end(),
         [](cAgent *a, cAgent *b)
         {
             return a->assignedCount() < b->assignedCount();
@@ -257,7 +259,7 @@ void cAgent::sortAssignedCount()
 void cAgent::sortFamily(const cSlot *slot)
 {
     std::stable_sort(
-        theAgents.begin(), theAgents.end(),
+        theDataStore.theAgents.begin(), theDataStore.theAgents.end(),
         [&](cAgent *a, cAgent *b)
         {
             bool af = slot->hasFamily(a->family());
@@ -268,7 +270,7 @@ void cAgent::sortFamily(const cSlot *slot)
 
 void cAgent::unassignAll()
 {
-    for (cAgent *pa : theAgents)
+    for (cAgent *pa : theDataStore.theAgents)
         pa->unAssign();
 }
 
@@ -276,7 +278,7 @@ std::vector<cAgent *>
 cAgent::getForTask(cTask *task)
 {
     std::vector<cAgent *> ret;
-    for (cAgent *pa : theAgents)
+    for (cAgent *pa : theDataStore.theAgents)
         if (pa->cando(task))
             ret.push_back(pa);
     return ret;
@@ -285,7 +287,7 @@ cAgent::getForTask(cTask *task)
 std::string cAgent::specTextAll()
 {
     std::string ret;
-    for (auto *pa : theAgentsInputOrder)
+    for (auto *pa : theDataStore.theAgentsInputOrder)
         ret += pa->specText();
 
     return ret;
@@ -293,25 +295,25 @@ std::string cAgent::specTextAll()
 
 void cAgent::clear()
 {
-    for (auto *pa : theAgents)
+    for (auto *pa : theDataStore.theAgents)
         delete pa;
-    theAgents.clear();
+    theDataStore.theAgents.clear();
 }
 
 void cAgent::saveInputOrder()
 {
-    theAgentsInputOrder = theAgents;
+    theDataStore.theAgentsInputOrder = theDataStore.theAgents;
 }
 void cAgent::restoreInputOrder()
 {
-    theAgents = theAgentsInputOrder;
+    theDataStore.theAgents = theDataStore.theAgentsInputOrder;
 }
 
 bool cAgent::isSane()
 {
     std::set<std::string> agents;
     std::set<std::string> groupMembers;
-    for (auto *agent : theAgents)
+    for (auto *agent : theDataStore.theAgents)
     {
         if (agent->name().find("_group") == -1)
         {
