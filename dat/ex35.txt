@@ -1,0 +1,9 @@
+a Carol 1 C cleaner
+a Bob 1 B cleaner
+a Alice 1 A cleaner
+t 2023051100 cleaner
+t 2023061100 cleaner
+t 2023071100 cleaner
+t 2023081100 cleaner
+t 2023101100 cleaner
+t 2023112110 cleaner

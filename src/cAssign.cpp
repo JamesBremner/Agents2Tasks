@@ -30,6 +30,9 @@ cAssign::getSlotAssigns(cSlot *slot)
 
 void cAssign::add(cSlot *ps, cAgent *pa, cTask *pt)
 {
+    if( ! ( ps && pa && pt ))
+        return;
+
     theAssigns.push_back(
         new cAssign(ps, pa, pt));
     if (pa->name().find("_group") != -1)
@@ -69,7 +72,14 @@ void Agents2Tasks()
     // loop over slots
     for (cSlot *slot : cSlot::getAll())
     {
+        // remove any assignments from a previous timeslot
+
         cAgent::unassignAll();
+
+        // remove any changes in agent order from a previous timeslot
+        // TID35
+
+        cAgent::restoreInputOrder();
 
         // loop over tasks required by slot
         for (cTask *ptask : slot->getTasks())
@@ -114,8 +124,8 @@ void Agents2Tasks()
             }
 
             // assign best agent to task
-            if (pBestAgent)
-                cAssign::add(slot, pBestAgent, ptask);
+
+            cAssign::add(slot, pBestAgent, ptask);
         }
     }
 }

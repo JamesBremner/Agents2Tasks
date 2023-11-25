@@ -4,20 +4,27 @@
 class cAgent
 {
 protected:
+
+    /* The agents in sorted order */
     static std::vector<cAgent *> theAgents;
+
+    /* The agents in input order */
     static std::vector<cAgent *> theAgentsInputOrder;
 
     std::string myName;
 
+    /* The tasks that this agent can be assigned to */
     std::vector<std::pair<cTask *, double>> myTasks;
 
-    static std::vector<std::string> vFamily; // family group names
-    int myFamily;                            // family group index
+    static std::vector<std::string> vFamily; // family names
+    int myFamily;                            // family index
 
+    /* True if agent has been assigned to current timeslot */
     bool myAssigned;
 
     timepoint_t myLastAssignmentTime; //  00:00:01 on day of previous assignment
 
+    /* The number of times agent assigned to a task in previous timeslots */
     int myAssignedCount;
 
     void parseTasks( int first, const std::vector<std::string> &vtoken );
@@ -96,6 +103,7 @@ public:
     static void clear();
 
     static void saveInputOrder();
+    static void restoreInputOrder();
 
     /// @brief Add an agent
     /// @param vtoken tokenized specification line

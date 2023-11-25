@@ -302,6 +302,10 @@ void cAgent::saveInputOrder()
 {
     theAgentsInputOrder = theAgents;
 }
+void cAgent::restoreInputOrder()
+{
+    theAgents = theAgentsInputOrder;
+}
 
 bool cAgent::isSane()
 {

@@ -81,6 +81,28 @@ bool unitTest()
     if (expected != result)
         throw std::runtime_error(utname + " unit test failed");
 
+    /////////////////////////////////
+
+    utname = "even workload tid35";
+    readstring(
+        "a Carol 1 C cleaner\n"
+        "a Bob 1 B cleaner\n"
+        "a Alice 1 A cleaner\n"
+        "t 2023051100 cleaner\n"
+        "t 2023061100 cleaner\n"
+        "t 2023071100 cleaner\n"
+        "t 2023081100 cleaner\n"
+        "t 2023101100 cleaner\n"
+        "t 2023112110 cleaner\n");
+
+
+    Agents2Tasks();
+
+    // Carol gets job in 4th timeslot because the workload has 'rolled around'
+    result = cAssign::text(cSlot::getAll()[3]);
+    if (result.find("Carol") == -1 )
+        throw std::runtime_error(utname + " unit test failed");
+
     /////////////////////////////////////////////
 
     utname = "prefer family";
