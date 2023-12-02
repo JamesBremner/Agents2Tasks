@@ -176,5 +176,23 @@ bool unitTest()
     if (expected != result)
         throw std::runtime_error(utname + " unit test failed");
 
+    ///////////////////////////////////////
+
+    utname = "Group Agent, no tasks";
+    readstring(
+        "a Alice 1 A\n"
+        "a Bob 1 B \n"
+        "a Carol 1 C Cleaner Acolyte\n"
+        "g Cleaner Alice Bob Carol\n"
+        "t 202311181000 Cleaner\n");
+
+    Agents2Tasks();
+
+    result = cAssign::text(cSlot::get()[0]);
+    expected = "A 202311181000 Alice_group to Cleaner\nA 202311181000 Alice in Alice_group to Cleaner\nA 202311181000 Bob in Alice_group to Cleaner\nA 202311181000 Carol in Alice_group to Cleaner\n";
+
+    if (expected != result)
+        throw std::runtime_error(utname + " unit test failed");
+
     return true;
 }

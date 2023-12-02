@@ -57,9 +57,6 @@ cAgentGroup::cAgentGroup(
 
 void cAgent::parseTasks(int first, const std::vector<std::string> &vtoken)
 {
-    if (vtoken.size() < first + 1)
-        throw std::runtime_error("26 Agent has no tasks");
-
     for (int k = first; k < vtoken.size(); k++)
     {
         cTask *pt = cTask::find(vtoken[k]);
