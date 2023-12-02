@@ -124,7 +124,7 @@ std::string cAgentGroup::specText() const
 void cAgent::add(const std::vector<std::string> &vtoken)
 {
     if (find(vtoken[1]))
-        throw std::runtime_error("12	Duplicate agent name");
+        throw std::runtime_error("12	Duplicate agent name " + vtoken[1]);
 
     theDataStore.theAgents.push_back(
         new cAgent(vtoken));
@@ -133,7 +133,7 @@ void cAgent::add(const std::vector<std::string> &vtoken)
 void cAgentGroup::add(const std::vector<std::string> &vtoken)
 {
     if (find(vtoken[1] + "_group"))
-        throw std::runtime_error("12	Duplicate agent name");
+        throw std::runtime_error("12	Duplicate agent name " + vtoken[1]);
     theDataStore.theAgents.push_back(
         new cAgentGroup(vtoken));
 }
@@ -315,15 +315,13 @@ bool cAgent::isSane()
         if (agent->name().find("_group") == -1)
         {
             // a single agent
-            if (!agents.insert(agent->name()).second)
-                throw std::runtime_error("24 Dulplicate agent name " + agent->name());
             continue;
         }
         for (auto *member : ((cAgentGroup *)agent)->getMembers())
         {
             // check if agent specified in a previous group
             if (!groupMembers.insert(member->name()).second)
-                throw std::runtime_error("23 Dulplicate group member " + member->name());
+                throw std::runtime_error("23 Duplicate group member " + member->name());
         }
     }
     return true;
