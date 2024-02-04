@@ -21,7 +21,6 @@ Allocate agents to tasks in multiple timeslots containing multiple tasks.
 
 - Loop over timeslots
    - Loop over tasks in timeslot
-       - Loop over tasks
             - Set picked agent to null
             - Loop over agents in preferred order of assignment
                  - IF agent can be assigned, is cheaper and has lower previous workload than picked
