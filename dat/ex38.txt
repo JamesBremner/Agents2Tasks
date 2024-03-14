@@ -1,0 +1,32 @@
+a dxuereb@gmail.com&1979-01-01 1 dxuereb@gmail.com Reader1 
+a mdalecka@gmail.com&1998-06-07 1 mdalecka@gmail.com Reader2 
+a rejkid@gmail.com&1998-06-07 1 rejkid@gmail.com Reader2 
+a rejkid@gmail.com&1992-08-28 1 rejkid@gmail.com MAS 
+a jwhite@gmail.com&1961-03-24 1 jwhite@gmail.com EMHC  Reader1 
+a jblack@gmail.com&1961-03-24 1 jblack@gmail.com EMHC  Reader1  Acolyte 
+a mwalsh@gmail.com&2010-01-01 1 mwalsh@gmail.com MAS 
+a jsmith@gmail.com&1961-03-24 1 jsmith@gmail.com EMHC  Reader2 
+a dxuereb@gmail.com&2010-01-01 1 dxuereb@gmail.com Acolyte 
+a rejkid@gmail.com&1961-07-02 1 rejkid@gmail.com Reader1 
+a rejkid@gmail.com&1961-03-24 1 rejkid@gmail.com Acolyte 
+a ddalecki@gmail.com&1998-06-07 1 ddalecki@gmail.com Acolyte 
+a example@gmail.com&1961-03-24 1 example@gmail.com Acolyte 
+a ismith@gmail.com&1961-07-02 1 ismith@gmail.com Acolyte 
+a dxuereb@gmail.com&1980-01-01 1 dxuereb@gmail.com MAS 
+a osiekkolawy@gmail.com&1961-03-24 1 osiekkolawy@gmail.com MAS 
+g Cleaner asmith@gmail.com&1998-06-07  rejkid@gmail.com&1961-03-24  ismith@gmail.com&1961-07-02 
+g Cleaner awhite@gmail.com&1998-06-07  iblack@gmail.com&1961-07-02  iwhite@gmail.com&1961-07-02  ablack@gmail.com&1998-06-07 
+g Cleaner mwalsh@gmail.com&2010-01-01 
+g Cleaner example@gmail.com&1961-03-24 
+
+t 202310220830 Acolyte Acolyte MAS MAS Reader1 Reader2 EMHC EMHC 
+t 202310221000 Acolyte   Acolyte MAS MAS Reader1 Reader2 EMHC  
+t 202310290830 Acolyte  MAS  Reader1 Reader2 EMHC EMHC 
+t 202310291000 Acolyte  MAS  Reader1 Reader2  EMHC 
+t 202311050830 Acolyte  MAS  Reader1 Reader2 EMHC  
+t 202311051000 Acolyte Acolyte MAS MAS Reader1 Reader2 EMHC EMHC 
+t 202312051000 Cleaner
+t 202312121000 Cleaner
+t 202312191000 Cleaner
+t 202312261000 Cleaner
+t 202401021000 Cleaner

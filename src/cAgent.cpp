@@ -308,21 +308,9 @@ void cAgent::restoreInputOrder()
 
 bool cAgent::isSane()
 {
-    std::set<std::string> agents;
-    std::set<std::string> groupMembers;
-    for (auto *agent : theDataStore.theAgents)
-    {
-        if (agent->name().find("_group") == -1)
-        {
-            // a single agent
-            continue;
-        }
-        for (auto *member : ((cAgentGroup *)agent)->getMembers())
-        {
-            // check if agent specified in a previous group
-            if (!groupMembers.insert(member->name()).second)
-                throw std::runtime_error("23 Duplicate group member " + member->name());
-        }
-    }
+    // allow agents to have membership in multiple groups
+    // https://github.com/JamesBremner/Agents2Tasks/issues/39
+
     return true;
+
 }

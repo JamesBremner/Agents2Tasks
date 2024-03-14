@@ -1,0 +1,21 @@
+a mwalsh 1 mwalsh MAS
+a example 1 example Acolyte
+g Cleaner mwalsh
+g Cleaner example mwalsh
+t 202312051000 Cleaner
+t 202312121000 Cleaner
+t 202312191000 Cleaner
+t 202312261000 Cleaner
+t 202401021000 Cleaner
+A 202312051000 mwalsh_group to Cleaner
+A 202312051000 mwalsh in mwalsh_group to Cleaner
+A 202312121000 example_group to Cleaner
+A 202312121000 example in example_group to Cleaner
+A 202312121000 mwalsh in example_group to Cleaner
+A 202312191000 mwalsh_group to Cleaner
+A 202312191000 mwalsh in mwalsh_group to Cleaner
+A 202312261000 example_group to Cleaner
+A 202312261000 example in example_group to Cleaner
+A 202312261000 mwalsh in example_group to Cleaner
+A 202401021000 mwalsh_group to Cleaner
+A 202401021000 mwalsh in mwalsh_group to Cleaner
