@@ -1,6 +1,5 @@
 #include "Agents2Tasks.h"
 
-
 void input(
     std::istream &ifs)
 {
@@ -23,11 +22,13 @@ void input(
         {
 
         case 'a':
-            cAgent::add(vtoken);
+            theDataStore.theAgents.push_back(
+                new cAgent(vtoken));
             break;
 
         case 'g':
-            cAgentGroup::add(vtoken);
+            theDataStore.theAgents.push_back(
+                new cAgentGroup(vtoken));
             break;
 
         case 't':
@@ -40,7 +41,6 @@ void input(
 
     cAgent::isSane();
     cSlot::isSane();
-
 }
 
 void readfile(
@@ -67,14 +67,14 @@ std::string specText()
     return ret;
 }
 
-void writefile( const std::string& fname )
+void writefile(const std::string &fname)
 {
-    std::ofstream ofs( fname );
-    if( ! ofs.is_open() )
-            throw std::runtime_error("14 Cannot open output file");
+    std::ofstream ofs(fname);
+    if (!ofs.is_open())
+        throw std::runtime_error("14 Cannot open output file");
     ofs << specText();
-    for( cSlot* ps : cSlot::get() )
+    for (cSlot *ps : cSlot::get())
     {
-        ofs << cAssign::text( ps );
+        ofs << cAssign::text(ps);
     }
 }

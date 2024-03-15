@@ -1,25 +1,28 @@
 #include "Agents2Tasks.h"
 
-
 cAgent::cAgent(const std::vector<std::string> &vtoken)
-    : myName(vtoken[1]),
-      myAssigned(false),
+    : myAssigned(false),
       myAssignedCount(0)
 {
+    // parse agent name
+    if (find(vtoken[1]))
+        throw std::runtime_error("12	Duplicate agent name " + vtoken[1]);
+    myName = vtoken[1];
+
     // parse family
 
     auto it = std::find(
-       theDataStore.vFamily.begin(),  theDataStore.vFamily.end(), vtoken[3]);
-    if (it ==  theDataStore.vFamily.end())
+        theDataStore.vFamily.begin(), theDataStore.vFamily.end(), vtoken[3]);
+    if (it == theDataStore.vFamily.end())
     {
         // new family
-         theDataStore.vFamily.push_back(vtoken[3]);
-        myFamily =  theDataStore.vFamily.size() - 1;
+        theDataStore.vFamily.push_back(vtoken[3]);
+        myFamily = theDataStore.vFamily.size() - 1;
     }
     else
     {
         // member of an existing family
-        myFamily = it -  theDataStore.vFamily.begin();
+        myFamily = it - theDataStore.vFamily.begin();
     }
 
     parseTasks(4, vtoken);
@@ -29,6 +32,8 @@ cAgentGroup::cAgentGroup(
     const std::vector<std::string> &vtoken)
 {
     myName = vtoken[2] + "_group";
+    if (find(myName))
+        throw std::runtime_error("12	Duplicate group name " + myName);
     myAssigned = false;
     myAssignedCount = 0;
     myFamily = -1;
@@ -49,11 +54,11 @@ cAgentGroup::cAgentGroup(
     }
 }
 
-    std::vector<cAgent *>
-    cAgent::get()
-    {
-        return theDataStore.theAgents;
-    }
+std::vector<cAgent *>
+cAgent::get()
+{
+    return theDataStore.theAgents;
+}
 
 void cAgent::parseTasks(int first, const std::vector<std::string> &vtoken)
 {
@@ -90,7 +95,7 @@ std::string cAgent::text() const
     ss
         << "a " << myName
         << " " << myTasks[0].second
-        << " " <<  theDataStore.vFamily[myFamily];
+        << " " << theDataStore.vFamily[myFamily];
 
     for (auto &tp : myTasks)
     {
@@ -119,23 +124,6 @@ std::string cAgentGroup::specText() const
     ss << "\n";
 
     return ss.str();
-}
-
-void cAgent::add(const std::vector<std::string> &vtoken)
-{
-    if (find(vtoken[1]))
-        throw std::runtime_error("12	Duplicate agent name " + vtoken[1]);
-
-    theDataStore.theAgents.push_back(
-        new cAgent(vtoken));
-}
-
-void cAgentGroup::add(const std::vector<std::string> &vtoken)
-{
-    if (find(vtoken[2] + "_group"))
-        throw std::runtime_error("12	Duplicate group name " + vtoken[2]+ "_group");
-    theDataStore.theAgents.push_back(
-        new cAgentGroup(vtoken));
 }
 
 /// @brief start of blocked time
@@ -312,5 +300,4 @@ bool cAgent::isSane()
     // https://github.com/JamesBremner/Agents2Tasks/issues/39
 
     return true;
-
 }
