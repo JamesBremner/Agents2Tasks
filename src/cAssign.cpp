@@ -56,7 +56,7 @@ std::string cAssign::text(const std::string &slotName) const
     ss << "A " << slotName
        << " " << myAgent->name();
     if (myGroup)
-        ss << " in " << myGroup->name();
+        ss << " in " << myGroup->user_name();
     ss << " to " << myTask->name();
     return ss.str();
 }

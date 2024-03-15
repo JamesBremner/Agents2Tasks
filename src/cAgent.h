@@ -51,6 +51,13 @@ public:
         return myName;
     }
 
+    std::string user_name() const
+    {
+        if( ! isGroup() )
+            return myName;
+        return myName.substr(0,myName.length()-6);
+    }
+
     double cost(cTask *task) const
     {
         if( ! myTasks.size() )
@@ -81,7 +88,7 @@ public:
         return ret;
     }
 
-    bool isGroup()
+    bool isGroup() const
     {
         return ( myName.find("_group") != -1 );
     }

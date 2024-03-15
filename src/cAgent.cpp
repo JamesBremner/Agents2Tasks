@@ -31,21 +31,21 @@ cAgent::cAgent(const std::vector<std::string> &vtoken)
 cAgentGroup::cAgentGroup(
     const std::vector<std::string> &vtoken)
 {
-    myName = vtoken[2] + "_group";
+    myName = vtoken[1] + "_group";
     if (find(myName))
         throw std::runtime_error("12	Duplicate group name " + myName);
     myAssigned = false;
     myAssignedCount = 0;
     myFamily = -1;
 
-    cTask *task = cTask::find(vtoken[1]);
+    cTask *task = cTask::find(vtoken[2]);
     if (!task)
-        task = cTask::add(vtoken[1]);
+        task = cTask::add(vtoken[2]);
     myTasks.push_back(
         std::make_pair(task, 0));
 
     // store member agents
-    for (int k = 2; k < vtoken.size(); k++)
+    for (int k = 3; k < vtoken.size(); k++)
     {
         auto *pa = cAgent::find(vtoken[k]);
         if (!pa)
@@ -116,7 +116,8 @@ std::string cAgentGroup::specText() const
     std::stringstream ss;
 
     ss
-        << "g " << myTasks[0].first->name();
+        << "g " << user_name() 
+        <<" "<< myTasks[0].first->name();
 
     for (auto &member : myMember)
         ss << " " << member->name();

@@ -1,0 +1,17 @@
+a rejkid@gmail.com&07-06-1998 1 rejkid@gmail.com Cleaner 
+a rose@ourladyoftheangels.org.au&24-03-1961 1 rose@ourladyoftheangels.org.au Cleaner  Welcomer 
+a pmurphy@gmail.com&24-03-1961 1 pmurphy@gmail.com Welcomer  Collector 
+a rejkid@gmail.com&28-08-1992 1 rejkid@gmail.com Cleaner  Collector 
+a rejkid@gmail.com&02-07-1961 1 rejkid@gmail.com Cleaner 
+g A Cleaner rejkid@gmail.com&07-06-1998  rose@ourladyoftheangels.org.au&24-03-1961 
+g B Cleaner rejkid@gmail.com&28-08-1992  rejkid@gmail.com&02-07-1961 
+g Rose Welcomer rose@ourladyoftheangels.org.au&24-03-1961  pmurphy@gmail.com&24-03-1961 
+g Peter Collector pmurphy@gmail.com&24-03-1961  rejkid@gmail.com&28-08-1992 
+
+
+
+t 202402030600 Cleaner
+t 202402040830 Welcomer
+t 202402041000 Collector
+t 202402110830 Welcomer
+t 202402111000 Collector

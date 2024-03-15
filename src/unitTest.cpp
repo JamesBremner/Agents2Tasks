@@ -12,8 +12,8 @@ bool unitTest()
         "a Carol2 1 A cleaner\n"
         "a Bob2 1 B cleaner\n"
         "a Alice2 1 C cleaner\n"
-        "g cleaner Alice Bob Carol\n"
-        "g cleaner Alice2 Bob2 Carol2\n"
+        "g Alice_group cleaner Alice Bob Carol\n"
+        "g Alice2_group cleaner Alice2 Bob2 Carol2\n"
         "t 202311011000 cleaner\n"
         "t 202312081000 cleaner\n");
 
@@ -34,7 +34,7 @@ bool unitTest()
         "a Carol 1 A cleaner\n"
         "a Bob 1 B cleaner\n"
         "a Alice 1 C cleaner\n"
-        "g Acolyte Alice Bob Carol\n"
+        "g Alice_group Acolyte Alice Bob Carol\n"
         "t 202311011000 cleaner cleaner\n");
 
     result = specText();
@@ -165,7 +165,7 @@ bool unitTest()
         "a Alice 1 A Cleaner\n"
         "a Bob 1 B Cleaner\n"
         "a Carol 1 C Cleaner Acolyte\n"
-        "g Cleaner Alice Bob Carol\n"
+        "g Alice_group Cleaner Alice Bob Carol\n"
         "t 202311181000 Cleaner\n");
 
     Agents2Tasks();
@@ -183,7 +183,7 @@ bool unitTest()
         "a Alice 1 A\n"
         "a Bob 1 B \n"
         "a Carol 1 C Cleaner Acolyte\n"
-        "g Cleaner Alice Bob Carol\n"
+        "g Alice_group Cleaner Alice Bob Carol\n"
         "t 202311181000 Cleaner\n");
 
     Agents2Tasks();
