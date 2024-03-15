@@ -132,8 +132,8 @@ void cAgent::add(const std::vector<std::string> &vtoken)
 
 void cAgentGroup::add(const std::vector<std::string> &vtoken)
 {
-    if (find(vtoken[1] + "_group"))
-        throw std::runtime_error("12	Duplicate agent name " + vtoken[1]);
+    if (find(vtoken[2] + "_group"))
+        throw std::runtime_error("12	Duplicate group name " + vtoken[2]+ "_group");
     theDataStore.theAgents.push_back(
         new cAgentGroup(vtoken));
 }
