@@ -43,7 +43,7 @@ bool unitTest()
         "a Carol 1 A cleaner\n"
         "a Bob 1 B cleaner\n"
         "a Alice 1 C cleaner\n"
-        "g Acolyte Alice Bob Carol\n"
+        "g Alice_group Acolyte Alice Bob Carol\n"
         "t 202311011000 cleaner cleaner\n";
     if (expected != result)
         throw std::runtime_error(utname + " unit test failed");
@@ -165,16 +165,18 @@ bool unitTest()
         "a Alice 1 A Cleaner\n"
         "a Bob 1 B Cleaner\n"
         "a Carol 1 C Cleaner Acolyte\n"
-        "g Alice_group Cleaner Alice Bob Carol\n"
+        "g Alice Cleaner Alice Bob Carol\n"
         "t 202311181000 Cleaner\n");
 
     Agents2Tasks();
 
     result = cAssign::text(cSlot::get()[0]);
-    expected = "A 202311181000 Alice_group to Cleaner\nA 202311181000 Alice in Alice_group to Cleaner\nA 202311181000 Bob in Alice_group to Cleaner\nA 202311181000 Carol in Alice_group to Cleaner\n";
+    expected = "A 202311181000 Alice_group to Cleaner\nA 202311181000 Alice in Alice to Cleaner\nA 202311181000 Bob in Alice to Cleaner\nA 202311181000 Carol in Alice to Cleaner\n";
 
-    if (expected != result)
+    if (expected != result) {
+        std::cout << result;
         throw std::runtime_error(utname + " unit test failed");
+    }
 
     ///////////////////////////////////////
 
@@ -183,16 +185,18 @@ bool unitTest()
         "a Alice 1 A\n"
         "a Bob 1 B \n"
         "a Carol 1 C Cleaner Acolyte\n"
-        "g Alice_group Cleaner Alice Bob Carol\n"
+        "g Alice Cleaner Alice Bob Carol\n"
         "t 202311181000 Cleaner\n");
 
     Agents2Tasks();
 
     result = cAssign::text(cSlot::get()[0]);
-    expected = "A 202311181000 Alice_group to Cleaner\nA 202311181000 Alice in Alice_group to Cleaner\nA 202311181000 Bob in Alice_group to Cleaner\nA 202311181000 Carol in Alice_group to Cleaner\n";
+    expected = "A 202311181000 Alice_group to Cleaner\nA 202311181000 Alice in Alice to Cleaner\nA 202311181000 Bob in Alice to Cleaner\nA 202311181000 Carol in Alice to Cleaner\n";
 
-    if (expected != result)
+    if (expected != result) {
+        std::cout << result;
         throw std::runtime_error(utname + " unit test failed");
+    }
 
     return true;
 }
