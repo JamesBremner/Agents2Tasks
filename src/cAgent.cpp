@@ -4,6 +4,10 @@ cAgent::cAgent(const std::vector<std::string> &vtoken)
     : myAssigned(false),
       myAssignedCount(0)
 {
+    if( vtoken.size() < 4 )
+        throw std::runtime_error(
+            "18 Badly formatted agent"        );
+            
     // parse agent name
     if (find(vtoken[1]))
         throw std::runtime_error("12	Duplicate agent name " + vtoken[1]);
@@ -92,9 +96,9 @@ std::string cAgent::text() const
 {
     std::stringstream ss;
 
-    ss
-        << "a " << myName
-        << " " << myTasks[0].second
+    ss << "a " << myName;
+    if( myTasks.size())
+        ss << " " << myTasks[0].second
         << " " << theDataStore.vFamily[myFamily];
 
     for (auto &tp : myTasks)
