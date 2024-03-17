@@ -6,6 +6,11 @@ Allocate agents to tasks in multiple timeslots containing multiple tasks.
 
 `>Agents2Tasks (specification filepath ) ( output filepath )`
 
+or
+
+`>Agents2Tasks explainer (specification filepath ) ( output filepath )`
+
+
 [File format documentation](https://github.com/JamesBremner/Agents2Tasks/wiki/File-format)
 
 # Constraints
