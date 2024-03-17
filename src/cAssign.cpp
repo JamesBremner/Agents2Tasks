@@ -139,15 +139,16 @@ void Agents2Tasks(bool fexplain)
             {
                 if (fexplain)
                     std::cout << "no available agents";
-                break;
             }
+            else
+            {
+                // assign best agent to task
 
-            // assign best agent to task
+                if (fexplain)
+                    std::cout << " assigned: " << pBestAgent->name();
 
-            if (fexplain)
-                std::cout << " assigned: " << pBestAgent->name();
-
-            cAssign::add(slot, pBestAgent, ptask);
+                cAssign::add(slot, pBestAgent, ptask);
+            }
         }
     }
 }
