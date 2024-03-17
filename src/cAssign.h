@@ -50,4 +50,4 @@ public:
 
 };
 
-void Agents2Tasks();
+void Agents2Tasks( bool fexplain );

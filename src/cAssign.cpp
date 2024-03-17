@@ -70,7 +70,7 @@ std::string cAssign::text(cSlot *pSlot)
     return ret;
 }
 
-void Agents2Tasks()
+void Agents2Tasks(bool fexplain)
 {
     cAssign::clear();
 
@@ -89,6 +89,10 @@ void Agents2Tasks()
         // loop over tasks required by slot
         for (cTask *ptask : slot->getTasks())
         {
+            if (fexplain)
+                std::cout << "\nAssigning task " << ptask->name()
+                          << " in slot " << slot->name()
+                          << ", available:";
 
             /* sort agents
             by workload first then by family
@@ -117,6 +121,9 @@ void Agents2Tasks()
                 if (pa->isAssignedRecently(slot->day()))
                     continue;
 
+                if (fexplain)
+                    std::cout << " " << pa->name();
+
                 if (!pBestAgent)
                 {
                     pBestAgent = pa;
@@ -128,7 +135,17 @@ void Agents2Tasks()
                     pBestAgent = pa;
             }
 
+            if (!pBestAgent)
+            {
+                if (fexplain)
+                    std::cout << "no available agents";
+                break;
+            }
+
             // assign best agent to task
+
+            if (fexplain)
+                std::cout << " assigned: " << pBestAgent->name();
 
             cAssign::add(slot, pBestAgent, ptask);
         }

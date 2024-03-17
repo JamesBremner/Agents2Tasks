@@ -14,6 +14,7 @@ protected:
 
     /* True if agent has been assigned to current timeslot */
     bool myAssigned;
+    bool myfGroup;
 
     timepoint_t myLastAssignmentTime; //  00:00:01 on day of previous assignment
 
@@ -90,7 +91,7 @@ public:
 
     bool isGroup() const
     {
-        return ( myName.find("_group") != -1 );
+        return myfGroup;
     }
 
     virtual std::string text() const;

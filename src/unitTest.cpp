@@ -17,7 +17,7 @@ bool unitTest()
         "t 202311011000 cleaner\n"
         "t 202312081000 cleaner\n");
 
-    Agents2Tasks();
+    Agents2Tasks(false);
 
     result = cAssign::text(cSlot::get()[0]);
     if (result.find("Alice_group") == -1)
@@ -50,7 +50,7 @@ bool unitTest()
 
     utname = "2";
 
-    Agents2Tasks();
+    Agents2Tasks(false);
 
     result = cAssign::text(cSlot::get()[0]);
     expected =
@@ -72,7 +72,7 @@ bool unitTest()
         "t 202311011000 cleaner cleaner\n"
         "t 202311011200 cleaner\n");
 
-    Agents2Tasks();
+    Agents2Tasks(false);
 
     // Alice gets job in 2nd timeslot because she has the least workload
     result = cAssign::text(cSlot::get()[1]);
@@ -96,7 +96,7 @@ bool unitTest()
         "t 2023112110 cleaner\n");
 
 
-    Agents2Tasks();
+    Agents2Tasks(false);
 
     // Carol gets job in 4th timeslot because the workload has 'rolled around'
     result = cAssign::text(cSlot::get()[3]);
@@ -116,7 +116,7 @@ bool unitTest()
     // give Alice a history of heavy workload
     cAgent::get()[2]->setPreviousTasks(10);
 
-    Agents2Tasks();
+    Agents2Tasks(false);
     result = cAssign::text(cSlot::get()[0]);
 
     // Carol and Alice gets the task because
@@ -137,7 +137,7 @@ bool unitTest()
         "t 202311020830 teacher cleaner\n"
         "t 202311030830 teacher cleaner\n");
 
-    Agents2Tasks();
+    Agents2Tasks(false);
 
     result = cAssign::text(cSlot::get()[0]);
     expected =
@@ -168,7 +168,7 @@ bool unitTest()
         "g Alice Cleaner Alice Bob Carol\n"
         "t 202311181000 Cleaner\n");
 
-    Agents2Tasks();
+    Agents2Tasks(false);
 
     result = cAssign::text(cSlot::get()[0]);
     expected = "A 202311181000 Alice_group to Cleaner\nA 202311181000 Alice in Alice to Cleaner\nA 202311181000 Bob in Alice to Cleaner\nA 202311181000 Carol in Alice to Cleaner\n";
@@ -188,7 +188,7 @@ bool unitTest()
         "g Alice Cleaner Alice Bob Carol\n"
         "t 202311181000 Cleaner\n");
 
-    Agents2Tasks();
+    Agents2Tasks(false);
 
     result = cAssign::text(cSlot::get()[0]);
     expected = "A 202311181000 Alice_group to Cleaner\nA 202311181000 Alice in Alice to Cleaner\nA 202311181000 Bob in Alice to Cleaner\nA 202311181000 Carol in Alice to Cleaner\n";

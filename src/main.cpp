@@ -13,13 +13,34 @@ void errorHandler(
     exit(status);
 }
 
-main(int argc, char *argv[])
+void parseCommand(
+    int argc, char *argv[],
+    bool &fexplain, std::string &infilename, std::string &outfilename)
 {
-    if (argc != 3)
+    if (argc != 3 && argc != 4)
         errorHandler(
             "3 "
-            "Usage: Agents2Tasks (input file path) ( output file path )");
+            "Usage: Agents2Tasks <explain> (input file path) ( output file path )");
 
+    fexplain = false;
+    infilename = argv[1];
+    outfilename = argv[2];
+    if (argc == 4)
+    {
+        fexplain = true;
+        infilename = argv[2];
+        outfilename = argv[3];
+    }
+}
+
+main(int argc, char *argv[])
+{
+    bool fexplain;
+    std::string infilename;
+    std::string outfilename;
+    parseCommand(
+        argc, argv,
+        fexplain, infilename, outfilename);
 
     // run unit tests
 
@@ -31,7 +52,7 @@ main(int argc, char *argv[])
     catch (std::exception &e)
     {
         std::string msg = "16 " + std::string(e.what());
-        //A.log(msg);
+        // A.log(msg);
         throw std::runtime_error(msg);
     }
     std::cout << "Unit tests passed\n\n";
@@ -40,17 +61,17 @@ main(int argc, char *argv[])
 
     try
     {
-        
-         readfile(argv[1]);
-         Agents2Tasks();
-         writefile( argv[2]);
+
+        readfile(infilename);
+        Agents2Tasks(fexplain);
+        writefile(outfilename);
 
         // A.log("\n============ Assignments ===========\n\n");
         // A.log(A.getSolutionAgents2Task().textFile('A'));
     }
     catch (std::exception &e)
     {
-       // A.log("Exception " + std::string(e.what()));
+        // A.log("Exception " + std::string(e.what()));
         errorHandler(
             e.what());
     }

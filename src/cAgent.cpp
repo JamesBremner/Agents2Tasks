@@ -2,7 +2,8 @@
 
 cAgent::cAgent(const std::vector<std::string> &vtoken)
     : myAssigned(false),
-      myAssignedCount(0)
+      myAssignedCount(0),
+      myfGroup( false )
 {
     if( vtoken.size() < 4 )
         throw std::runtime_error(
@@ -35,6 +36,7 @@ cAgent::cAgent(const std::vector<std::string> &vtoken)
 cAgentGroup::cAgentGroup(
     const std::vector<std::string> &vtoken)
 {
+    myfGroup = true;
     myName = vtoken[1] + "_group";
     if (find(myName))
         throw std::runtime_error("12	Duplicate group name " + myName);
