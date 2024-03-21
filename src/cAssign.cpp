@@ -122,7 +122,8 @@ void Agents2Tasks(bool fexplain)
                     continue;
 
                 if (fexplain)
-                    std::cout << " " << pa->name();
+                    std::cout << " " << pa->name()
+                        << " w" << pa->assignedCount() << ", ";
 
                 if (!pBestAgent)
                 {
