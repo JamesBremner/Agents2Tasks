@@ -1,8 +1,8 @@
 a mwalsh 1 mwalsh MAS
 a example 1 example Acolyte
 
-g Cleaner mwalsh
-g Cleaner example mwalsh
+g A Cleaner mwalsh
+g B Cleaner example mwalsh
 
 t 202312051000 Cleaner
 t 202312121000 Cleaner
