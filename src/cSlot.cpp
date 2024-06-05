@@ -7,6 +7,19 @@
             delete ps;
         theDataStore.theSlots.clear();
     }
+
+    int cSlot::firstUnassigned( cTask* pt)
+    {
+        for( int kt = 0; kt < myTasks.size(); kt++ ) {
+            if( myTasks[kt]->name() != pt->name() )
+                continue;
+            if( myfTaskAssigned[kt] )
+                continue;
+            return kt;
+        }
+        throw std::runtime_error(
+            "cSlot::firstUnassigned no unassigned task"        );
+    }
     
         void cSlot::add(std::vector<std::string> &vtoken)
     {
@@ -37,6 +50,7 @@ cSlot::cSlot(const std::vector<std::string> &vtoken)
             pt = cTask::add(vtoken[k]);
         }
         myTasks.push_back(pt);
+        myfTaskAssigned.push_back( false );
     }
 }
 

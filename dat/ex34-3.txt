@@ -9,8 +9,8 @@ a ablack 1 ablack none
 a jwhite 1 jwhite EMHC Reader1
 a iwhite 1 iwhite none
 a awhite 1 awhite none
-g Cleaner asmith rejkid1 ismith
-g Cleaner iblack ablack iwhite awhite
+g g1 Cleaner asmith rejkid1 ismith
+g g2 Cleaner iblack ablack iwhite awhite
 t 202312051000 Cleaner
 t 202312121000 Cleaner
 

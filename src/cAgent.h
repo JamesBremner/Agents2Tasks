@@ -144,8 +144,6 @@ class cAgentGroup : public cAgent
 public:
     cAgentGroup(const std::vector<std::string> &vtoken);
 
-    virtual void assign( int day );
-
     virtual bool isAssignedRecently( int day ) const;
 
     virtual std::vector<cAgent*> getMembers() const

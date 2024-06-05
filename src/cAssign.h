@@ -16,6 +16,10 @@ public:
     // construct assignment of group agent member
     cAssign(cSlot *ps, cAgent *pa, cTask *pt, cAgentGroup* pg );
 
+    void set( cAgentGroup* g )
+    {
+        myGroup = g;
+    }
 
     cSlot* slot() const{
         return mySlot;
@@ -31,9 +35,11 @@ public:
     /// @brief Assign agent to task in slot
     /// @param ps slot
     /// @param pa agent
-    /// @param pt task
+    /// @param pt task type
 
-    static void add(cSlot *ps, cAgent *pa, cTask *pt);
+    static void add(cSlot *ps, cAgent *pa, cTask *pt );
+    static void addIndividual(cSlot *ps, cAgent *pa, cTask *pt );
+
 
     /// @brief Get display text for the assignments in a slot
     /// @param pSlot 

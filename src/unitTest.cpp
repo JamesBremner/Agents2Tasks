@@ -4,27 +4,26 @@ bool unitTest()
 {
     std::string utname, result, expected;
 
+    utname = "tid44";
+    readfile("../dat/tid44.txt");
+    Agents2Tasks(false);
+    result = cAssign::text(cSlot::get()[0]);
+    expected = "A 202402030600 A group assigned\nA 202402030600 b in A to Cleaner\nA 202402030600 c in A to Cleaner\n";
+    if (expected != result)
+        throw std::runtime_error(utname + " unit test failed");
+
+    ///////////////////////////////////////////
     utname = "tid34";
-    readstring(
-        "a Carol 1 A cleaner\n"
-        "a Bob 1 B cleaner\n"
-        "a Alice 1 C cleaner\n"
-        "a Carol2 1 A cleaner\n"
-        "a Bob2 1 B cleaner\n"
-        "a Alice2 1 C cleaner\n"
-        "g Alice_group cleaner Alice Bob Carol\n"
-        "g Alice2_group cleaner Alice2 Bob2 Carol2\n"
-        "t 202311011000 cleaner\n"
-        "t 202312081000 cleaner\n");
+    readfile("../dat/ex34-3.txt");
 
     Agents2Tasks(false);
 
     result = cAssign::text(cSlot::get()[0]);
-    if (result.find("Alice_group") == -1)
+    if (result.find("g1") == -1)
         throw std::runtime_error(utname + " unit test failed");
 
     result = cAssign::text(cSlot::get()[1]);
-    if (result.find("Alice2_group") == -1)
+    if (result.find("g2") == -1)
         throw std::runtime_error(utname + " unit test failed");
 
     //////////////////////////////////////////////
@@ -171,7 +170,7 @@ bool unitTest()
     Agents2Tasks(false);
 
     result = cAssign::text(cSlot::get()[0]);
-    expected = "A 202311181000 Alice_group to Cleaner\nA 202311181000 Alice in Alice to Cleaner\nA 202311181000 Bob in Alice to Cleaner\nA 202311181000 Carol in Alice to Cleaner\n";
+    expected = "A 202311181000 Alice group assigned\nA 202311181000 Alice in Alice to Cleaner\n";
 
     if (expected != result) {
         std::cout << result;
@@ -191,7 +190,7 @@ bool unitTest()
     Agents2Tasks(false);
 
     result = cAssign::text(cSlot::get()[0]);
-    expected = "A 202311181000 Alice_group to Cleaner\nA 202311181000 Alice in Alice to Cleaner\nA 202311181000 Bob in Alice to Cleaner\nA 202311181000 Carol in Alice to Cleaner\n";
+    expected = "A 202311181000 Alice group assigned\nA 202311181000 Alice in Alice to Cleaner\n";
 
     if (expected != result) {
         std::cout << result;

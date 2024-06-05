@@ -172,18 +172,6 @@ void cAgent::assign(int day)
     myLastAssignmentTime = timepoint(day);
 }
 
-void cAgentGroup::assign(int day)
-{
-    // assign the agent group
-    cAgent::assign(day);
-
-    // assign the member agents
-    for (auto &member : myMember)
-    {
-        member->assign(day);
-    }
-}
-
 bool cAgent::cando(cTask *task) const
 {
     for (auto &pt : myTasks)

@@ -5,6 +5,7 @@ protected:
     std::string myName;
 
     std::vector<cTask *> myTasks;
+    std::vector<bool> myfTaskAssigned;      // true if task has been assigned an agent
 
     std::set<int> myFamily; // indices of family groups assigned to this slot
 
@@ -36,9 +37,20 @@ public:
         return atoi(myName.substr(0, 8).c_str());
     }
 
+    int firstUnassigned( cTask* pt);
+
     void assign(int iFamily)
     {
         myFamily.insert(iFamily);
+    }
+
+    bool isTaskAssigned( int kTask ) const
+    {
+        return myfTaskAssigned[kTask];
+    }
+    void taskAssign( int kTask )
+    {
+        myfTaskAssigned[kTask] = true;
     }
 
     static void clear();

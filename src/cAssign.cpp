@@ -33,19 +33,52 @@ cAssign::getSlotAssigns(cSlot *slot)
     return ret;
 }
 
+void cAssign::addIndividual(cSlot *ps, cAgent *pa, cTask *pt)
+{
+    int kt = ps->firstUnassigned(pt);
+    theDataStore.theAssigns.push_back(
+        new cAssign(ps, pa, pt));
+    ps->taskAssign(kt);
+}
 void cAssign::add(cSlot *ps, cAgent *pa, cTask *pt)
 {
     if (!(ps && pa && pt))
         return;
 
-    theDataStore.theAssigns.push_back(
-        new cAssign(ps, pa, pt));
-    if (pa->name().find("_group") != -1)
+    if (!pa->isGroup())
     {
-        // assign group agent  members
-        for (cAgent *pm : pa->getMembers())
-            theDataStore.theAssigns.push_back(
-                new cAssign(ps, pm, pt, (cAgentGroup *)pa));
+        // individual agent
+        // assign it to the first unassigned task of type pt
+        addIndividual(ps, pa, pt);
+    }
+    else
+    {
+        // group agent
+
+        theDataStore.theAssigns.push_back(
+            new cAssign(ps, pa, pt));
+        theDataStore.theAssigns.back()->set((cAgentGroup *)pa);
+
+        // loop over group members
+        for (cAgent *pma : ((cAgentGroup *)pa)->getMembers())
+        {
+            if (pma->isAssigned())
+                continue;
+
+            // loop over timeslot tasks
+            for (int kt = 0; kt < ps->getTasks().size(); kt++)
+            {
+                if (ps->isTaskAssigned(kt))
+                    continue;
+
+                theDataStore.theAssigns.push_back(
+                    new cAssign(ps, pma, pt, (cAgentGroup *)pa));
+                ps->taskAssign(kt);
+                pa->assign(ps->day());
+
+                break;
+            }
+        }
     }
 }
 
@@ -53,11 +86,16 @@ std::string cAssign::text(const std::string &slotName) const
 {
     std::stringstream ss;
 
-    ss << "A " << slotName
-       << " " << myAgent->name();
-    if (myGroup)
-        ss << " in " << myGroup->user_name();
-    ss << " to " << myTask->name();
+    ss << "A " << slotName << " ";
+    if (myAgent->isGroup())
+        ss << myAgent->user_name() << " group assigned";
+    else
+    {
+        ss << myAgent->name();
+        if (myGroup)
+            ss << " in " << myGroup->user_name();
+        ss << " to " << myTask->name();
+    }
     return ss.str();
 }
 
@@ -87,8 +125,20 @@ void Agents2Tasks(bool fexplain)
         cAgent::restoreInputOrder();
 
         // loop over tasks required by slot
-        for (cTask *ptask : slot->getTasks())
+        // for (cTask *ptask : slot->getTasks())
+        for (int ktask = 0; ktask < slot->getTasks().size(); ktask++)
         {
+            cTask *ptask = slot->getTasks()[ktask];
+
+            if (slot->isTaskAssigned(ktask))
+            {
+                if (fexplain)
+                    std::cout << "\ntask " << ptask->name()
+                              << " in slot " << slot->name()
+                              << ", already assigned";
+                continue;
+            }
+
             if (fexplain)
                 std::cout << "\nAssigning task " << ptask->name()
                           << " in slot " << slot->name()
@@ -123,7 +173,7 @@ void Agents2Tasks(bool fexplain)
 
                 if (fexplain)
                     std::cout << " " << pa->name()
-                        << " w" << pa->assignedCount() << ", ";
+                              << " w" << pa->assignedCount() << ", ";
 
                 if (!pBestAgent)
                 {
