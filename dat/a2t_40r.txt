@@ -12,12 +12,13 @@ t 202402040830 Welcomer
 t 202402041000 Collector
 t 202402110830 Welcomer
 t 202402111000 Collector
-A 202402030600 A_group to Cleaner
+A 202402030600 A_group assigned
 A 202402030600 rejkid@gmail.com&07-06-1998 in A to Cleaner
-A 202402030600 rose@ourladyoftheangels.org.au&24-03-1961 in A to Cleaner
-A 202402040830 pmurphy@gmail.com&24-03-1961 to Welcomer
-A 202402041000 rejkid@gmail.com&28-08-1992 to Collector
-A 202402110830 Rose_group to Welcomer
+A 202402040830 Rose_group assigned
+A 202402040830 rose@ourladyoftheangels.org.au&24-03-1961 in Rose to Welcomer
+A 202402041000 Peter_group assigned
+A 202402041000 pmurphy@gmail.com&24-03-1961 in Peter to Collector
+A 202402110830 Rose_group assigned
 A 202402110830 rose@ourladyoftheangels.org.au&24-03-1961 in Rose to Welcomer
-A 202402110830 pmurphy@gmail.com&24-03-1961 in Rose to Welcomer
-A 202402111000 rejkid@gmail.com&28-08-1992 to Collector
+A 202402111000 Peter_group assigned
+A 202402111000 pmurphy@gmail.com&24-03-1961 in Peter to Collector

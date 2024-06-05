@@ -8,7 +8,7 @@ bool unitTest()
     readfile("../dat/tid44.txt");
     Agents2Tasks(false);
     result = cAssign::text(cSlot::get()[0]);
-    expected = "A 202402030600 A group assigned\nA 202402030600 b in A to Cleaner\nA 202402030600 c in A to Cleaner\n";
+    expected = "A 202402030600 A_group assigned\nA 202402030600 b in A to Cleaner\nA 202402030600 c in A to Cleaner\n";
     if (expected != result)
         throw std::runtime_error(utname + " unit test failed");
 
@@ -170,7 +170,7 @@ bool unitTest()
     Agents2Tasks(false);
 
     result = cAssign::text(cSlot::get()[0]);
-    expected = "A 202311181000 Alice group assigned\nA 202311181000 Alice in Alice to Cleaner\n";
+    expected = "A 202311181000 Alice_group assigned\nA 202311181000 Alice in Alice to Cleaner\n";
 
     if (expected != result) {
         std::cout << result;
@@ -190,7 +190,7 @@ bool unitTest()
     Agents2Tasks(false);
 
     result = cAssign::text(cSlot::get()[0]);
-    expected = "A 202311181000 Alice group assigned\nA 202311181000 Alice in Alice to Cleaner\n";
+    expected = "A 202311181000 Alice_group assigned\nA 202311181000 Alice in Alice to Cleaner\n";
 
     if (expected != result) {
         std::cout << result;

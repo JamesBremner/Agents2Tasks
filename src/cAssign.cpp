@@ -88,7 +88,7 @@ std::string cAssign::text(const std::string &slotName) const
 
     ss << "A " << slotName << " ";
     if (myAgent->isGroup())
-        ss << myAgent->user_name() << " group assigned";
+        ss << myAgent->name() << " assigned";
     else
     {
         ss << myAgent->name();
