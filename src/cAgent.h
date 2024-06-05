@@ -8,7 +8,7 @@ protected:
     std::string myName;
 
     /* The tasks that this agent can be assigned to */
-    std::vector<std::pair<cTask *, double>> myTasks;
+    std::vector<std::pair<cTaskType *, double>> myTasks;
 
     int myFamily;                            // family index
 
@@ -59,7 +59,7 @@ public:
         return myName.substr(0,myName.length()-6);
     }
 
-    double cost(cTask *task) const
+    double cost(cTaskType *task) const
     {
         if( ! myTasks.size() )
             return 0;
@@ -71,7 +71,7 @@ public:
         return myFamily;
     }
 
-    bool cando( cTask* task ) const;
+    bool cando( cTaskType* task ) const;
 
     bool isAssigned() const
     {
@@ -130,7 +130,7 @@ public:
     /// get agents that can do task
 
     static std::vector<cAgent *>
-    getForTask( cTask* task );
+    getForTask( cTaskType* task );
 
     static std::string specTextAll();
 

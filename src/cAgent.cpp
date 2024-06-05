@@ -44,9 +44,9 @@ cAgentGroup::cAgentGroup(
     myAssignedCount = 0;
     myFamily = -1;
 
-    cTask *task = cTask::find(vtoken[2]);
+    cTaskType *task = cTaskType::find(vtoken[2]);
     if (!task)
-        task = cTask::add(vtoken[2]);
+        task = cTaskType::add(vtoken[2]);
     myTasks.push_back(
         std::make_pair(task, 0));
 
@@ -70,13 +70,13 @@ void cAgent::parseTasks(int first, const std::vector<std::string> &vtoken)
 {
     for (int k = first; k < vtoken.size(); k++)
     {
-        cTask *pt = cTask::find(vtoken[k]);
+        cTaskType *pt = cTaskType::find(vtoken[k]);
         if (!pt)
-            cTask::add(vtoken[k]);
+            cTaskType::add(vtoken[k]);
 
         myTasks.push_back(
             std::make_pair(
-                cTask::find(vtoken[k]),
+                cTaskType::find(vtoken[k]),
                 atof(vtoken[2].c_str())));
     }
 }
@@ -172,7 +172,7 @@ void cAgent::assign(int day)
     myLastAssignmentTime = timepoint(day);
 }
 
-bool cAgent::cando(cTask *task) const
+bool cAgent::cando(cTaskType *task) const
 {
     for (auto &pt : myTasks)
         if (pt.first == task)
@@ -255,7 +255,7 @@ void cAgent::unassignAll()
 }
 
 std::vector<cAgent *>
-cAgent::getForTask(cTask *task)
+cAgent::getForTask(cTaskType *task)
 {
     std::vector<cAgent *> ret;
     for (cAgent *pa : theDataStore.theAgents)

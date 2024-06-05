@@ -8,7 +8,7 @@
         theDataStore.theSlots.clear();
     }
 
-    int cSlot::firstUnassigned( cTask* pt)
+    int cSlot::firstUnassigned( cTaskType* pt)
     {
         for( int kt = 0; kt < myTasks.size(); kt++ ) {
             if( myTasks[kt]->name() != pt->name() )
@@ -44,10 +44,10 @@ cSlot::cSlot(const std::vector<std::string> &vtoken)
 {
     for (int k = 2; k < vtoken.size(); k++)
     {
-        cTask *pt = cTask::find(vtoken[k]);
+        cTaskType *pt = cTaskType::find(vtoken[k]);
         if (!pt)
         {
-            pt = cTask::add(vtoken[k]);
+            pt = cTaskType::add(vtoken[k]);
         }
         myTasks.push_back(pt);
         myfTaskAssigned.push_back( false );
@@ -65,7 +65,7 @@ std::string cSlot::text() const
 
     ss
         << "t " << myName;
-    for (cTask *pt : myTasks)
+    for (cTaskType *pt : myTasks)
         ss << " " << pt->name();
 
     return ss.str();

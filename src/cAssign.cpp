@@ -1,6 +1,6 @@
 #include "Agents2Tasks.h"
 
-cAssign::cAssign(cSlot *ps, cAgent *pa, cTask *pt)
+cAssign::cAssign(cSlot *ps, cAgent *pa, cTaskType *pt)
     : myAgent(pa),
       myTask(pt),
       mySlot(ps),
@@ -10,7 +10,7 @@ cAssign::cAssign(cSlot *ps, cAgent *pa, cTask *pt)
     ps->assign(pa->family());
 }
 
-cAssign::cAssign(cSlot *ps, cAgent *pa, cTask *pt, cAgentGroup *pg)
+cAssign::cAssign(cSlot *ps, cAgent *pa, cTaskType *pt, cAgentGroup *pg)
     : cAssign(ps, pa, pt)
 {
     myGroup = pg;
@@ -33,14 +33,14 @@ cAssign::getSlotAssigns(cSlot *slot)
     return ret;
 }
 
-void cAssign::addIndividual(cSlot *ps, cAgent *pa, cTask *pt)
+void cAssign::addIndividual(cSlot *ps, cAgent *pa, cTaskType *pt)
 {
     int kt = ps->firstUnassigned(pt);
     theDataStore.theAssigns.push_back(
         new cAssign(ps, pa, pt));
     ps->taskAssign(kt);
 }
-void cAssign::add(cSlot *ps, cAgent *pa, cTask *pt)
+void cAssign::add(cSlot *ps, cAgent *pa, cTaskType *pt)
 {
     if (!(ps && pa && pt))
         return;
@@ -128,7 +128,7 @@ void Agents2Tasks(bool fexplain)
         // for (cTask *ptask : slot->getTasks())
         for (int ktask = 0; ktask < slot->getTasks().size(); ktask++)
         {
-            cTask *ptask = slot->getTasks()[ktask];
+            cTaskType *ptask = slot->getTasks()[ktask];
 
             if (slot->isTaskAssigned(ktask))
             {

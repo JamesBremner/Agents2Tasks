@@ -1,13 +1,15 @@
 #pragma once
 
-class cTask
+/// a generic task type
+
+class cTaskType
 {
 
     std::string myName;
 
     public:
 
-    cTask(  const std::string& name )
+    cTaskType(  const std::string& name )
     : myName( name )
     {}
 
@@ -18,12 +20,25 @@ class cTask
 
     static void clear();
 
-    static cTask* add( const std::string& name );
+    static cTaskType* add( const std::string& name );
 
-    static std::vector< cTask* >
+    static std::vector< cTaskType* >
     get();
 
-    static cTask* find( const std::string& name );
+    static cTaskType* find( const std::string& name );
 
+};
+
+// a particular task in a timeslot
+class cTask
+{
+    cTaskType * myType;
+    bool myfAssigned;
+
+    public:
+    cTask( cTaskType * t)
+    : myType( t )
+    , myfAssigned( false )
+    {}
 };
 

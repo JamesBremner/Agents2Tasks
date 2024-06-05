@@ -3,7 +3,7 @@
 void input(
     std::istream &ifs)
 {
-    cTask::clear();
+    cTaskType::clear();
     cAgent::clear();
     cSlot::clear();
     cAssign::clear();
@@ -49,7 +49,8 @@ void readfile(
     std::ifstream ifs(fname);
     if (!ifs.is_open())
         throw std::runtime_error("15 "
-                                 "Cannot open input file");
+                                 "Cannot open input file"
+                                 + fname );
     input(ifs);
 }
 void readstring(
