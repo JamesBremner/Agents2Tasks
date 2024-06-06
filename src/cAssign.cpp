@@ -120,23 +120,19 @@ void Agents2Tasks(bool fexplain)
         cAgent::restoreInputOrder();
 
         // loop over tasks required by slot
-        // for (cTask *ptask : slot->getTasks())
-        for (int ktask = 0; ktask < slot->getTasks().size(); ktask++)
+        for (cTask task : slot->getTasks())
         {
-            // cTaskType *ptask = slot->getTasks()[ktask];
-            cTaskType *ptask = cTaskType::find(slot->getTasks()[ktask].type());
-
-            if (slot->isTaskAssigned(ktask))
+            if (task.isAssigned())
             {
                 if (fexplain)
-                    std::cout << "\ntask " << ptask->name()
+                    std::cout << "\ntask " << task.type()
                               << " in slot " << slot->name()
                               << ", already assigned";
                 continue;
             }
 
             if (fexplain)
-                std::cout << "\nAssigning task " << ptask->name()
+                std::cout << "\nAssigning task " << task.type()
                           << " in slot " << slot->name()
                           << ", available:";
 
@@ -159,7 +155,7 @@ void Agents2Tasks(bool fexplain)
             cAgent *pBestAgent = 0;
 
             // loop over agents that can do the task
-            for (cAgent *pa : cAgent::getForTask(ptask))
+            for (cAgent *pa : cAgent::getForTask(task))
             {
                 if (pa->isAssigned())
                     continue;
@@ -178,7 +174,7 @@ void Agents2Tasks(bool fexplain)
                 }
 
                 // check for cheaper
-                if (pa->cost(ptask) < pBestAgent->cost(ptask))
+                if (pa->cost() < pBestAgent->cost())
                     pBestAgent = pa;
             }
 
@@ -194,7 +190,10 @@ void Agents2Tasks(bool fexplain)
                 if (fexplain)
                     std::cout << " assigned: " << pBestAgent->name();
 
-                cAssign::add(slot, pBestAgent, ptask);
+                cAssign::add(
+                    slot,
+                    pBestAgent,
+                    cTaskType::find(task.type()));
             }
         }
     }

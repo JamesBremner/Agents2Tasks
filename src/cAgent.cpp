@@ -172,10 +172,10 @@ void cAgent::assign(int day)
     myLastAssignmentTime = timepoint(day);
 }
 
-bool cAgent::cando(cTaskType *task) const
+bool cAgent::cando(const std::string& type) const
 {
     for (auto &pt : myTasks)
-        if (pt.first == task)
+        if (pt.first->name() == type)
             return true;
     return false;
 }
@@ -255,11 +255,11 @@ void cAgent::unassignAll()
 }
 
 std::vector<cAgent *>
-cAgent::getForTask(cTaskType *task)
+cAgent::getForTask(const cTask& task)
 {
     std::vector<cAgent *> ret;
     for (cAgent *pa : theDataStore.theAgents)
-        if (pa->cando(task))
+        if (pa->cando(task.type()))
             ret.push_back(pa);
     return ret;
 }

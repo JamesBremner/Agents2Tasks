@@ -59,7 +59,7 @@ public:
         return myName.substr(0,myName.length()-6);
     }
 
-    double cost(cTaskType *task) const
+    double cost() const
     {
         if( ! myTasks.size() )
             return 0;
@@ -71,7 +71,7 @@ public:
         return myFamily;
     }
 
-    bool cando( cTaskType* task ) const;
+    bool cando( const std::string& type ) const;
 
     bool isAssigned() const
     {
@@ -130,7 +130,7 @@ public:
     /// get agents that can do task
 
     static std::vector<cAgent *>
-    getForTask( cTaskType* task );
+    getForTask( const cTask& task );
 
     static std::string specTextAll();
 
