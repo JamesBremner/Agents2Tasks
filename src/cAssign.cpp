@@ -33,13 +33,6 @@ cAssign::getSlotAssigns(cSlot *slot)
     return ret;
 }
 
-void cAssign::addIndividual(cSlot *ps, cAgent *pa, cTaskType *pt)
-{
-    int kt = ps->firstUnassigned(pt);
-    theDataStore.theAssigns.push_back(
-        new cAssign(ps, pa, pt));
-    ps->taskAssign(kt);
-}
 void cAssign::add(cSlot *ps, cAgent *pa, cTaskType *pt)
 {
     if (!(ps && pa && pt))
@@ -49,7 +42,9 @@ void cAssign::add(cSlot *ps, cAgent *pa, cTaskType *pt)
     {
         // individual agent
         // assign it to the first unassigned task of type pt
-        addIndividual(ps, pa, pt);
+        ps->firstUnassigned(pt).assign();
+        theDataStore.theAssigns.push_back(
+            new cAssign(ps, pa, pt));
     }
     else
     {
@@ -128,7 +123,8 @@ void Agents2Tasks(bool fexplain)
         // for (cTask *ptask : slot->getTasks())
         for (int ktask = 0; ktask < slot->getTasks().size(); ktask++)
         {
-            cTaskType *ptask = slot->getTasks()[ktask];
+            // cTaskType *ptask = slot->getTasks()[ktask];
+            cTaskType *ptask = cTaskType::find(slot->getTasks()[ktask].type());
 
             if (slot->isTaskAssigned(ktask))
             {

@@ -38,8 +38,6 @@ public:
     /// @param pt task type
 
     static void add(cSlot *ps, cAgent *pa, cTaskType *pt );
-    static void addIndividual(cSlot *ps, cAgent *pa, cTaskType *pt );
-
 
     /// @brief Get display text for the assignments in a slot
     /// @param pSlot 

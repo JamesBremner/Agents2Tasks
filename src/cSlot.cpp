@@ -8,14 +8,15 @@
         theDataStore.theSlots.clear();
     }
 
-    int cSlot::firstUnassigned( cTaskType* pt)
+    cTask& cSlot::firstUnassigned( cTaskType* pt)
     {
-        for( int kt = 0; kt < myTasks.size(); kt++ ) {
-            if( myTasks[kt]->name() != pt->name() )
+        for( auto& t : myTasks )
+        {
+            if( t.type() != pt->name() )
                 continue;
-            if( myfTaskAssigned[kt] )
+            if( t.isAssigned() )
                 continue;
-            return kt;
+            return t;
         }
         throw std::runtime_error(
             "cSlot::firstUnassigned no unassigned task"        );
@@ -42,6 +43,7 @@
 cSlot::cSlot(const std::vector<std::string> &vtoken)
     : myName(vtoken[1])
 {
+    // loop over tasks to be added to timeslot
     for (int k = 2; k < vtoken.size(); k++)
     {
         cTaskType *pt = cTaskType::find(vtoken[k]);
@@ -49,8 +51,7 @@ cSlot::cSlot(const std::vector<std::string> &vtoken)
         {
             pt = cTaskType::add(vtoken[k]);
         }
-        myTasks.push_back(pt);
-        myfTaskAssigned.push_back( false );
+        myTasks.emplace_back(pt);
     }
 }
 
@@ -65,8 +66,8 @@ std::string cSlot::text() const
 
     ss
         << "t " << myName;
-    for (cTaskType *pt : myTasks)
-        ss << " " << pt->name();
+    for (auto& t : myTasks)
+        ss << " " << t.type();
 
     return ss.str();
 }

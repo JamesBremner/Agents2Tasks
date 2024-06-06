@@ -40,5 +40,18 @@ class cTask
     : myType( t )
     , myfAssigned( false )
     {}
+
+    void assign()
+    {
+        myfAssigned = true;
+    }
+    bool isAssigned() const
+    {
+        return myfAssigned;
+    }
+    std::string type() const
+    {
+        return myType->name();
+    }
 };
 

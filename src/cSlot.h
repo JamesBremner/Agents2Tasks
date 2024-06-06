@@ -3,8 +3,7 @@ class cSlot
 {
     std::string myName;
 
-    std::vector<cTaskType *> myTasks;
-    std::vector<bool> myfTaskAssigned;      // true if task has been assigned an agent
+    std::vector< cTask > myTasks;
 
     std::set<int> myFamily; // indices of family groups assigned to this slot
 
@@ -18,7 +17,7 @@ public:
 
     std::string text() const;
 
-    std::vector<cTaskType *> &getTasks()
+    std::vector<cTask> &getTasks()
     {
         return myTasks;
     }
@@ -36,7 +35,7 @@ public:
         return atoi(myName.substr(0, 8).c_str());
     }
 
-    int firstUnassigned( cTaskType* pt);
+    cTask& firstUnassigned( cTaskType* pt);
 
     void assign(int iFamily)
     {
@@ -45,11 +44,11 @@ public:
 
     bool isTaskAssigned( int kTask ) const
     {
-        return myfTaskAssigned[kTask];
+        return myTasks[kTask].isAssigned();
     }
     void taskAssign( int kTask )
     {
-        myfTaskAssigned[kTask] = true;
+        myTasks[kTask].assign();
     }
 
     static void clear();
