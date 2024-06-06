@@ -117,8 +117,9 @@ public:
 
     static cAgent* find( const std::string& name );
 
+    /// Sort agents into priority order
+    static void sort(const cSlot *slot);
     static void sortAssignedCount();
-
     static void sortFamily(const cSlot *slot);
 
     /// get all the agents in sorted order

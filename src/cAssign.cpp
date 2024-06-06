@@ -136,27 +136,20 @@ void Agents2Tasks(bool fexplain)
                           << " in slot " << slot->name()
                           << ", available:";
 
-            /* sort agents
-            by workload first then by family
-            so family gets priority
+            /* sort agents into priority order
+            e.g. least workload or same family
             */
 
-            // std::cout << "before sort\n";
-            // for (cAgent *pa : cAgent::get())
-            //     std::cout << pa->name() << "\n";
-
-            cAgent::sortAssignedCount();
-            cAgent::sortFamily(slot);
-
-            // std::cout << "after sort\n";
-            // for (cAgent *pa : cAgent::get())
-            //     std::cout << pa->name() << "\n";
+            cAgent::sort( slot );
 
             cAgent *pBestAgent = 0;
 
-            // loop over agents that can do the task
-            for (cAgent *pa : cAgent::getForTask(task))
+            // loop over agents 
+            for (cAgent *pa : theDataStore.theAgents)
             {
+                if( ! pa->cando( task.type()))
+                    continue;
+
                 if (pa->isAssigned())
                     continue;
 

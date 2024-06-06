@@ -3,12 +3,12 @@
 cAgent::cAgent(const std::vector<std::string> &vtoken)
     : myAssigned(false),
       myAssignedCount(0),
-      myfGroup( false )
+      myfGroup(false)
 {
-    if( vtoken.size() < 4 )
+    if (vtoken.size() < 4)
         throw std::runtime_error(
-            "18 Badly formatted agent"        );
-            
+            "18 Badly formatted agent");
+
     // parse agent name
     if (find(vtoken[1]))
         throw std::runtime_error("12	Duplicate agent name " + vtoken[1]);
@@ -99,9 +99,9 @@ std::string cAgent::text() const
     std::stringstream ss;
 
     ss << "a " << myName;
-    if( myTasks.size())
+    if (myTasks.size())
         ss << " " << myTasks[0].second
-        << " " << theDataStore.vFamily[myFamily];
+           << " " << theDataStore.vFamily[myFamily];
 
     for (auto &tp : myTasks)
     {
@@ -122,8 +122,8 @@ std::string cAgentGroup::specText() const
     std::stringstream ss;
 
     ss
-        << "g " << user_name() 
-        <<" "<< myTasks[0].first->name();
+        << "g " << user_name()
+        << " " << myTasks[0].first->name();
 
     for (auto &member : myMember)
         ss << " " << member->name();
@@ -172,7 +172,7 @@ void cAgent::assign(int day)
     myLastAssignmentTime = timepoint(day);
 }
 
-bool cAgent::cando(const std::string& type) const
+bool cAgent::cando(const std::string &type) const
 {
     for (auto &pt : myTasks)
         if (pt.first->name() == type)
@@ -225,6 +225,19 @@ bool cAgentGroup::isAssignedRecently(int day) const
     }
     return false;
 }
+void cAgent::sort(const cSlot *slot)
+{
+    // std::cout << "before sort\n";
+    // for (cAgent *pa : cAgent::get())
+    //     std::cout << pa->name() << "\n";
+
+    cAgent::sortAssignedCount();
+    cAgent::sortFamily(slot);
+
+    // std::cout << "after sort\n";
+    // for (cAgent *pa : cAgent::get())
+    //     std::cout << pa->name() << "\n";
+}
 
 void cAgent::sortAssignedCount()
 {
@@ -255,7 +268,7 @@ void cAgent::unassignAll()
 }
 
 std::vector<cAgent *>
-cAgent::getForTask(const cTask& task)
+cAgent::getForTask(const cTask &task)
 {
     std::vector<cAgent *> ret;
     for (cAgent *pa : theDataStore.theAgents)
