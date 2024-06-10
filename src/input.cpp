@@ -3,7 +3,6 @@
 void input(
     std::istream &ifs)
 {
-    cTaskType::clear();
     cAgent::clear();
     cSlot::clear();
     cAssign::clear();

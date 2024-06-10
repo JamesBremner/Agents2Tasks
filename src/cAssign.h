@@ -5,7 +5,6 @@ class cAssign
 
     cSlot *mySlot;
     cAgent *myAgent;
-    //cTaskType *myTask;
     std::string myTaskType;
     cAgentGroup * myGroup;
 

@@ -44,11 +44,8 @@ cAgentGroup::cAgentGroup(
     myAssignedCount = 0;
     myFamily = -1;
 
-    cTaskType *task = cTaskType::find(vtoken[2]);
-    if (!task)
-        task = cTaskType::add(vtoken[2]);
     myTasks.push_back(
-        std::make_pair(task, 0));
+        std::make_pair(vtoken[2], 0));
 
     // store member agents
     for (int k = 3; k < vtoken.size(); k++)
@@ -70,13 +67,9 @@ void cAgent::parseTasks(int first, const std::vector<std::string> &vtoken)
 {
     for (int k = first; k < vtoken.size(); k++)
     {
-        cTaskType *pt = cTaskType::find(vtoken[k]);
-        if (!pt)
-            cTaskType::add(vtoken[k]);
-
         myTasks.push_back(
             std::make_pair(
-                cTaskType::find(vtoken[k]),
+                vtoken[k],
                 atof(vtoken[2].c_str())));
     }
 }
@@ -105,7 +98,7 @@ std::string cAgent::text() const
 
     for (auto &tp : myTasks)
     {
-        ss << " " << tp.first->name();
+        ss << " " << tp.first;
     }
     ss << "\n";
 
@@ -123,7 +116,7 @@ std::string cAgentGroup::specText() const
 
     ss
         << "g " << user_name()
-        << " " << myTasks[0].first->name();
+        << " " << myTasks[0].first;
 
     for (auto &member : myMember)
         ss << " " << member->name();
@@ -175,7 +168,7 @@ void cAgent::assign(int day)
 bool cAgent::cando(const std::string &type) const
 {
     for (auto &pt : myTasks)
-        if (pt.first->name() == type)
+        if (pt.first == type)
             return true;
     return false;
 }

@@ -24,7 +24,7 @@ class cSlot;
 
 struct sDataStore
 {
-    std::vector<cTaskType *> theTasks;
+    /* The timeslots */
     std::vector<cSlot *> theSlots;
 
     /* The agents in sorted order */

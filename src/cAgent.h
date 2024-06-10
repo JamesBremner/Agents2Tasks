@@ -8,7 +8,7 @@ protected:
     std::string myName;
 
     /* The tasks that this agent can be assigned to */
-    std::vector<std::pair<cTaskType *, double>> myTasks;
+    std::vector<std::pair<std::string, double>> myTasks;
 
     int myFamily;                            // family index
 

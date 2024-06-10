@@ -46,12 +46,7 @@ cSlot::cSlot(const std::vector<std::string> &vtoken)
     // loop over tasks to be added to timeslot
     for (int k = 2; k < vtoken.size(); k++)
     {
-        cTaskType *pt = cTaskType::find(vtoken[k]);
-        if (!pt)
-        {
-            pt = cTaskType::add(vtoken[k]);
-        }
-        myTasks.emplace_back(pt);
+        myTasks.emplace_back(vtoken[k]);
     }
 }
 
