@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/bin/Agents2Tasks.exe",
-              "args": ["../dat/a2t_40.txt", "../dat/a2t_40r.txt"],
+              "args": ["explain","../dat/tid44-3.txt", "r.txt"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/bin",
             "environment": [],

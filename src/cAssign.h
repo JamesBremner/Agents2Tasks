@@ -37,8 +37,13 @@ public:
     /// @param ps slot
     /// @param pa agent
     /// @param pt task type
+    /// @param fexplain true if explanation required
 
-    static void add(cSlot *ps, cAgent *pa, const std::string& taksType );
+    static void add(
+        cSlot *ps,
+        cAgent *pa,
+        const std::string& taskType,
+        bool fexplain );
 
     /// @brief Get display text for the assignments in a slot
     /// @param pSlot 

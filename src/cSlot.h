@@ -50,6 +50,10 @@ public:
     {
         myTasks[kTask].assign();
     }
+    std::string taskType( int kTask) const
+    {
+        return myTasks[kTask].type();
+    }
 
     static void clear();
 

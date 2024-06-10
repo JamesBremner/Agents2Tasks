@@ -1,6 +1,6 @@
 #include "Agents2Tasks.h"
 
-cAssign::cAssign(cSlot *ps, cAgent *pa, const std::string& taskType)
+cAssign::cAssign(cSlot *ps, cAgent *pa, const std::string &taskType)
     : myAgent(pa),
       myTaskType(taskType),
       mySlot(ps),
@@ -10,7 +10,7 @@ cAssign::cAssign(cSlot *ps, cAgent *pa, const std::string& taskType)
     ps->assign(pa->family());
 }
 
-cAssign::cAssign(cSlot *ps, cAgent *pa,const std::string& taskType, cAgentGroup *pg)
+cAssign::cAssign(cSlot *ps, cAgent *pa, const std::string &taskType, cAgentGroup *pg)
     : cAssign(ps, pa, taskType)
 {
     myGroup = pg;
@@ -33,10 +33,23 @@ cAssign::getSlotAssigns(cSlot *slot)
     return ret;
 }
 
-void cAssign::add(cSlot *ps, cAgent *pa, const std::string& taskType )
+void cAssign::add(
+    cSlot *ps,
+    cAgent *pa,
+    const std::string &taskType,
+    bool fexplain)
 {
-    if (!(ps && pa))
+    if (!pa)
+    {
+        if (fexplain)
+            std::cout << "no available agents";
         return;
+    }
+    if (!ps)
+        return;
+
+    if (fexplain)
+        std::cout << " assigned: " << pa->name() << "\n";
 
     if (!pa->isGroup())
     {
@@ -65,6 +78,17 @@ void cAssign::add(cSlot *ps, cAgent *pa, const std::string& taskType )
             {
                 if (ps->isTaskAssigned(kt))
                     continue;
+
+                // check that group task matches task type
+                if (taskType != ps->taskType(kt))
+                    continue;
+
+                if (fexplain)
+                {
+                    std::cout << "assigning group " << pa->name()
+                              << " member " << pma->name()
+                              << " to task " << taskType << "\n";
+                }
 
                 theDataStore.theAssigns.push_back(
                     new cAssign(ps, pma, taskType, (cAgentGroup *)pa));
@@ -140,14 +164,14 @@ void Agents2Tasks(bool fexplain)
             e.g. least workload or same family
             */
 
-            cAgent::sort( slot );
+            cAgent::sort(slot);
 
             cAgent *pBestAgent = 0;
 
-            // loop over agents 
+            // loop over agents
             for (cAgent *pa : theDataStore.theAgents)
             {
-                if( ! pa->cando( task.type()))
+                if (!pa->cando(task.type()))
                     continue;
 
                 if (pa->isAssigned())
@@ -171,24 +195,13 @@ void Agents2Tasks(bool fexplain)
                     pBestAgent = pa;
             }
 
-            if (!pBestAgent)
-            {
-                if (fexplain)
-                    std::cout << "no available agents";
-            }
-            else
-            {
-                // assign best agent to task
+            // assign best agent to task
 
-                if (fexplain)
-                    std::cout << " assigned: " << pBestAgent->name();
-
-                cAssign::add(
-                    slot,
-                    pBestAgent,
-                    // cTaskType::find(task.type()));
-                    task.type());
-            }
+            cAssign::add(
+                slot,
+                pBestAgent,
+                task.type(),
+                fexplain);
         }
     }
 }
