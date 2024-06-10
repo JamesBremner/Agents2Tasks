@@ -5,16 +5,17 @@ class cAssign
 
     cSlot *mySlot;
     cAgent *myAgent;
-    cTaskType *myTask;
+    //cTaskType *myTask;
+    std::string myTaskType;
     cAgentGroup * myGroup;
 
 public:
 
     // construct assignment of single agent
-    cAssign(cSlot *ps, cAgent *pa, cTaskType *pt);
+    cAssign(cSlot *ps, cAgent *pa, const std::string& taskType);
 
     // construct assignment of group agent member
-    cAssign(cSlot *ps, cAgent *pa, cTaskType *pt, cAgentGroup* pg );
+    cAssign(cSlot *ps, cAgent *pa, const std::string& taskType, cAgentGroup* pg );
 
     void set( cAgentGroup* g )
     {
@@ -37,7 +38,7 @@ public:
     /// @param pa agent
     /// @param pt task type
 
-    static void add(cSlot *ps, cAgent *pa, cTaskType *pt );
+    static void add(cSlot *ps, cAgent *pa, const std::string& taksType );
 
     /// @brief Get display text for the assignments in a slot
     /// @param pSlot 

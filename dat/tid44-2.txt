@@ -1,0 +1,13 @@
+a ablack@gmail.com&07-06-1998 1 ablack@gmail.com Cleaner
+a awhite@gmail.com&07-06-1998 1 awhite@gmail.com Cleaner
+a iblack@gmail.com&02-07-1961 1 iblack@gmail.com Cleaner
+a ismith@gmail.com&02-07-1961 1 ismith@gmail.com Cleaner
+a iwhite@gmail.com&02-07-1961 1 iwhite@gmail.com Cleaner
+a rejkid@gmail.com&24-03-1961 1 rejkid@gmail.com Cleaner Acolyte EMHC
+g A Cleaner ismith@gmail.com&02-07-1961 rejkid@gmail.com&24-03-1961
+g B Cleaner ablack@gmail.com&07-06-1998 iblack@gmail.com&02-07-1961 iwhite@gmail.com&02-07-1961 awhite@gmail.com&07-06-1998 rejkid@gmail.com&24-03-1961
+t 202402030600 Cleaner Cleaner Acolyte Acolyte Acolyte
+t 202402100600 Cleaner Cleaner Cleaner Cleaner Cleaner Cleaner
+t 202404020600 Cleaner
+
+

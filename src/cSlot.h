@@ -35,7 +35,7 @@ public:
         return atoi(myName.substr(0, 8).c_str());
     }
 
-    cTask& firstUnassigned( cTaskType* pt);
+    cTask& firstUnassigned( const std::string& taskType );
 
     void assign(int iFamily)
     {

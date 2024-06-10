@@ -8,11 +8,11 @@
         theDataStore.theSlots.clear();
     }
 
-    cTask& cSlot::firstUnassigned( cTaskType* pt)
+    cTask& cSlot::firstUnassigned( const std::string& taskType)
     {
         for( auto& t : myTasks )
         {
-            if( t.type() != pt->name() )
+            if( t.type() != taskType )
                 continue;
             if( t.isAssigned() )
                 continue;

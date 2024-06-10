@@ -1,8 +1,8 @@
 #include "Agents2Tasks.h"
 
-cAssign::cAssign(cSlot *ps, cAgent *pa, cTaskType *pt)
+cAssign::cAssign(cSlot *ps, cAgent *pa, const std::string& taskType)
     : myAgent(pa),
-      myTask(pt),
+      myTaskType(taskType),
       mySlot(ps),
       myGroup(0)
 {
@@ -10,8 +10,8 @@ cAssign::cAssign(cSlot *ps, cAgent *pa, cTaskType *pt)
     ps->assign(pa->family());
 }
 
-cAssign::cAssign(cSlot *ps, cAgent *pa, cTaskType *pt, cAgentGroup *pg)
-    : cAssign(ps, pa, pt)
+cAssign::cAssign(cSlot *ps, cAgent *pa,const std::string& taskType, cAgentGroup *pg)
+    : cAssign(ps, pa, taskType)
 {
     myGroup = pg;
 }
@@ -33,25 +33,25 @@ cAssign::getSlotAssigns(cSlot *slot)
     return ret;
 }
 
-void cAssign::add(cSlot *ps, cAgent *pa, cTaskType *pt)
+void cAssign::add(cSlot *ps, cAgent *pa, const std::string& taskType )
 {
-    if (!(ps && pa && pt))
+    if (!(ps && pa))
         return;
 
     if (!pa->isGroup())
     {
         // individual agent
         // assign it to the first unassigned task of type pt
-        ps->firstUnassigned(pt).assign();
+        ps->firstUnassigned(taskType).assign();
         theDataStore.theAssigns.push_back(
-            new cAssign(ps, pa, pt));
+            new cAssign(ps, pa, taskType));
     }
     else
     {
         // group agent
 
         theDataStore.theAssigns.push_back(
-            new cAssign(ps, pa, pt));
+            new cAssign(ps, pa, taskType));
         theDataStore.theAssigns.back()->set((cAgentGroup *)pa);
 
         // loop over group members
@@ -67,7 +67,7 @@ void cAssign::add(cSlot *ps, cAgent *pa, cTaskType *pt)
                     continue;
 
                 theDataStore.theAssigns.push_back(
-                    new cAssign(ps, pma, pt, (cAgentGroup *)pa));
+                    new cAssign(ps, pma, taskType, (cAgentGroup *)pa));
                 ps->taskAssign(kt);
                 pa->assign(ps->day());
 
@@ -89,7 +89,7 @@ std::string cAssign::text(const std::string &slotName) const
         ss << myAgent->name();
         if (myGroup)
             ss << " in " << myGroup->user_name();
-        ss << " to " << myTask->name();
+        ss << " to " << myTaskType;
     }
     return ss.str();
 }
@@ -186,7 +186,8 @@ void Agents2Tasks(bool fexplain)
                 cAssign::add(
                     slot,
                     pBestAgent,
-                    cTaskType::find(task.type()));
+                    // cTaskType::find(task.type()));
+                    task.type());
             }
         }
     }
